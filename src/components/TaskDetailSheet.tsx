@@ -302,6 +302,9 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
             </div>
           </div>
 
+          {/* Labels */}
+          <TaskLabels taskId={task.id} boardId={boardId} />
+
           {/* Time Tracking */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">

@@ -46,6 +46,26 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
     },
   });
 
+  // Labels for this task
+  const { data: taskLabels = [] } = useQuery({
+    queryKey: ["task-labels-full", task.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("task_labels" as any)
+        .select("label_id")
+        .eq("task_id", task.id);
+      if (error) throw error;
+      const labelIds = (data as any[]).map((tl) => tl.label_id);
+      if (labelIds.length === 0) return [];
+      const { data: labels, error: lErr } = await supabase
+        .from("labels" as any)
+        .select("id, name, color")
+        .in("id", labelIds);
+      if (lErr) throw lErr;
+      return labels as any[];
+    },
+  });
+
   return (
     <Card
       onClick={onClick}
