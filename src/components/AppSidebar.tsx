@@ -37,6 +37,7 @@ import {
   Sun,
   X,
   Check,
+  Clock,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -160,6 +161,14 @@ export function AppSidebar() {
                   <NavLink to="/" end activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
                     <LayoutDashboard className="h-4 w-4 mr-2 shrink-0" />
                     {!collapsed && <span>Dashboard</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/reports" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
+                    <Clock className="h-4 w-4 mr-2 shrink-0" />
+                    {!collapsed && <span>Reports</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
