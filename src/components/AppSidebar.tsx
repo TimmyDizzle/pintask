@@ -163,6 +163,14 @@ export function AppSidebar() {
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/reports" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
+                    <Clock className="h-4 w-4 mr-2 shrink-0" />
+                    {!collapsed && <span>Reports</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
