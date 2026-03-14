@@ -35,21 +35,6 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   const [editingColumn, setEditingColumn] = useState<string | null>(null);
   const [editColumnName, setEditColumnName] = useState("");
 
-  const kanbanShortcuts = useMemo(
-    () => [
-      {
-        key: "n",
-        handler: () => {
-          if (columns.length > 0) {
-            setAddingTaskInColumn(columns[0].id);
-          }
-        },
-      },
-    ],
-    [columns]
-  );
-  useKeyboardShortcuts(kanbanShortcuts);
-
   const { data: columns = [] } = useQuery({
     queryKey: ["columns", boardId],
     queryFn: async () => {
@@ -78,6 +63,22 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
     },
     enabled: columns.length > 0,
   });
+
+  const kanbanShortcuts = useMemo(
+    () => [
+      {
+        key: "n",
+        handler: () => {
+          if (columns.length > 0) {
+            setAddingTaskInColumn(columns[0].id);
+          }
+        },
+      },
+    ],
+    [columns]
+  );
+  useKeyboardShortcuts(kanbanShortcuts);
+
 
   const addColumn = useMutation({
     mutationFn: async (name: string) => {
