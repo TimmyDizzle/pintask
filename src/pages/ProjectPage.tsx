@@ -1,9 +1,9 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
-import Dashboard from "@/pages/Dashboard";
+import ProjectView from "@/pages/ProjectView";
 
-const Index = () => {
+export default function ProjectPage() {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -18,9 +18,7 @@ const Index = () => {
 
   return (
     <AppLayout>
-      <Dashboard />
+      <ProjectView />
     </AppLayout>
   );
-};
-
-export default Index;
+}
