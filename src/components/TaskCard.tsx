@@ -79,6 +79,19 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
           style={{ backgroundColor: task.color_label }}
         />
       )}
+      {taskLabels.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-1.5">
+          {taskLabels.map((label: any) => (
+            <Badge
+              key={label.id}
+              className="text-[9px] text-white border-0 px-1.5 py-0 h-4 font-medium"
+              style={{ backgroundColor: label.color }}
+            >
+              {label.name}
+            </Badge>
+          ))}
+        </div>
+      )}
       <p className="text-sm font-medium leading-snug">{task.title}</p>
 
       {task.description && (
