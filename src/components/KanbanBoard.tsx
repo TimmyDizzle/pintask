@@ -35,7 +35,21 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   const [editingColumn, setEditingColumn] = useState<string | null>(null);
   const [editColumnName, setEditColumnName] = useState("");
 
-  const { data: columns = [] } = useQuery({
+  const kanbanShortcuts = useMemo(
+    () => [
+      {
+        key: "n",
+        handler: () => {
+          if (columns.length > 0) {
+            setAddingTaskInColumn(columns[0].id);
+          }
+        },
+      },
+    ],
+    [columns]
+  );
+  useKeyboardShortcuts(kanbanShortcuts);
+
     queryKey: ["columns", boardId],
     queryFn: async () => {
       const { data, error } = await supabase
