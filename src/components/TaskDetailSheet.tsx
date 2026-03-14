@@ -29,6 +29,7 @@ import {
   ExternalLink,
   Clock,
 } from "lucide-react";
+import { TaskComments } from "@/components/TaskComments";
 import { useToast } from "@/hooks/use-toast";
 import { format, formatDistanceToNow } from "date-fns";
 import type { Tables } from "@/integrations/supabase/types";
@@ -428,6 +429,9 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
               </div>
             ))}
           </div>
+
+          {/* Comments */}
+          <TaskComments taskId={task.id} />
 
           {/* Delete */}
           <div className="pt-4 border-t border-border">
