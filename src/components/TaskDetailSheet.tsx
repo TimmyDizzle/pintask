@@ -430,6 +430,9 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
             ))}
           </div>
 
+          {/* Comments */}
+          <TaskComments taskId={task.id} />
+
           {/* Delete */}
           <div className="pt-4 border-t border-border">
             <Button
