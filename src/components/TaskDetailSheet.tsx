@@ -30,6 +30,7 @@ import {
   Clock,
 } from "lucide-react";
 import { TaskComments } from "@/components/TaskComments";
+import { TaskLabels } from "@/components/TaskLabels";
 import { useToast } from "@/hooks/use-toast";
 import { format, formatDistanceToNow } from "date-fns";
 import type { Tables } from "@/integrations/supabase/types";
