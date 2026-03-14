@@ -50,6 +50,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   );
   useKeyboardShortcuts(kanbanShortcuts);
 
+  const { data: columns = [] } = useQuery({
     queryKey: ["columns", boardId],
     queryFn: async () => {
       const { data, error } = await supabase
