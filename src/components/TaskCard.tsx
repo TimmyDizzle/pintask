@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Calendar, Link as LinkIcon, Clock } from "lucide-react";
 import { format } from "date-fns";
 import type { Tables } from "@/integrations/supabase/types";
@@ -45,6 +46,26 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
     },
   });
 
+  // Labels for this task
+  const { data: taskLabels = [] } = useQuery({
+    queryKey: ["task-labels-full", task.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("task_labels" as any)
+        .select("label_id")
+        .eq("task_id", task.id);
+      if (error) throw error;
+      const labelIds = (data as any[]).map((tl) => tl.label_id);
+      if (labelIds.length === 0) return [];
+      const { data: labels, error: lErr } = await supabase
+        .from("labels" as any)
+        .select("id, name, color")
+        .in("id", labelIds);
+      if (lErr) throw lErr;
+      return labels as any[];
+    },
+  });
+
   return (
     <Card
       onClick={onClick}
@@ -57,6 +78,19 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
           className="h-1.5 w-12 rounded-full mb-2"
           style={{ backgroundColor: task.color_label }}
         />
+      )}
+      {taskLabels.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-1.5">
+          {taskLabels.map((label: any) => (
+            <Badge
+              key={label.id}
+              className="text-[9px] text-white border-0 px-1.5 py-0 h-4 font-medium"
+              style={{ backgroundColor: label.color }}
+            >
+              {label.name}
+            </Badge>
+          ))}
+        </div>
       )}
       <p className="text-sm font-medium leading-snug">{task.title}</p>
 

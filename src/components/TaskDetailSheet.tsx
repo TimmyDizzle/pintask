@@ -30,6 +30,7 @@ import {
   Clock,
 } from "lucide-react";
 import { TaskComments } from "@/components/TaskComments";
+import { TaskLabels } from "@/components/TaskLabels";
 import { useToast } from "@/hooks/use-toast";
 import { format, formatDistanceToNow } from "date-fns";
 import type { Tables } from "@/integrations/supabase/types";
@@ -300,6 +301,9 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
               ))}
             </div>
           </div>
+
+          {/* Labels */}
+          <TaskLabels taskId={task.id} boardId={boardId} />
 
           {/* Time Tracking */}
           <div className="space-y-3">
