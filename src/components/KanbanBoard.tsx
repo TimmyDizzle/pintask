@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -62,6 +63,22 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
     },
     enabled: columns.length > 0,
   });
+
+  const kanbanShortcuts = useMemo(
+    () => [
+      {
+        key: "n",
+        handler: () => {
+          if (columns.length > 0) {
+            setAddingTaskInColumn(columns[0].id);
+          }
+        },
+      },
+    ],
+    [columns]
+  );
+  useKeyboardShortcuts(kanbanShortcuts);
+
 
   const addColumn = useMutation({
     mutationFn: async (name: string) => {
