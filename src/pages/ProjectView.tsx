@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { KanbanBoard } from "@/components/KanbanBoard";
+import { ImageAttachments } from "@/components/ImageAttachments";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
