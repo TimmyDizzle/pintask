@@ -435,6 +435,9 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
             ))}
           </div>
 
+          {/* Images */}
+          <ImageAttachments taskId={task.id} />
+
           {/* Comments */}
           <TaskComments taskId={task.id} />
 
