@@ -245,6 +245,10 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                             <Edit2 className="h-4 w-4 mr-2" />
                             Rename
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setColorPickerColumn(column.id)}>
+                            <Palette className="h-4 w-4 mr-2" />
+                            Set column color
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => deleteColumn.mutate(column.id)}
                             className="text-destructive"
