@@ -8,7 +8,7 @@ import { TaskCard } from "@/components/TaskCard";
 import { TaskDetailSheet } from "@/components/TaskDetailSheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, MoreHorizontal, X, Check, Trash2, Edit2, Palette } from "lucide-react";
+import { Plus, MoreHorizontal, X, Check, Trash2, Edit2, Palette, Loader2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +31,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   const [newColumnName, setNewColumnName] = useState("");
   const [addingTaskInColumn, setAddingTaskInColumn] = useState<string | null>(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [parsingTask, setParsingTask] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Tables<"tasks"> | null>(null);
   const [editingColumn, setEditingColumn] = useState<string | null>(null);
   const [editColumnName, setEditColumnName] = useState("");
@@ -138,14 +139,38 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
 
   const addTask = useMutation({
     mutationFn: async ({ columnId, title }: { columnId: string; title: string }) => {
-      const colTasks = tasks.filter((t) => t.column_id === columnId);
-      const { error } = await supabase.from("tasks").insert({
-        title,
-        column_id: columnId,
-        user_id: user!.id,
-        position: colTasks.length,
-      });
-      if (error) throw error;
+      setParsingTask(true);
+      try {
+        // Parse natural language via AI
+        let parsed = { title, dueDate: null as string | null, priority: "medium" };
+        try {
+          const { data, error } = await supabase.functions.invoke("parse-task", {
+            body: { text: title },
+          });
+          if (!error && data && !data.error) {
+            parsed = {
+              title: data.title || title,
+              dueDate: data.dueDate || null,
+              priority: data.label === "urgent" ? "urgent" : (data.priority || "medium"),
+            };
+          }
+        } catch {
+          // AI parsing failed, use raw title
+        }
+
+        const colTasks = tasks.filter((t) => t.column_id === columnId);
+        const { error } = await supabase.from("tasks").insert({
+          title: parsed.title,
+          column_id: columnId,
+          user_id: user!.id,
+          position: colTasks.length,
+          due_date: parsed.dueDate,
+          priority: parsed.priority,
+        });
+        if (error) throw error;
+      } finally {
+        setParsingTask(false);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", boardId] });
@@ -331,10 +356,17 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                             setNewTaskTitle("");
                           }
                         }}
-                        placeholder="Task title..."
+                        placeholder="e.g. Call John on Friday urgent..."
                         className="text-sm"
                         autoFocus
+                        disabled={parsingTask}
                       />
+                      {parsingTask && (
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Parsing with AI...
+                        </div>
+                      )}
                       <div className="flex gap-1">
                         <Button
                           size="sm"
@@ -343,6 +375,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                               addTask.mutate({ columnId: column.id, title: newTaskTitle.trim() });
                           }}
                           className="text-xs h-7"
+                          disabled={parsingTask}
                         >
                           Add
                         </Button>
@@ -354,6 +387,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                             setNewTaskTitle("");
                           }}
                           className="text-xs h-7"
+                          disabled={parsingTask}
                         >
                           Cancel
                         </Button>
