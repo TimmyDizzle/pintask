@@ -31,6 +31,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   const [newColumnName, setNewColumnName] = useState("");
   const [addingTaskInColumn, setAddingTaskInColumn] = useState<string | null>(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [parsingTask, setParsingTask] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Tables<"tasks"> | null>(null);
   const [editingColumn, setEditingColumn] = useState<string | null>(null);
   const [editColumnName, setEditColumnName] = useState("");
