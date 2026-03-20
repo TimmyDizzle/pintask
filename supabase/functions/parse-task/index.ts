@@ -20,10 +20,9 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      // Fallback: return plain task
-      console.error("LOVABLE_API_KEY not configured");
+    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+    if (!ANTHROPIC_API_KEY) {
+      console.error("ANTHROPIC_API_KEY not configured");
       return new Response(
         JSON.stringify({ title: text.trim(), dueDate: null, label: "normal", priority: "medium" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -32,57 +31,37 @@ serve(async (req) => {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "claude-sonnet-4-6",
+        max_tokens: 256,
         tools: [
           {
-            type: "function",
-            function: {
-              name: "parse_task",
-              description: "Extract structured task data from natural language text.",
-              parameters: {
-                type: "object",
-                properties: {
-                  title: {
-                    type: "string",
-                    description: "Clean task title without date or priority info",
-                  },
-                  dueDate: {
-                    type: "string",
-                    description: "ISO date string (YYYY-MM-DD) or null if no date mentioned",
-                  },
-                  label: {
-                    type: "string",
-                    enum: ["urgent", "normal"],
-                    description: "urgent if the text implies urgency, otherwise normal",
-                  },
-                  priority: {
-                    type: "string",
-                    enum: ["high", "medium", "low"],
-                    description: "Task priority inferred from text",
-                  },
-                },
-                required: ["title", "label", "priority"],
-                additionalProperties: false,
+            name: "parse_task",
+            description: "Extract structured task data from natural language text.",
+            input_schema: {
+              type: "object",
+              properties: {
+                title: { type: "string", description: "Clean task title without date or priority info" },
+                dueDate: { type: "string", description: "ISO date string (YYYY-MM-DD) or null if no date mentioned" },
+                label: { type: "string", enum: ["urgent", "normal"], description: "urgent if the text implies urgency, otherwise normal" },
+                priority: { type: "string", enum: ["high", "medium", "low"], description: "Task priority inferred from text" },
               },
+              required: ["title", "label", "priority"],
             },
           },
         ],
-        tool_choice: { type: "function", function: { name: "parse_task" } },
+        tool_choice: { type: "tool", name: "parse_task" },
         messages: [
           {
-            role: "system",
-            content: `You are a task parser. Today is ${today}. Extract structured task data from the user's text. Interpret relative dates like "Friday", "tomorrow", "next week" relative to today. If no date is mentioned, set dueDate to null. If the text sounds urgent or uses words like "urgent", "ASAP", "immediately", set label to "urgent" and priority to "high".`,
-          },
-          {
             role: "user",
-            content: text.trim(),
+            content: `You are a task parser. Today is ${today}. Extract structured task data from this text. Interpret relative dates like "Friday", "tomorrow", "next week" relative to today. If no date is mentioned, set dueDate to null. If the text sounds urgent or uses words like "urgent", "ASAP", "immediately", set label to "urgent" and priority to "high".\n\nText: ${text.trim()}`,
           },
         ],
       }),
@@ -91,19 +70,11 @@ serve(async (req) => {
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (aiResponse.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const errText = await aiResponse.text();
-      console.error("AI gateway error:", aiResponse.status, errText);
-      // Fallback
+      console.error("Anthropic API error:", aiResponse.status, errText);
       return new Response(
         JSON.stringify({ title: text.trim(), dueDate: null, label: "normal", priority: "medium" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -111,26 +82,21 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
-    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    const toolUse = aiData.content?.find((block: any) => block.type === "tool_use");
 
-    if (toolCall?.function?.arguments) {
-      try {
-        const parsed = JSON.parse(toolCall.function.arguments);
-        return new Response(
-          JSON.stringify({
-            title: parsed.title || text.trim(),
-            dueDate: parsed.dueDate || null,
-            label: parsed.label || "normal",
-            priority: parsed.priority || "medium",
-          }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      } catch {
-        // JSON parse failed, fallback
-      }
+    if (toolUse?.input) {
+      const parsed = toolUse.input;
+      return new Response(
+        JSON.stringify({
+          title: parsed.title || text.trim(),
+          dueDate: parsed.dueDate || null,
+          label: parsed.label || "normal",
+          priority: parsed.priority || "medium",
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    // Fallback
     return new Response(
       JSON.stringify({ title: text.trim(), dueDate: null, label: "normal", priority: "medium" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
