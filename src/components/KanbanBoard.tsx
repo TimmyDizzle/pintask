@@ -139,14 +139,38 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
 
   const addTask = useMutation({
     mutationFn: async ({ columnId, title }: { columnId: string; title: string }) => {
-      const colTasks = tasks.filter((t) => t.column_id === columnId);
-      const { error } = await supabase.from("tasks").insert({
-        title,
-        column_id: columnId,
-        user_id: user!.id,
-        position: colTasks.length,
-      });
-      if (error) throw error;
+      setParsingTask(true);
+      try {
+        // Parse natural language via AI
+        let parsed = { title, dueDate: null as string | null, priority: "medium" };
+        try {
+          const { data, error } = await supabase.functions.invoke("parse-task", {
+            body: { text: title },
+          });
+          if (!error && data && !data.error) {
+            parsed = {
+              title: data.title || title,
+              dueDate: data.dueDate || null,
+              priority: data.label === "urgent" ? "urgent" : (data.priority || "medium"),
+            };
+          }
+        } catch {
+          // AI parsing failed, use raw title
+        }
+
+        const colTasks = tasks.filter((t) => t.column_id === columnId);
+        const { error } = await supabase.from("tasks").insert({
+          title: parsed.title,
+          column_id: columnId,
+          user_id: user!.id,
+          position: colTasks.length,
+          due_date: parsed.dueDate,
+          priority: parsed.priority,
+        });
+        if (error) throw error;
+      } finally {
+        setParsingTask(false);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", boardId] });
