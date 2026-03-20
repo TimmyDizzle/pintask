@@ -106,12 +106,20 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
             {task.priority}
           </span>
         )}
-        {task.due_date && (
-          <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-            <Calendar className="h-3 w-3" />
-            {format(new Date(task.due_date), "MMM d")}
-          </span>
-        )}
+        {task.due_date && (() => {
+          const daysUntil = differenceInDays(startOfDay(new Date(task.due_date)), startOfDay(new Date()));
+          const dueDateColor = daysUntil <= 0
+            ? "text-red-600 dark:text-red-400"
+            : daysUntil <= 7
+              ? "text-amber-600 dark:text-amber-400"
+              : "text-emerald-600 dark:text-emerald-400";
+          return (
+            <span className={`flex items-center gap-1 text-[10px] font-medium ${dueDateColor}`}>
+              <Calendar className="h-3 w-3" />
+              {format(new Date(task.due_date), "MMM d")}
+            </span>
+          );
+        })()}
         {linkCount > 0 && (
           <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
             <LinkIcon className="h-3 w-3" />
