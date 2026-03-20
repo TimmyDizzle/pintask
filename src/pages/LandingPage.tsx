@@ -178,6 +178,52 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Social Proof */}
+      <section className="border-t border-border/40 px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-center text-sm font-medium uppercase tracking-widest text-muted-foreground">
+            Trusted by teams who ship
+          </p>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                quote: "Pintask replaced three tools for us. The built-in timer alone saved our team hours of manual logging every week.",
+                name: "Mara Solano",
+                role: "Engineering Lead, Covalent Labs",
+              },
+              {
+                quote: "I tried every Kanban app out there. Pintask is the first one that actually feels fast — keyboard shortcuts make all the difference.",
+                name: "Theo Acharya",
+                role: "Freelance Designer",
+              },
+              {
+                quote: "We went from scattered sticky notes to a single board with real deadlines. Our sprint completion rate jumped 34% in the first month.",
+                name: "Lin Johansson",
+                role: "Product Manager, Meridian Health",
+              },
+            ].map((t) => (
+              <blockquote
+                key={t.name}
+                className="flex flex-col justify-between rounded-xl border border-border/50 bg-card p-6 shadow-sm"
+              >
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  "{t.quote}"
+                </p>
+                <footer className="mt-5 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                    {t.name.split(" ").map((n) => n[0]).join("")}
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.role}</div>
+                  </div>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Bottom CTA */}
       <section className="px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
