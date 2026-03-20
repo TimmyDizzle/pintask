@@ -197,8 +197,11 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
             {columns.map((column) => (
               <div
                 key={column.id}
-                className="flex flex-col w-72 shrink-0 bg-muted/30 rounded-xl"
+                className="flex flex-col w-72 shrink-0 bg-muted/30 rounded-xl overflow-hidden"
               >
+                {(column as any).color && (
+                  <div className="h-1 w-full" style={{ backgroundColor: (column as any).color }} />
+                )}
                 {/* Column header */}
                 <div className="flex items-center justify-between px-3 py-3">
                   {editingColumn === column.id ? (
