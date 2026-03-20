@@ -76,6 +76,21 @@ export default function Dashboard() {
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
   };
 
+  const generateBriefing = async () => {
+    setGeneratingBriefing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("daily-briefing");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setBriefing(data.briefing);
+      setBriefingTime(new Date());
+    } catch (e: any) {
+      toast({ title: "Briefing failed", description: e.message, variant: "destructive" });
+    } finally {
+      setGeneratingBriefing(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div>
