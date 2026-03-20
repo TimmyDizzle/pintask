@@ -8,7 +8,7 @@ import { TaskCard } from "@/components/TaskCard";
 import { TaskDetailSheet } from "@/components/TaskDetailSheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, MoreHorizontal, X, Check, Trash2, Edit2 } from "lucide-react";
+import { Plus, MoreHorizontal, X, Check, Trash2, Edit2, Palette } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
