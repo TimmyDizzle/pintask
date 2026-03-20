@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import productShot from "@/assets/product-shot.png";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const features = [
   {
@@ -45,7 +46,59 @@ const features = [
   },
 ];
 
+const revealBase = "transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]";
+const revealHidden = "opacity-0 translate-y-5 blur-[4px]";
+const revealVisible = "opacity-100 translate-y-0 blur-0";
+
+function RevealSection({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, isVisible } = useScrollReveal({ threshold: 0.15 });
+  return (
+    <div
+      ref={ref}
+      className={`${revealBase} ${isVisible ? revealVisible : revealHidden} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+const testimonials = [
+  {
+    quote:
+      "Pintask replaced three tools for us. The built-in timer alone saved our team hours of manual logging every week.",
+    name: "Mara Solano",
+    role: "Engineering Lead, Covalent Labs",
+  },
+  {
+    quote:
+      "I tried every Kanban app out there. Pintask is the first one that actually feels fast — keyboard shortcuts make all the difference.",
+    name: "Theo Acharya",
+    role: "Freelance Designer",
+  },
+  {
+    quote:
+      "We went from scattered sticky notes to a single board with real deadlines. Our sprint completion rate jumped 34% in the first month.",
+    name: "Lin Johansson",
+    role: "Product Manager, Meridian Health",
+  },
+];
+
 export default function LandingPage() {
+  const heroReveal = useScrollReveal({ threshold: 0.1 });
+  const shotReveal = useScrollReveal({ threshold: 0.1 });
+  const featuresReveal = useScrollReveal({ threshold: 0.1 });
+  const proofReveal = useScrollReveal({ threshold: 0.15 });
+  const ctaReveal = useScrollReveal({ threshold: 0.2 });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -74,24 +127,39 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-16 pt-20 md:pt-28">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">
+        <div
+          ref={heroReveal.ref}
+          className={`mx-auto max-w-3xl text-center ${revealBase} duration-1000 ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+        >
+          <div
+            className={`inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "100ms" }}
+          >
             <Sparkles className="h-3.5 w-3.5" />
             Now in Open Beta
           </div>
-          <h1 className="mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          <h1
+            className={`mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "200ms" }}
+          >
             Organize your work.
             <br />
             <span className="text-primary">Track your time.</span>
             <br />
             Ship faster.
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
+          <p
+            className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "350ms" }}
+          >
             Pintask is a lightweight project management tool with Kanban boards,
             built-in time tracking, and everything you need to stay on top of your
             work.
           </p>
-          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <div
+            className={`mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "500ms" }}
+          >
             <Button size="lg" className="h-12 px-8 text-base" asChild>
               <Link to="/auth">
                 Try Pintask Free <ArrowRight className="ml-1.5 h-4 w-4" />
@@ -101,10 +169,16 @@ export default function LandingPage() {
               <a href="#features">See Features</a>
             </Button>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p
+            className={`mt-3 text-sm text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "600ms" }}
+          >
             No credit card required. Free during beta.
           </p>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p
+            className={`mt-2 text-xs text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "650ms" }}
+          >
             Join <span className="font-bold text-primary">847</span> people already on the waitlist
           </p>
         </div>
@@ -112,7 +186,10 @@ export default function LandingPage() {
 
       {/* Product Shot */}
       <section className="px-6 pb-20">
-        <div className="mx-auto max-w-5xl">
+        <div
+          ref={shotReveal.ref}
+          className={`mx-auto max-w-5xl ${revealBase} duration-1000 ${shotReveal.isVisible ? "opacity-100 translate-y-0 blur-0 scale-100" : "opacity-0 translate-y-8 blur-[6px] scale-[0.97]"}`}
+        >
           <img
             src={productShot}
             alt="Pintask dashboard showing a Kanban board with tasks organized in columns"
@@ -124,18 +201,26 @@ export default function LandingPage() {
 
       {/* Features */}
       <section id="features" className="border-t border-border/40 bg-muted/30 px-6 py-20">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+        <div ref={featuresReveal.ref} className="mx-auto max-w-6xl">
+          <h2
+            className={`text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl ${revealBase} ${featuresReveal.isVisible ? revealVisible : revealHidden}`}
+          >
             Everything you need to stay productive
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">
+          <p
+            className={`mx-auto mt-4 max-w-xl text-center text-muted-foreground ${revealBase} ${featuresReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "80ms" }}
+          >
             No bloat. Just the tools that matter.
           </p>
           <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
+            {features.map((f, i) => (
               <div
                 key={f.title}
-                className="rounded-xl border border-border/50 bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
+                className={`rounded-xl border border-border/50 bg-card p-6 shadow-sm transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:shadow-md ${
+                  featuresReveal.isVisible ? revealVisible : revealHidden
+                }`}
+                style={{ transitionDelay: `${150 + i * 80}ms` }}
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <f.icon className="h-5 w-5" />
@@ -150,44 +235,27 @@ export default function LandingPage() {
 
       {/* Social Proof */}
       <section className="border-t border-border/40 px-6 py-20">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-center text-sm font-medium uppercase tracking-widest text-muted-foreground">
+        <div ref={proofReveal.ref} className="mx-auto max-w-6xl">
+          <p
+            className={`text-center text-sm font-medium uppercase tracking-widest text-muted-foreground ${revealBase} ${proofReveal.isVisible ? revealVisible : revealHidden}`}
+          >
             Trusted by teams who ship
           </p>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {[
-              {
-                quote:
-                  "Pintask replaced three tools for us. The built-in timer alone saved our team hours of manual logging every week.",
-                name: "Mara Solano",
-                role: "Engineering Lead, Covalent Labs",
-              },
-              {
-                quote:
-                  "I tried every Kanban app out there. Pintask is the first one that actually feels fast — keyboard shortcuts make all the difference.",
-                name: "Theo Acharya",
-                role: "Freelance Designer",
-              },
-              {
-                quote:
-                  "We went from scattered sticky notes to a single board with real deadlines. Our sprint completion rate jumped 34% in the first month.",
-                name: "Lin Johansson",
-                role: "Product Manager, Meridian Health",
-              },
-            ].map((t) => (
+            {testimonials.map((t, i) => (
               <blockquote
                 key={t.name}
-                className="flex flex-col justify-between rounded-xl border border-border/50 bg-card p-6 shadow-sm"
+                className={`flex flex-col justify-between rounded-xl border border-border/50 bg-card p-6 shadow-sm ${revealBase} ${
+                  proofReveal.isVisible ? revealVisible : revealHidden
+                }`}
+                style={{ transitionDelay: `${100 + i * 100}ms` }}
               >
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   "{t.quote}"
                 </p>
                 <footer className="mt-5 flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                    {t.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
+                    {t.name.split(" ").map((n) => n[0]).join("")}
                   </div>
                   <div>
                     <div className="text-sm font-medium">{t.name}</div>
@@ -202,7 +270,10 @@ export default function LandingPage() {
 
       {/* Bottom CTA */}
       <section className="border-t border-border/40 bg-muted/30 px-6 py-20">
-        <div className="mx-auto max-w-2xl text-center">
+        <div
+          ref={ctaReveal.ref}
+          className={`mx-auto max-w-2xl text-center ${revealBase} duration-700 ${ctaReveal.isVisible ? revealVisible : revealHidden}`}
+        >
           <h2 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
             Ready to take control of your workflow?
           </h2>
