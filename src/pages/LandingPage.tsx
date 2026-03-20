@@ -1,9 +1,5 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import {
   CheckSquare,
   Clock,
@@ -12,7 +8,7 @@ import {
   Keyboard,
   BarChart3,
   ArrowRight,
-  Loader2,
+  Sparkles,
 } from "lucide-react";
 import productShot from "@/assets/product-shot.png";
 
@@ -49,51 +45,6 @@ const features = [
   },
 ];
 
-function EmailForm({ id }: { id?: string }) {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      toast({ title: "Please enter a valid email address", variant: "destructive" });
-      return;
-    }
-    setLoading(true);
-    const { error } = await supabase.from("waitlist_emails").insert({ email: trimmed });
-    setLoading(false);
-    if (error) {
-      if (error.code === "23505") {
-        toast({ title: "You're already on the list! 🎉" });
-      } else {
-        toast({ title: "Something went wrong. Try again.", variant: "destructive" });
-      }
-    } else {
-      toast({ title: "You're on the list! We'll be in touch. ✉️" });
-      setEmail("");
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-2" id={id}>
-      <Input
-        type="email"
-        placeholder="you@example.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="h-12 bg-background/80 backdrop-blur-sm border-border/50"
-        required
-      />
-      <Button type="submit" size="lg" className="h-12 px-6 shrink-0" disabled={loading}>
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
-          <>Join Waitlist <ArrowRight className="ml-1 h-4 w-4" /></>
-        )}
-      </Button>
-    </form>
-  );
-}
-
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -108,8 +59,13 @@ export default function LandingPage() {
             <Button variant="ghost" asChild>
               <a href="#features">Features</a>
             </Button>
-            <Button asChild>
+            <Button variant="ghost" asChild>
               <Link to="/auth">Sign In</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/auth">
+                Try it Free <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -119,7 +75,11 @@ export default function LandingPage() {
       <section className="relative overflow-hidden px-6 pb-16 pt-20 md:pt-28">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            Now in Open Beta
+          </div>
+          <h1 className="mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
             Organize your work.
             <br />
             <span className="text-primary">Track your time.</span>
@@ -131,11 +91,18 @@ export default function LandingPage() {
             built-in time tracking, and everything you need to stay on top of your
             work.
           </p>
-          <div className="mt-8 flex justify-center">
-            <EmailForm id="hero-email" />
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <Button size="lg" className="h-12 px-8 text-base" asChild>
+              <Link to="/auth">
+                Try Pintask Free <ArrowRight className="ml-1.5 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
+              <a href="#features">See Features</a>
+            </Button>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Join the waitlist — be the first to know when we launch.
+            No credit card required. Free during beta.
           </p>
         </div>
       </section>
@@ -187,17 +154,20 @@ export default function LandingPage() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               {
-                quote: "Pintask replaced three tools for us. The built-in timer alone saved our team hours of manual logging every week.",
+                quote:
+                  "Pintask replaced three tools for us. The built-in timer alone saved our team hours of manual logging every week.",
                 name: "Mara Solano",
                 role: "Engineering Lead, Covalent Labs",
               },
               {
-                quote: "I tried every Kanban app out there. Pintask is the first one that actually feels fast — keyboard shortcuts make all the difference.",
+                quote:
+                  "I tried every Kanban app out there. Pintask is the first one that actually feels fast — keyboard shortcuts make all the difference.",
                 name: "Theo Acharya",
                 role: "Freelance Designer",
               },
               {
-                quote: "We went from scattered sticky notes to a single board with real deadlines. Our sprint completion rate jumped 34% in the first month.",
+                quote:
+                  "We went from scattered sticky notes to a single board with real deadlines. Our sprint completion rate jumped 34% in the first month.",
                 name: "Lin Johansson",
                 role: "Product Manager, Meridian Health",
               },
@@ -211,7 +181,10 @@ export default function LandingPage() {
                 </p>
                 <footer className="mt-5 flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                    {t.name.split(" ").map((n) => n[0]).join("")}
+                    {t.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </div>
                   <div>
                     <div className="text-sm font-medium">{t.name}</div>
@@ -225,16 +198,20 @@ export default function LandingPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="px-6 py-20">
+      <section className="border-t border-border/40 bg-muted/30 px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
             Ready to take control of your workflow?
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Drop your email and we'll let you know the moment Pintask is ready.
+            Sign up in seconds. Free while we're in beta — no strings attached.
           </p>
-          <div className="mt-8 flex justify-center">
-            <EmailForm id="bottom-email" />
+          <div className="mt-8">
+            <Button size="lg" className="h-12 px-10 text-base" asChild>
+              <Link to="/auth">
+                Get Started Free <ArrowRight className="ml-1.5 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
