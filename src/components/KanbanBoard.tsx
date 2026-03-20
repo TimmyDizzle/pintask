@@ -8,7 +8,7 @@ import { TaskCard } from "@/components/TaskCard";
 import { TaskDetailSheet } from "@/components/TaskDetailSheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, MoreHorizontal, X, Check, Trash2, Edit2 } from "lucide-react";
+import { Plus, MoreHorizontal, X, Check, Trash2, Edit2, Palette } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +34,12 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   const [selectedTask, setSelectedTask] = useState<Tables<"tasks"> | null>(null);
   const [editingColumn, setEditingColumn] = useState<string | null>(null);
   const [editColumnName, setEditColumnName] = useState("");
+  const [colorPickerColumn, setColorPickerColumn] = useState<string | null>(null);
+
+  const columnColors = [
+    "#3b82f6", "#22c55e", "#ef4444", "#f97316",
+    "#8b5cf6", "#14b8a6", "#eab308", "#6b7280",
+  ];
 
   const { data: columns = [] } = useQuery({
     queryKey: ["columns", boardId],
@@ -119,6 +125,17 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
     },
   });
 
+  const setColumnColor = useMutation({
+    mutationFn: async ({ id, color }: { id: string; color: string | null }) => {
+      const { error } = await supabase.from("columns").update({ color } as any).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["columns", boardId] });
+      setColorPickerColumn(null);
+    },
+  });
+
   const addTask = useMutation({
     mutationFn: async ({ columnId, title }: { columnId: string; title: string }) => {
       const colTasks = tasks.filter((t) => t.column_id === columnId);
@@ -180,8 +197,11 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
             {columns.map((column) => (
               <div
                 key={column.id}
-                className="flex flex-col w-72 shrink-0 bg-muted/30 rounded-xl"
+                className="flex flex-col w-72 shrink-0 bg-muted/30 rounded-xl overflow-hidden"
               >
+                {(column as any).color && (
+                  <div className="h-1 w-full" style={{ backgroundColor: (column as any).color }} />
+                )}
                 {/* Column header */}
                 <div className="flex items-center justify-between px-3 py-3">
                   {editingColumn === column.id ? (
@@ -225,6 +245,10 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                             <Edit2 className="h-4 w-4 mr-2" />
                             Rename
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setColorPickerColumn(column.id)}>
+                            <Palette className="h-4 w-4 mr-2" />
+                            Set column color
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => deleteColumn.mutate(column.id)}
                             className="text-destructive"
@@ -235,6 +259,28 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </>
+                  )}
+                  {colorPickerColumn === column.id && (
+                    <div className="flex items-center gap-1.5 px-3 pb-2">
+                      {columnColors.map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => setColumnColor.mutate({ id: column.id, color })}
+                          className={`h-5 w-5 rounded-full border-2 transition-transform hover:scale-110 ${
+                            (column as any).color === color ? "border-foreground scale-110" : "border-transparent"
+                          }`}
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                      {(column as any).color && (
+                        <button
+                          onClick={() => setColumnColor.mutate({ id: column.id, color: null })}
+                          className="text-muted-foreground hover:text-foreground ml-1"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
 
