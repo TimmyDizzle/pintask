@@ -104,6 +104,9 @@ export default function LandingPage() {
           <p className="mt-3 text-sm text-muted-foreground">
             No credit card required. Free during beta.
           </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Join <span className="font-bold text-primary">847</span> people already on the waitlist
+          </p>
         </div>
       </section>
 
