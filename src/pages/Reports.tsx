@@ -306,13 +306,36 @@ export default function Reports() {
     );
   };
 
+  const generateWeeklyReport = async () => {
+    setGeneratingReport(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("weekly-report");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setWeeklyReport(data.report);
+      setReportStats(data.stats || null);
+      setReportTime(new Date());
+    } catch (e: any) {
+      toast({ title: "Report failed", description: e.message, variant: "destructive" });
+    } finally {
+      setGeneratingReport(false);
+    }
+  };
+
+  const copyReport = async () => {
+    if (!weeklyReport) return;
+    await navigator.clipboard.writeText(weeklyReport.replace(/##\s*/g, "").replace(/\*\*/g, ""));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Time Reports</h1>
+          <h1 className="text-2xl font-bold">Reports</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Track where your time goes — with period comparison
+            AI-powered summaries and time tracking analytics
           </p>
         </div>
         <div className="flex items-center gap-3">
