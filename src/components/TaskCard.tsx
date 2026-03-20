@@ -66,12 +66,17 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
     },
   });
 
+  const isUrgent = task.priority === "urgent";
+  const hasMetadata = !!task.due_date || taskLabels.length > 0;
+
   return (
     <Card
       onClick={onClick}
       className={`p-3 cursor-pointer hover:shadow-md transition-all border-border/50 ${
         isDragging ? "shadow-lg rotate-2 scale-105" : ""
-      } ${activeTimer ? "ring-2 ring-accent/50" : ""}`}
+      } ${activeTimer ? "ring-2 ring-accent/50" : ""} ${
+        isUrgent ? "border-l-[3px] border-l-red-500" : ""
+      } ${!hasMetadata ? "opacity-[0.88]" : ""}`}
     >
       {task.color_label && (
         <div
@@ -92,7 +97,7 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
           ))}
         </div>
       )}
-      <p className="text-sm font-medium leading-snug">{task.title}</p>
+      <p className="text-[13px] font-semibold leading-snug">{task.title}</p>
 
       {task.description && (
         <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
