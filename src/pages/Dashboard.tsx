@@ -1,14 +1,21 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FolderKanban, Clock, CheckCircle2, Timer } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FolderKanban, Clock, CheckCircle2, Timer, Sparkles, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [briefing, setBriefing] = useState<string | null>(null);
+  const [briefingTime, setBriefingTime] = useState<Date | null>(null);
+  const [generatingBriefing, setGeneratingBriefing] = useState(false);
 
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
@@ -69,6 +76,21 @@ export default function Dashboard() {
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
   };
 
+  const generateBriefing = async () => {
+    setGeneratingBriefing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("daily-briefing");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setBriefing(data.briefing);
+      setBriefingTime(new Date());
+    } catch (e: any) {
+      toast({ title: "Briefing failed", description: e.message, variant: "destructive" });
+    } finally {
+      setGeneratingBriefing(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div>
@@ -124,6 +146,64 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Briefing + Recent Projects + Active Timers */}
+      <Card className="border-primary/20">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              AI Daily Briefing
+            </CardTitle>
+            {briefingTime && (
+              <span className="text-[11px] text-muted-foreground">
+                Generated {format(briefingTime, "h:mm a")}
+              </span>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {briefing ? (
+            <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed [&_h2]:text-xs [&_h2]:font-bold [&_h2]:uppercase [&_h2]:tracking-wide [&_h2]:text-primary [&_h2]:mt-4 [&_h2]:mb-1.5 [&_h2:first-child]:mt-0 [&_ul]:my-1 [&_li]:my-0 [&_p]:my-1">
+              {briefing.split(/\n/).map((line, i) => {
+                const trimmed = line.trim();
+                if (!trimmed) return null;
+                if (trimmed.startsWith("## ")) {
+                  return <h2 key={i}>{trimmed.replace("## ", "")}</h2>;
+                }
+                if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+                  return <p key={i} className="flex items-start gap-1.5"><span className="text-primary mt-0.5">•</span>{trimmed.slice(2)}</p>;
+                }
+                if (/^\d+\./.test(trimmed)) {
+                  return <p key={i}>{trimmed}</p>;
+                }
+                return <p key={i}>{trimmed}</p>;
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-sm text-muted-foreground mb-3">
+                Get a personalized summary of your priorities, overdue items, and what to focus on today.
+              </p>
+            </div>
+          )}
+          <Button
+            onClick={generateBriefing}
+            disabled={generatingBriefing}
+            variant={briefing ? "outline" : "default"}
+            size="sm"
+            className={`mt-3 ${!briefing ? "w-full" : ""}`}
+          >
+            {generatingBriefing ? (
+              <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Generating...</>
+            ) : briefing ? (
+              <><Sparkles className="h-3.5 w-3.5 mr-1.5" /> Regenerate</>
+            ) : (
+              <><Sparkles className="h-3.5 w-3.5 mr-1.5" /> Generate My Briefing</>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
