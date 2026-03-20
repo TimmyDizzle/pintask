@@ -12,6 +12,10 @@ import { useToast } from "@/hooks/use-toast";
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [briefing, setBriefing] = useState<string | null>(null);
+  const [briefingTime, setBriefingTime] = useState<Date | null>(null);
+  const [generatingBriefing, setGeneratingBriefing] = useState(false);
 
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
