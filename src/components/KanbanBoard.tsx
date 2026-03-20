@@ -175,207 +175,216 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 overflow-x-auto p-6 pb-8 h-[calc(100vh-3rem)] scrollbar-thin">
-          {columns.map((column) => (
-            <div
-              key={column.id}
-              className="flex flex-col w-72 shrink-0 bg-muted/30 rounded-xl"
-            >
-              {/* Column header */}
-              <div className="flex items-center justify-between px-3 py-3">
-                {editingColumn === column.id ? (
-                  <div className="flex items-center gap-1 flex-1">
-                    <Input
-                      value={editColumnName}
-                      onChange={(e) => setEditColumnName(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && editColumnName.trim())
-                          renameColumn.mutate({ id: column.id, name: editColumnName.trim() });
-                        if (e.key === "Escape") setEditingColumn(null);
-                      }}
-                      className="h-7 text-sm"
-                      autoFocus
-                    />
-                    <button onClick={() => {
-                      if (editColumnName.trim()) renameColumn.mutate({ id: column.id, name: editColumnName.trim() });
-                    }}>
-                      <Check className="h-4 w-4 text-primary" />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-sm">{column.name}</h3>
-                      <span className="text-xs text-muted-foreground bg-muted rounded-full px-2 py-0.5">
-                        {getTasksForColumn(column.id).length}
-                      </span>
+        <div className="flex flex-col flex-1 min-h-0">
+          <div className="flex gap-4 overflow-x-auto p-6 pb-4 flex-1 min-h-0 scrollbar-thin">
+            {columns.map((column) => (
+              <div
+                key={column.id}
+                className="flex flex-col w-72 shrink-0 bg-muted/30 rounded-xl"
+              >
+                {/* Column header */}
+                <div className="flex items-center justify-between px-3 py-3">
+                  {editingColumn === column.id ? (
+                    <div className="flex items-center gap-1 flex-1">
+                      <Input
+                        value={editColumnName}
+                        onChange={(e) => setEditColumnName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && editColumnName.trim())
+                            renameColumn.mutate({ id: column.id, name: editColumnName.trim() });
+                          if (e.key === "Escape") setEditingColumn(null);
+                        }}
+                        className="h-7 text-sm"
+                        autoFocus
+                      />
+                      <button onClick={() => {
+                        if (editColumnName.trim()) renameColumn.mutate({ id: column.id, name: editColumnName.trim() });
+                      }}>
+                        <Check className="h-4 w-4 text-primary" />
+                      </button>
                     </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className="text-muted-foreground hover:text-foreground transition-colors">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => {
-                          setEditingColumn(column.id);
-                          setEditColumnName(column.name);
-                        }}>
-                          <Edit2 className="h-4 w-4 mr-2" />
-                          Rename
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => deleteColumn.mutate(column.id)}
-                          className="text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </>
-                )}
-              </div>
-
-              {/* Tasks */}
-              <Droppable droppableId={column.id}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={`flex-1 overflow-y-auto px-2 pb-2 space-y-2 min-h-[60px] transition-colors rounded-lg mx-1 ${
-                      snapshot.isDraggingOver ? "bg-primary/5" : ""
-                    }`}
-                  >
-                    {getTasksForColumn(column.id).map((task, index) => (
-                      <Draggable key={task.id} draggableId={task.id} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-sm">{column.name}</h3>
+                        <span className="text-xs text-muted-foreground bg-muted rounded-full px-2 py-0.5">
+                          {getTasksForColumn(column.id).length}
+                        </span>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="text-muted-foreground hover:text-foreground transition-colors">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => {
+                            setEditingColumn(column.id);
+                            setEditColumnName(column.name);
+                          }}>
+                            <Edit2 className="h-4 w-4 mr-2" />
+                            Rename
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => deleteColumn.mutate(column.id)}
+                            className="text-destructive"
                           >
-                            <TaskCard
-                              task={task}
-                              isDragging={snapshot.isDragging}
-                              onClick={() => setSelectedTask(task)}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </>
+                  )}
+                </div>
 
-              {/* Add task */}
-              <div className="px-2 pb-3">
-                {addingTaskInColumn === column.id ? (
-                  <div className="space-y-2">
-                    <Input
-                      value={newTaskTitle}
-                      onChange={(e) => setNewTaskTitle(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && newTaskTitle.trim())
-                          addTask.mutate({ columnId: column.id, title: newTaskTitle.trim() });
-                        if (e.key === "Escape") {
-                          setAddingTaskInColumn(null);
-                          setNewTaskTitle("");
-                        }
-                      }}
-                      placeholder="Task title..."
-                      className="text-sm"
-                      autoFocus
-                    />
-                    <div className="flex gap-1">
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          if (newTaskTitle.trim())
-                            addTask.mutate({ columnId: column.id, title: newTaskTitle.trim() });
-                        }}
-                        className="text-xs h-7"
-                      >
-                        Add
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          setAddingTaskInColumn(null);
-                          setNewTaskTitle("");
-                        }}
-                        className="text-xs h-7"
-                      >
-                        Cancel
-                      </Button>
+                {/* Tasks */}
+                <Droppable droppableId={column.id}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className={`flex-1 overflow-y-auto px-2 pb-2 space-y-2 min-h-[60px] transition-colors rounded-lg mx-1 ${
+                        snapshot.isDraggingOver ? "bg-primary/5" : ""
+                      }`}
+                    >
+                      {getTasksForColumn(column.id).map((task, index) => (
+                        <Draggable key={task.id} draggableId={task.id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <TaskCard
+                                task={task}
+                                isDragging={snapshot.isDragging}
+                                onClick={() => setSelectedTask(task)}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
                     </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setAddingTaskInColumn(column.id)}
-                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors w-full px-2 py-1.5 rounded-md hover:bg-muted/50"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add task
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+                  )}
+                </Droppable>
 
-          {/* Add column */}
-          <div className="w-72 shrink-0">
-            {addingColumn ? (
-              <div className="bg-muted/30 rounded-xl p-3 space-y-2">
-                <Input
-                  value={newColumnName}
-                  onChange={(e) => setNewColumnName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && newColumnName.trim())
-                      addColumn.mutate(newColumnName.trim());
-                    if (e.key === "Escape") {
-                      setAddingColumn(false);
-                      setNewColumnName("");
-                    }
-                  }}
-                  placeholder="Column name..."
-                  className="text-sm"
-                  autoFocus
-                />
-                <div className="flex gap-1">
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      if (newColumnName.trim()) addColumn.mutate(newColumnName.trim());
-                    }}
-                    className="text-xs h-7"
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      setAddingColumn(false);
-                      setNewColumnName("");
-                    }}
-                    className="text-xs h-7"
-                  >
-                    Cancel
-                  </Button>
+                {/* Add task */}
+                <div className="px-2 pb-3">
+                  {addingTaskInColumn === column.id ? (
+                    <div className="space-y-2">
+                      <Input
+                        value={newTaskTitle}
+                        onChange={(e) => setNewTaskTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && newTaskTitle.trim())
+                            addTask.mutate({ columnId: column.id, title: newTaskTitle.trim() });
+                          if (e.key === "Escape") {
+                            setAddingTaskInColumn(null);
+                            setNewTaskTitle("");
+                          }
+                        }}
+                        placeholder="Task title..."
+                        className="text-sm"
+                        autoFocus
+                      />
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            if (newTaskTitle.trim())
+                              addTask.mutate({ columnId: column.id, title: newTaskTitle.trim() });
+                          }}
+                          className="text-xs h-7"
+                        >
+                          Add
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            setAddingTaskInColumn(null);
+                            setNewTaskTitle("");
+                          }}
+                          className="text-xs h-7"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setAddingTaskInColumn(column.id)}
+                      className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors w-full px-2 py-1.5 rounded-md hover:bg-muted/50"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add task
+                    </button>
+                  )}
                 </div>
               </div>
-            ) : (
-              <button
-                onClick={() => setAddingColumn(true)}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors w-full px-4 py-3 rounded-xl border-2 border-dashed border-border hover:border-primary/30"
-              >
-                <Plus className="h-4 w-4" />
-                Add column
-              </button>
-            )}
+            ))}
+
+            {/* Add column */}
+            <div className="w-72 shrink-0">
+              {addingColumn ? (
+                <div className="bg-muted/30 rounded-xl p-3 space-y-2">
+                  <Input
+                    value={newColumnName}
+                    onChange={(e) => setNewColumnName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && newColumnName.trim())
+                        addColumn.mutate(newColumnName.trim());
+                      if (e.key === "Escape") {
+                        setAddingColumn(false);
+                        setNewColumnName("");
+                      }
+                    }}
+                    placeholder="Column name..."
+                    className="text-sm"
+                    autoFocus
+                  />
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        if (newColumnName.trim()) addColumn.mutate(newColumnName.trim());
+                      }}
+                      className="text-xs h-7"
+                    >
+                      Add
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setAddingColumn(false);
+                        setNewColumnName("");
+                      }}
+                      className="text-xs h-7"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setAddingColumn(true)}
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors w-full px-4 py-3 rounded-xl border-2 border-dashed border-border hover:border-primary/30"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add column
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Keyboard shortcut hint */}
+          <div className="px-6 pb-3">
+            <p className="text-xs text-muted-foreground/50">
+              Press <kbd className="px-1.5 py-0.5 rounded border border-border/50 bg-muted/50 text-[10px] font-mono">N</kbd> to quickly add a task
+            </p>
           </div>
         </div>
       </DragDropContext>
