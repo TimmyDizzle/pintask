@@ -39,7 +39,9 @@ import {
   isSameWeek,
   isSameMonth,
 } from "date-fns";
-import { Clock, TrendingUp, TrendingDown, FolderKanban, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { Clock, TrendingUp, TrendingDown, FolderKanban, ArrowUpRight, ArrowDownRight, Minus, Sparkles, Loader2, Copy, Check as CheckIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 const COLORS = [
   "hsl(250, 65%, 55%)",
