@@ -87,6 +87,12 @@ function ComparisonBadge({ current, previous }: { current: number; previous: num
 export default function Reports() {
   const [dateRange, setDateRange] = useState("7");
   const [viewMode, setViewMode] = useState<ViewMode>("daily");
+  const { toast } = useToast();
+  const [weeklyReport, setWeeklyReport] = useState<string | null>(null);
+  const [reportStats, setReportStats] = useState<{ completed: number; inProgress: number; todo: number; overdue: number } | null>(null);
+  const [reportTime, setReportTime] = useState<Date | null>(null);
+  const [generatingReport, setGeneratingReport] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const rangeDays = parseInt(dateRange);
   const currentStart = useMemo(() => startOfDay(subDays(new Date(), rangeDays)), [rangeDays]);
