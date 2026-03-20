@@ -10,7 +10,8 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import productShot from "@/assets/product-shot.png";
+import kanbanDragGif from "@/assets/kanban-drag.gif";
+import tourScreensGif from "@/assets/tour-screens.gif";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const features = [
