@@ -205,10 +205,6 @@ export default function ProjectView() {
         </div>
       </div>
 
-      {/* Project Images */}
-      <div className="px-6 py-3 border-b border-border">
-        <ImageAttachments projectId={projectId!} />
-      </div>
 
       {/* Board */}
       {board ? (
