@@ -356,10 +356,17 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                             setNewTaskTitle("");
                           }
                         }}
-                        placeholder="Task title..."
+                        placeholder="e.g. Call John on Friday urgent..."
                         className="text-sm"
                         autoFocus
+                        disabled={parsingTask}
                       />
+                      {parsingTask && (
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Parsing with AI...
+                        </div>
+                      )}
                       <div className="flex gap-1">
                         <Button
                           size="sm"
@@ -368,6 +375,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                               addTask.mutate({ columnId: column.id, title: newTaskTitle.trim() });
                           }}
                           className="text-xs h-7"
+                          disabled={parsingTask}
                         >
                           Add
                         </Button>
@@ -379,6 +387,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                             setNewTaskTitle("");
                           }}
                           className="text-xs h-7"
+                          disabled={parsingTask}
                         >
                           Cancel
                         </Button>
