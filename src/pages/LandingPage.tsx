@@ -185,18 +185,36 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Product Shot */}
+      {/* Product GIFs */}
       <section className="px-6 pb-20">
         <div
           ref={shotReveal.ref}
-          className={`mx-auto max-w-5xl ${revealBase} duration-1000 ${shotReveal.isVisible ? "opacity-100 translate-y-0 blur-0 scale-100" : "opacity-0 translate-y-8 blur-[6px] scale-[0.97]"}`}
+          className={`mx-auto max-w-6xl ${revealBase} duration-1000 ${shotReveal.isVisible ? "opacity-100 translate-y-0 blur-0 scale-100" : "opacity-0 translate-y-8 blur-[6px] scale-[0.97]"}`}
         >
-          <img
-            src={productShot}
-            alt="Pintask dashboard showing a Kanban board with tasks organized in columns"
-            className="w-full rounded-lg shadow-2xl shadow-primary/10"
-            loading="lazy"
-          />
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-3">
+              <p className="text-center text-sm font-medium text-muted-foreground">
+                Drag & drop task management
+              </p>
+              <img
+                src={kanbanDragGif}
+                alt="Animated demo showing a task card being dragged between Kanban columns"
+                className="w-full rounded-lg shadow-2xl shadow-primary/10"
+                loading="lazy"
+              />
+            </div>
+            <div className="space-y-3">
+              <p className="text-center text-sm font-medium text-muted-foreground">
+                Dashboard, boards & reports
+              </p>
+              <img
+                src={tourScreensGif}
+                alt="Animated tour cycling through dashboard stats, Kanban board, and reports views"
+                className="w-full rounded-lg shadow-2xl shadow-primary/10"
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
