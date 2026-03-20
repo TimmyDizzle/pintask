@@ -243,7 +243,7 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`flex-1 px-2 pb-2 space-y-2 min-h-[60px] transition-colors rounded-lg mx-1 ${
+                    className={`flex-1 overflow-y-auto px-2 pb-2 space-y-2 min-h-[60px] transition-colors rounded-lg mx-1 ${
                       snapshot.isDraggingOver ? "bg-primary/5" : ""
                     }`}
                   >
