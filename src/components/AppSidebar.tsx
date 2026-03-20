@@ -156,7 +156,14 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* Dashboard and Reports hidden until pages are built */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/dashboard" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
+                    <LayoutDashboard className="h-4 w-4 mr-2 shrink-0" />
+                    {!collapsed && <span>Dashboard</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
