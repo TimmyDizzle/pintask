@@ -34,6 +34,12 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
   const [selectedTask, setSelectedTask] = useState<Tables<"tasks"> | null>(null);
   const [editingColumn, setEditingColumn] = useState<string | null>(null);
   const [editColumnName, setEditColumnName] = useState("");
+  const [colorPickerColumn, setColorPickerColumn] = useState<string | null>(null);
+
+  const columnColors = [
+    "#3b82f6", "#22c55e", "#ef4444", "#f97316",
+    "#8b5cf6", "#14b8a6", "#eab308", "#6b7280",
+  ];
 
   const { data: columns = [] } = useQuery({
     queryKey: ["columns", boardId],
