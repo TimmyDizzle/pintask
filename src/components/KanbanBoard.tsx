@@ -260,6 +260,28 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
                       </DropdownMenu>
                     </>
                   )}
+                  {colorPickerColumn === column.id && (
+                    <div className="flex items-center gap-1.5 px-3 pb-2">
+                      {columnColors.map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => setColumnColor.mutate({ id: column.id, color })}
+                          className={`h-5 w-5 rounded-full border-2 transition-transform hover:scale-110 ${
+                            (column as any).color === color ? "border-foreground scale-110" : "border-transparent"
+                          }`}
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                      {(column as any).color && (
+                        <button
+                          onClick={() => setColumnColor.mutate({ id: column.id, color: null })}
+                          className="text-muted-foreground hover:text-foreground ml-1"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Tasks */}
