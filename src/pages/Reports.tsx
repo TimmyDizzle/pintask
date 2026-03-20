@@ -360,6 +360,89 @@ export default function Reports() {
         </div>
       </div>
 
+      {/* Weekly AI Summary */}
+      <Card className="border-primary/20">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              Weekly AI Summary
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              {reportTime && (
+                <span className="text-[11px] text-muted-foreground">
+                  Generated {format(reportTime, "MMM d, h:mm a")}
+                </span>
+              )}
+              {weeklyReport && (
+                <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={copyReport}>
+                  {copied ? <CheckIcon className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  {copied ? "Copied" : "Copy"}
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {weeklyReport ? (
+            <>
+              {reportStats && (
+                <div className="flex gap-3 mb-4 flex-wrap">
+                  <span className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-1 rounded-md font-medium">
+                    ✓ {reportStats.completed} completed
+                  </span>
+                  <span className="text-xs bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-1 rounded-md font-medium">
+                    → {reportStats.inProgress} in progress
+                  </span>
+                  <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-md font-medium">
+                    ○ {reportStats.todo} to do
+                  </span>
+                  {reportStats.overdue > 0 && (
+                    <span className="text-xs bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-1 rounded-md font-medium">
+                      ⚠ {reportStats.overdue} overdue
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed [&_h2]:text-xs [&_h2]:font-bold [&_h2]:uppercase [&_h2]:tracking-wide [&_h2]:text-primary [&_h2]:mt-4 [&_h2]:mb-1.5 [&_h2:first-child]:mt-0 [&_ul]:my-1 [&_li]:my-0 [&_p]:my-1">
+                {weeklyReport.split(/\n/).map((line, i) => {
+                  const trimmed = line.trim();
+                  if (!trimmed) return null;
+                  if (trimmed.startsWith("## ")) {
+                    return <h2 key={i}>{trimmed.replace("## ", "")}</h2>;
+                  }
+                  if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+                    return <p key={i} className="flex items-start gap-1.5"><span className="text-primary mt-0.5">•</span>{trimmed.slice(2)}</p>;
+                  }
+                  return <p key={i}>{trimmed}</p>;
+                })}
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-sm text-muted-foreground mb-3">
+                Get an AI-powered analysis of your week — wins, gaps, blockers, and focus areas.
+              </p>
+            </div>
+          )}
+          <Button
+            onClick={generateWeeklyReport}
+            disabled={generatingReport}
+            variant={weeklyReport ? "outline" : "default"}
+            size="sm"
+            className={`mt-3 ${!weeklyReport ? "w-full" : ""}`}
+          >
+            {generatingReport ? (
+              <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Generating...</>
+            ) : weeklyReport ? (
+              <><Sparkles className="h-3.5 w-3.5 mr-1.5" /> Regenerate Report</>
+            ) : (
+              <><Sparkles className="h-3.5 w-3.5 mr-1.5" /> Generate Weekly Report</>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Summary cards with comparison */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
