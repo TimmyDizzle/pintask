@@ -156,22 +156,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/" end activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
-                    <LayoutDashboard className="h-4 w-4 mr-2 shrink-0" />
-                    {!collapsed && <span>Dashboard</span>}
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/reports" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
-                    <Clock className="h-4 w-4 mr-2 shrink-0" />
-                    {!collapsed && <span>Reports</span>}
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {/* Dashboard and Reports hidden until pages are built */}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
