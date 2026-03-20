@@ -125,6 +125,17 @@ export function KanbanBoard({ boardId, projectId }: KanbanBoardProps) {
     },
   });
 
+  const setColumnColor = useMutation({
+    mutationFn: async ({ id, color }: { id: string; color: string | null }) => {
+      const { error } = await supabase.from("columns").update({ color } as any).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["columns", boardId] });
+      setColorPickerColumn(null);
+    },
+  });
+
   const addTask = useMutation({
     mutationFn: async ({ columnId, title }: { columnId: string; title: string }) => {
       const colTasks = tasks.filter((t) => t.column_id === columnId);
