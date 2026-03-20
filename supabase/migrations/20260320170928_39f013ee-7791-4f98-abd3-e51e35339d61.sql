@@ -1,0 +1,1 @@
+ALTER TABLE public.columns ADD COLUMN color text DEFAULT NULL;

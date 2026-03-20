@@ -103,6 +103,7 @@ export type Database = {
       columns: {
         Row: {
           board_id: string
+          color: string | null
           created_at: string
           id: string
           name: string
@@ -111,6 +112,7 @@ export type Database = {
         }
         Insert: {
           board_id: string
+          color?: string | null
           created_at?: string
           id?: string
           name: string
@@ -119,6 +121,7 @@ export type Database = {
         }
         Update: {
           board_id?: string
+          color?: string | null
           created_at?: string
           id?: string
           name?: string
