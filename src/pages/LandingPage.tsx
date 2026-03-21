@@ -116,7 +116,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
-      <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
+      <nav className={`sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "shadow-sm" : ""}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2 font-heading text-xl font-bold text-primary">
             <CheckSquare className="h-6 w-6" />
@@ -127,11 +127,14 @@ export default function LandingPage() {
               <a href="#features">Features</a>
             </Button>
             <Button variant="ghost" asChild>
+              <a href="#pricing">Pricing</a>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link to="/auth">Sign In</Link>
             </Button>
             <Button asChild>
               <Link to="/auth">
-                Try it Free <ArrowRight className="ml-1 h-4 w-4" />
+                Start Free — No Card Needed <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
