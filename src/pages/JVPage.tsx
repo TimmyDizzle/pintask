@@ -59,7 +59,7 @@ export default function JVPage() {
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
             Promote <span className="text-primary">Pintask</span> &<br />
-            Earn <span className="text-accent">50% Commissions</span>
+            Earn <span className="text-accent">70% Commissions</span>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             AI-powered task management your audience actually needs. 
