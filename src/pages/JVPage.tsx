@@ -7,10 +7,10 @@ import {
 } from "lucide-react";
 
 const commissionTiers = [
-  { label: "Front-End", rate: "50%", price: "$17–$27", color: "hsl(var(--primary))" },
-  { label: "OTO 1 – Pro Upgrade", rate: "50%", price: "$37", color: "hsl(var(--accent))" },
-  { label: "OTO 2 – Team License", rate: "50%", price: "$47", color: "hsl(var(--warning))" },
-  { label: "OTO 3 – Agency/Reseller", rate: "40%", price: "$97", color: "hsl(var(--success))" },
+  { label: "Front-End", rate: "70%", price: "$17–$27", color: "hsl(var(--primary))" },
+  { label: "OTO 1 – Pro Upgrade", rate: "70%", price: "$37", color: "hsl(var(--accent))" },
+  { label: "OTO 2 – Team License", rate: "70%", price: "$47", color: "hsl(var(--warning))" },
+  { label: "OTO 3 – Agency/Reseller", rate: "70%", price: "$97", color: "hsl(var(--success))" },
 ];
 
 const features = [
