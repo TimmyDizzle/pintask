@@ -7,10 +7,10 @@ import {
 } from "lucide-react";
 
 const commissionTiers = [
-  { label: "Front-End", rate: "50%", price: "$17–$27", color: "hsl(var(--primary))" },
-  { label: "OTO 1 – Pro Upgrade", rate: "50%", price: "$37", color: "hsl(var(--accent))" },
-  { label: "OTO 2 – Team License", rate: "50%", price: "$47", color: "hsl(var(--warning))" },
-  { label: "OTO 3 – Agency/Reseller", rate: "40%", price: "$97", color: "hsl(var(--success))" },
+  { label: "Front-End", rate: "70%", price: "$17–$27", color: "hsl(var(--primary))" },
+  { label: "OTO 1 – Pro Upgrade", rate: "70%", price: "$37", color: "hsl(var(--accent))" },
+  { label: "OTO 2 – Team License", rate: "70%", price: "$47", color: "hsl(var(--warning))" },
+  { label: "OTO 3 – Agency/Reseller", rate: "70%", price: "$97", color: "hsl(var(--success))" },
 ];
 
 const features = [
@@ -37,8 +37,8 @@ const swipeAssets = [
     preview: "I found a task manager that actually gets out of your way. It has AI features Trello doesn't, built-in time tracking, and you can run your whole day from the keyboard..."
   },
   {
-    subject: "NEW: AI-powered task manager (50% commissions)",
-    preview: "Pintask just launched on JVZoo — it's a modern kanban board with AI smarts, and the free tier converts like crazy. 50% across the funnel..."
+    subject: "NEW: AI-powered task manager (70% commissions)",
+    preview: "Pintask just launched on JVZoo — it's a modern kanban board with AI smarts, and the free tier converts like crazy. 70% across the funnel..."
   },
   {
     subject: "Your audience needs this (seriously)",
@@ -59,7 +59,7 @@ export default function JVPage() {
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
             Promote <span className="text-primary">Pintask</span> &<br />
-            Earn <span className="text-accent">50% Commissions</span>
+            Earn <span className="text-accent">70% Commissions</span>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             AI-powered task management your audience actually needs. 
