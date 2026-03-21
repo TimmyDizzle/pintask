@@ -506,8 +506,9 @@ export default function LandingPage() {
           >
             You don't need 200 features. You need the right 6.
           </p>
+          <p className="mt-8 text-center text-xs text-muted-foreground md:hidden">← swipe to compare →</p>
           <div
-            className={`mt-12 overflow-x-auto ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
+            className={`mt-2 md:mt-12 overflow-x-auto scrollbar-thin ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "160ms" }}
           >
             <table className="w-full min-w-[500px] text-sm">
