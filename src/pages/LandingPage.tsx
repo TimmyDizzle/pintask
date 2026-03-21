@@ -108,6 +108,7 @@ const testimonials = [
 
 export default function LandingPage() {
   const [showAiBanner, setShowAiBanner] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
