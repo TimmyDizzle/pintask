@@ -12,6 +12,9 @@ import {
   Sparkles,
   BrainCircuit,
   X,
+  Briefcase,
+  User,
+  Users,
 } from "lucide-react";
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
@@ -249,6 +252,46 @@ export default function LandingPage() {
           </div>
         </div>
       )}
+
+      {/* Personas */}
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <RevealSection>
+            <h2 className="text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+              Built for people like you
+            </h2>
+          </RevealSection>
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {[
+              {
+                icon: Briefcase,
+                title: "Freelancers & Consultants",
+                text: "Manage multiple clients without the chaos. One board per client, one place for everything.",
+              },
+              {
+                icon: User,
+                title: "Solo Operators & Founders",
+                text: "Running 5 things at once? Pintask keeps your work and personal life organized in one clean space.",
+              },
+              {
+                icon: Users,
+                title: "Small Teams (2–10 people)",
+                text: "No enterprise bloat. Just a fast, shared board your whole team will actually use.",
+              },
+            ].map((c, i) => (
+              <RevealSection key={c.title} delay={100 + i * 100}>
+                <div className="rounded-xl border border-border/50 bg-muted/30 p-6">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <c.icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 font-heading text-lg font-semibold">{c.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{c.text}</p>
+                </div>
+              </RevealSection>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Features */}
       <section id="features" className="border-t border-border/40 bg-muted/30 px-6 py-20">
