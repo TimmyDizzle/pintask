@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import fullDemoGif from "@/assets/pintask-full-demo.gif";
 import { Button } from "@/components/ui/button";
 import {
   Zap, CheckCircle2, ArrowRight, Shield, Star, Clock,
