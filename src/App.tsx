@@ -28,6 +28,7 @@ const App = () => (
             <Route path="/project/:projectId" element={<ProjectPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/jv" element={<JVPage />} />
+            <Route path="/jvsalespage" element={<JVSalesPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
