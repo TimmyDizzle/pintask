@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ProjectPage from "./pages/ProjectPage";
 import ReportsPage from "./pages/ReportsPage";
+import JVPage from "./pages/JVPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/project/:projectId" element={<ProjectPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/jv" element={<JVPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
