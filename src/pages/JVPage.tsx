@@ -37,8 +37,8 @@ const swipeAssets = [
     preview: "I found a task manager that actually gets out of your way. It has AI features Trello doesn't, built-in time tracking, and you can run your whole day from the keyboard..."
   },
   {
-    subject: "NEW: AI-powered task manager (50% commissions)",
-    preview: "Pintask just launched on JVZoo — it's a modern kanban board with AI smarts, and the free tier converts like crazy. 50% across the funnel..."
+    subject: "NEW: AI-powered task manager (70% commissions)",
+    preview: "Pintask just launched on JVZoo — it's a modern kanban board with AI smarts, and the free tier converts like crazy. 70% across the funnel..."
   },
   {
     subject: "Your audience needs this (seriously)",
