@@ -133,7 +133,8 @@ export default function LandingPage() {
             <CheckSquare className="h-6 w-6" />
             Pintask
           </div>
-          <div className="flex items-center gap-3">
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-3 md:flex">
             <Button variant="ghost" asChild>
               <a href="#features">Features</a>
             </Button>
@@ -149,7 +150,36 @@ export default function LandingPage() {
               </Link>
             </Button>
           </div>
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden rounded-md p-2 text-muted-foreground hover:bg-muted"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="border-t border-border/40 bg-background px-6 py-4 md:hidden">
+            <div className="flex flex-col gap-2">
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+              </Button>
+              <Button className="w-full" asChild>
+                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                  Get Started Free <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}
