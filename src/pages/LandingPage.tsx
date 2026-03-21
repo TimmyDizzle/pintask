@@ -545,7 +545,7 @@ export default function LandingPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="border-t border-border/40 bg-muted/30 px-6 py-20">
+      <section className="border-t border-border/40 bg-muted/30 px-6 py-14">
         <div
           ref={ctaReveal.ref}
           className={`mx-auto max-w-2xl text-center ${revealBase} duration-700 ${ctaReveal.isVisible ? revealVisible : revealHidden}`}
@@ -567,13 +567,44 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/40 px-6 py-8">
-        <div className="mx-auto flex max-w-6xl items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2 font-heading font-semibold text-foreground">
-            <CheckSquare className="h-4 w-4 text-primary" />
-            Pintask
+      <footer className="border-t border-border/20 bg-[hsl(230,25%,10%)] px-6 py-14">
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-3">
+          {/* Brand */}
+          <div>
+            <div className="flex items-center gap-2 font-heading text-lg font-bold text-white">
+              <CheckSquare className="h-5 w-5 text-primary" />
+              Pintask
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-gray-400">
+              Simple task management for people who actually want to get things done.
+            </p>
           </div>
-          <span>© {new Date().getFullYear()} Pintask. All rights reserved.</span>
+
+          {/* Product */}
+          <div>
+            <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-300">Product</h4>
+            <ul className="mt-4 space-y-2 text-sm text-gray-400">
+              <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+              <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+              <li><Link to="/auth" className="hover:text-white transition-colors">Sign In</Link></li>
+              <li><Link to="/auth" className="hover:text-white transition-colors">Get Started</Link></li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-300">Company</h4>
+            <ul className="mt-4 space-y-2 text-sm text-gray-400">
+              <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mx-auto mt-10 max-w-6xl border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+          © {new Date().getFullYear()} Pintask. All rights reserved.
         </div>
       </footer>
     </div>
