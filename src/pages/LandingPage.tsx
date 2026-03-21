@@ -97,6 +97,7 @@ export default function LandingPage() {
   const heroReveal = useScrollReveal({ threshold: 0.1 });
   const shotReveal = useScrollReveal({ threshold: 0.1 });
   const featuresReveal = useScrollReveal({ threshold: 0.1 });
+  const pricingReveal = useScrollReveal({ threshold: 0.1 });
   const proofReveal = useScrollReveal({ threshold: 0.15 });
   const ctaReveal = useScrollReveal({ threshold: 0.2 });
 
