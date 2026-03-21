@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import fullDemoGif from "@/assets/pintask-full-demo.gif";
 import { Button } from "@/components/ui/button";
 import {
   Zap, CheckCircle2, ArrowRight, Shield, Star, Clock,
@@ -171,12 +172,8 @@ export default function JVSalesPage() {
               </div>
               <span className="text-xs text-purple-400 font-mono">AI SYSTEM ACTIVE</span>
             </div>
-            <div className="aspect-video bg-gradient-to-br from-purple-900/30 via-[#12122a] to-emerald-900/20 flex items-center justify-center">
-              <div className="text-center">
-                <Layout className="w-16 h-16 text-purple-400/50 mx-auto mb-4" />
-                <p className="text-white/40 text-sm">Live product demo video</p>
-                <p className="text-white/20 text-xs mt-1">Embed your demo video here</p>
-              </div>
+            <div className="aspect-video bg-[#12122a]">
+              <img src={fullDemoGif} alt="Pintask live demo – Kanban, Reports & AI Briefing" className="w-full h-full object-cover" />
             </div>
           </div>
 
