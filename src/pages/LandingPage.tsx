@@ -398,6 +398,40 @@ export default function LandingPage() {
             Free while we're in beta. Upgrade when you're ready.
           </p>
           <div className="mt-14 grid gap-8 md:grid-cols-3">
+            {/* Pro — shown first on mobile via order */}
+            <div
+              className={`relative flex flex-col rounded-xl border-2 border-primary bg-primary p-8 text-primary-foreground shadow-lg shadow-primary/20 order-first md:order-none ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+              style={{ transitionDelay: "250ms" }}
+            >
+              <div className="absolute right-4 top-4 rounded-full bg-primary-foreground/20 px-2.5 py-0.5 text-xs font-semibold">
+                Most Popular
+              </div>
+              <h3 className="font-heading text-lg font-semibold">Pro</h3>
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="font-heading text-4xl font-extrabold">$8</span>
+                <span className="text-sm opacity-80">/ month</span>
+              </div>
+              <p className="mt-2 text-sm opacity-80">For power users and freelancers</p>
+              <ul className="mt-6 flex-1 space-y-3 text-sm">
+                {[
+                  "Unlimited boards",
+                  "Everything in Free",
+                  "Built-in time tracking",
+                  "Reports & insights",
+                  "AI Daily Briefing (coming soon)",
+                  "AI Task Breakdown (coming soon)",
+                  "Priority support",
+                ].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Button className="mt-8 w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90" asChild>
+                <Link to="/auth">Start Free Trial</Link>
+              </Button>
+            </div>
             {/* Personal */}
             <div
               className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
