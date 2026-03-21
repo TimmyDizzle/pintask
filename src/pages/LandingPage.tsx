@@ -222,6 +222,23 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* AI Banner */}
+      {showAiBanner && (
+        <div className="relative bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 px-6 py-3">
+          <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 text-center text-sm text-foreground">
+            <span>✨ AI-powered features now in development — smart task breakdowns, daily briefings, and natural language task entry. Built right into your board.</span>
+            <a href="#features" className="ml-1 whitespace-nowrap font-medium text-primary underline underline-offset-2 hover:text-primary/80">Learn more</a>
+            <button
+              onClick={() => setShowAiBanner(false)}
+              className="ml-3 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+              aria-label="Dismiss banner"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Features */}
       <section id="features" className="border-t border-border/40 bg-muted/30 px-6 py-20">
         <div ref={featuresReveal.ref} className="mx-auto max-w-6xl">
