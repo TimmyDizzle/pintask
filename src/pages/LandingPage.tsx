@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,8 @@ import {
   BarChart3,
   ArrowRight,
   Sparkles,
+  BrainCircuit,
+  X,
 } from "lucide-react";
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
