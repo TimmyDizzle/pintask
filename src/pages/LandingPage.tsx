@@ -196,7 +196,7 @@ export default function LandingPage() {
             🔁 Pintask is back — and it brought AI with it
           </div>
           <h1
-            className={`mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            className={`mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "200ms" }}
           >
             Organize your work.
