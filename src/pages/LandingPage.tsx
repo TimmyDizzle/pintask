@@ -21,6 +21,7 @@ import {
   Briefcase,
   User,
   Users,
+  Menu,
 } from "lucide-react";
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
@@ -107,6 +108,7 @@ const testimonials = [
 
 export default function LandingPage() {
   const [showAiBanner, setShowAiBanner] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -131,7 +133,8 @@ export default function LandingPage() {
             <CheckSquare className="h-6 w-6" />
             Pintask
           </div>
-          <div className="flex items-center gap-3">
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-3 md:flex">
             <Button variant="ghost" asChild>
               <a href="#features">Features</a>
             </Button>
@@ -147,7 +150,36 @@ export default function LandingPage() {
               </Link>
             </Button>
           </div>
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden rounded-md p-2 text-muted-foreground hover:bg-muted"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="border-t border-border/40 bg-background px-6 py-4 md:hidden">
+            <div className="flex flex-col gap-2">
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+              </Button>
+              <Button className="w-full" asChild>
+                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                  Get Started Free <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}
@@ -164,7 +196,7 @@ export default function LandingPage() {
             🔁 Pintask is back — and it brought AI with it
           </div>
           <h1
-            className={`mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            className={`mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "200ms" }}
           >
             Organize your work.
@@ -185,12 +217,12 @@ export default function LandingPage() {
             className={`mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "500ms" }}
           >
-            <Button size="lg" className="h-12 px-8 text-base" asChild>
+            <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto" asChild>
               <Link to="/auth">
                 Try Pintask Free <ArrowRight className="ml-1.5 h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
+            <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto" asChild>
               <a href="#features">See Features</a>
             </Button>
           </div>
@@ -366,33 +398,9 @@ export default function LandingPage() {
             Free while we're in beta. Upgrade when you're ready.
           </p>
           <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {/* Personal */}
+            {/* Pro — shown first on mobile via order */}
             <div
-              className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
-              style={{ transitionDelay: "150ms" }}
-            >
-              <h3 className="font-heading text-lg font-semibold">Personal</h3>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-heading text-4xl font-extrabold">$0</span>
-                <span className="text-sm text-muted-foreground">/ forever</span>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">Perfect for individuals</p>
-              <ul className="mt-6 flex-1 space-y-3 text-sm">
-                {["Up to 3 boards", "Unlimited tasks", "Kanban boards", "Labels & due dates", "Mobile access"].map((f) => (
-                  <li key={f} className="flex items-center gap-2">
-                    <CheckSquare className="h-4 w-4 text-primary" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="outline" className="mt-8 w-full" asChild>
-                <Link to="/auth">Get Started Free</Link>
-              </Button>
-            </div>
-
-            {/* Pro */}
-            <div
-              className={`relative flex flex-col rounded-xl border-2 border-primary bg-primary p-8 text-primary-foreground shadow-lg shadow-primary/20 ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+              className={`relative flex flex-col rounded-xl border-2 border-primary bg-primary p-8 text-primary-foreground shadow-lg shadow-primary/20 order-first md:order-none ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
               style={{ transitionDelay: "250ms" }}
             >
               <div className="absolute right-4 top-4 rounded-full bg-primary-foreground/20 px-2.5 py-0.5 text-xs font-semibold">
@@ -424,6 +432,31 @@ export default function LandingPage() {
                 <Link to="/auth">Start Free Trial</Link>
               </Button>
             </div>
+            {/* Personal */}
+            <div
+              className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+              style={{ transitionDelay: "150ms" }}
+            >
+              <h3 className="font-heading text-lg font-semibold">Personal</h3>
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="font-heading text-4xl font-extrabold">$0</span>
+                <span className="text-sm text-muted-foreground">/ forever</span>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">Perfect for individuals</p>
+              <ul className="mt-6 flex-1 space-y-3 text-sm">
+                {["Up to 3 boards", "Unlimited tasks", "Kanban boards", "Labels & due dates", "Mobile access"].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4 text-primary" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Button variant="outline" className="mt-8 w-full" asChild>
+                <Link to="/auth">Get Started Free</Link>
+              </Button>
+            </div>
+
+
 
             {/* Team */}
             <div
@@ -473,8 +506,9 @@ export default function LandingPage() {
           >
             You don't need 200 features. You need the right 6.
           </p>
+          <p className="mt-8 text-center text-xs text-muted-foreground md:hidden">← swipe to compare →</p>
           <div
-            className={`mt-12 overflow-x-auto ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
+            className={`mt-2 md:mt-12 overflow-x-auto scrollbar-thin ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "160ms" }}
           >
             <table className="w-full min-w-[500px] text-sm">
@@ -609,7 +643,7 @@ export default function LandingPage() {
             Sign up in seconds. Free while we're in beta — no strings attached.
           </p>
           <div className="mt-8">
-            <Button size="lg" className="h-12 px-10 text-base" asChild>
+            <Button size="lg" className="h-12 px-10 text-base w-full sm:w-auto" asChild>
               <Link to="/auth">
                 Get Started Free <ArrowRight className="ml-1.5 h-4 w-4" />
               </Link>
