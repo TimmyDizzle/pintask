@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,8 @@ import {
   BarChart3,
   ArrowRight,
   Sparkles,
+  BrainCircuit,
+  X,
 } from "lucide-react";
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
@@ -94,6 +97,7 @@ const testimonials = [
 ];
 
 export default function LandingPage() {
+  const [showAiBanner, setShowAiBanner] = useState(true);
   const heroReveal = useScrollReveal({ threshold: 0.1 });
   const shotReveal = useScrollReveal({ threshold: 0.1 });
   const featuresReveal = useScrollReveal({ threshold: 0.1 });
@@ -218,6 +222,23 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* AI Banner */}
+      {showAiBanner && (
+        <div className="relative bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 px-6 py-3">
+          <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 text-center text-sm text-foreground">
+            <span>✨ AI-powered features now in development — smart task breakdowns, daily briefings, and natural language task entry. Built right into your board.</span>
+            <a href="#features" className="ml-1 whitespace-nowrap font-medium text-primary underline underline-offset-2 hover:text-primary/80">Learn more</a>
+            <button
+              onClick={() => setShowAiBanner(false)}
+              className="ml-3 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+              aria-label="Dismiss banner"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Features */}
       <section id="features" className="border-t border-border/40 bg-muted/30 px-6 py-20">
         <div ref={featuresReveal.ref} className="mx-auto max-w-6xl">
@@ -248,6 +269,24 @@ export default function LandingPage() {
                 <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
               </div>
             ))}
+            {/* AI Assistant card */}
+            <div
+              className={`relative rounded-xl border border-primary/30 bg-card p-6 shadow-sm transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:shadow-md ${
+                featuresReveal.isVisible ? revealVisible : revealHidden
+              }`}
+              style={{ transitionDelay: `${150 + 6 * 80}ms` }}
+            >
+              <div className="absolute right-4 top-4 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                Coming Soon
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <BrainCircuit className="h-5 w-5" />
+              </div>
+              <h3 className="mt-4 font-heading text-lg font-semibold">AI Assistant</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Let AI write your daily briefing, break tasks into subtasks, and help you prioritize — all inside your board.
+              </p>
+            </div>
           </div>
         </div>
       </section>
