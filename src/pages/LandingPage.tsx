@@ -152,9 +152,9 @@ export default function LandingPage() {
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "350ms" }}
           >
-            Pintask is a lightweight project management tool with Kanban boards,
-            built-in time tracking, and everything you need to stay on top of your
-            work.
+            Same clean simplicity you loved, rebuilt from the ground up — now with
+            an AI assistant that writes your daily briefing, breaks down your tasks,
+            and keeps you moving.
           </p>
           <div
             className={`mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
