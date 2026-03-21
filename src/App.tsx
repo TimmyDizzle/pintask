@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import ProjectPage from "./pages/ProjectPage";
 import ReportsPage from "./pages/ReportsPage";
 import JVPage from "./pages/JVPage";
+import JVSalesPage from "./pages/JVSalesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/project/:projectId" element={<ProjectPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/jv" element={<JVPage />} />
+            <Route path="/jvsalespage" element={<JVSalesPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
