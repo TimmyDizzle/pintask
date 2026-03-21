@@ -550,6 +550,52 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="border-t border-border/40 px-6 py-20">
+        <div className="mx-auto max-w-3xl">
+          <RevealSection>
+            <h2 className="text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+              Questions we get a lot
+            </h2>
+          </RevealSection>
+          <RevealSection delay={100}>
+            <Accordion type="single" collapsible className="mt-12">
+              {[
+                {
+                  q: "Is Pintask really free?",
+                  a: "Yes. The Personal plan is free forever with no credit card required. We're also fully free during the beta period — including features that will be paid later. No surprises, no gotchas.",
+                },
+                {
+                  q: "How is this different from Trello?",
+                  a: "Trello is great but has no built-in time tracker, limited keyboard shortcuts, and gets complicated fast. Pintask is built for speed — you can manage your entire day without touching your mouse. It also has AI features Trello doesn't offer.",
+                },
+                {
+                  q: "I used the original Pintask.me — is this the same thing?",
+                  a: "We're big fans of the original Pintask.me and built this with that same simplicity-first philosophy in mind. Same clean kanban spirit, rebuilt from the ground up with modern tools and AI capabilities the original never had.",
+                },
+                {
+                  q: "Is my data safe?",
+                  a: "Yes. All data is encrypted at rest and in transit. We don't sell your data or share it with third parties. Ever.",
+                },
+                {
+                  q: "What AI features are coming?",
+                  a: "We're building AI-powered daily briefings, smart task breakdowns, natural language task entry ('remind me to call John on Friday'), and weekly productivity reports — all powered by AI, built directly into your board.",
+                },
+              ].map((item, i) => (
+                <AccordionItem key={i} value={`faq-${i}`} className="border-border/50">
+                  <AccordionTrigger className="text-left font-heading text-base font-semibold hover:no-underline [&>svg]:text-primary">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </RevealSection>
+        </div>
+      </section>
+
       {/* Bottom CTA */}
       <section className="border-t border-border/40 bg-muted/30 px-6 py-14">
         <div
