@@ -643,7 +643,7 @@ export default function LandingPage() {
             Sign up in seconds. Free while we're in beta — no strings attached.
           </p>
           <div className="mt-8">
-            <Button size="lg" className="h-12 px-10 text-base" asChild>
+            <Button size="lg" className="h-12 px-10 text-base w-full sm:w-auto" asChild>
               <Link to="/auth">
                 Get Started Free <ArrowRight className="ml-1.5 h-4 w-4" />
               </Link>
