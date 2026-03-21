@@ -257,7 +257,7 @@ export default function LandingPage() {
           <p
             className={`text-center text-sm font-medium uppercase tracking-widest text-muted-foreground ${revealBase} ${proofReveal.isVisible ? revealVisible : revealHidden}`}
           >
-            Trusted by teams who ship
+            What our beta users are saying
           </p>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {testimonials.map((t, i) => (
