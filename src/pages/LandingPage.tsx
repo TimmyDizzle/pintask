@@ -12,6 +12,9 @@ import {
   Sparkles,
   BrainCircuit,
   X,
+  Briefcase,
+  User,
+  Users,
 } from "lucide-react";
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
