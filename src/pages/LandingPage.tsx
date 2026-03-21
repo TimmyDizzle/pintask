@@ -21,6 +21,7 @@ import {
   Briefcase,
   User,
   Users,
+  Menu,
 } from "lucide-react";
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
