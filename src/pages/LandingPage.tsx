@@ -136,8 +136,7 @@ export default function LandingPage() {
             className={`inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "100ms" }}
           >
-            <Sparkles className="h-3.5 w-3.5" />
-            Now in Open Beta
+            🔁 Pintask is back — and it brought AI with it
           </div>
           <h1
             className={`mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
