@@ -217,12 +217,12 @@ export default function LandingPage() {
             className={`mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "500ms" }}
           >
-            <Button size="lg" className="h-12 px-8 text-base" asChild>
+            <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto" asChild>
               <Link to="/auth">
                 Try Pintask Free <ArrowRight className="ml-1.5 h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
+            <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto" asChild>
               <a href="#features">See Features</a>
             </Button>
           </div>
