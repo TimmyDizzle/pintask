@@ -252,7 +252,115 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Social Proof */}
+      {/* Pricing */}
+      <section className="border-t border-border/40 px-6 py-20">
+        <div ref={pricingReveal.ref} className="mx-auto max-w-6xl">
+          <h2
+            className={`text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+          >
+            Simple, honest pricing
+          </h2>
+          <p
+            className={`mx-auto mt-4 max-w-xl text-center text-muted-foreground ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "80ms" }}
+          >
+            Free while we're in beta. Upgrade when you're ready.
+          </p>
+          <div className="mt-14 grid gap-8 md:grid-cols-3">
+            {/* Personal */}
+            <div
+              className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+              style={{ transitionDelay: "150ms" }}
+            >
+              <h3 className="font-heading text-lg font-semibold">Personal</h3>
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="font-heading text-4xl font-extrabold">$0</span>
+                <span className="text-sm text-muted-foreground">/ forever</span>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">Perfect for individuals</p>
+              <ul className="mt-6 flex-1 space-y-3 text-sm">
+                {["Up to 3 boards", "Unlimited tasks", "Kanban boards", "Labels & due dates", "Mobile access"].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4 text-primary" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Button variant="outline" className="mt-8 w-full" asChild>
+                <Link to="/auth">Get Started Free</Link>
+              </Button>
+            </div>
+
+            {/* Pro */}
+            <div
+              className={`relative flex flex-col rounded-xl border-2 border-primary bg-primary p-8 text-primary-foreground shadow-lg shadow-primary/20 ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+              style={{ transitionDelay: "250ms" }}
+            >
+              <div className="absolute right-4 top-4 rounded-full bg-primary-foreground/20 px-2.5 py-0.5 text-xs font-semibold">
+                Most Popular
+              </div>
+              <h3 className="font-heading text-lg font-semibold">Pro</h3>
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="font-heading text-4xl font-extrabold">$8</span>
+                <span className="text-sm opacity-80">/ month</span>
+              </div>
+              <p className="mt-2 text-sm opacity-80">For power users and freelancers</p>
+              <ul className="mt-6 flex-1 space-y-3 text-sm">
+                {[
+                  "Unlimited boards",
+                  "Everything in Free",
+                  "Built-in time tracking",
+                  "Reports & insights",
+                  "AI Daily Briefing (coming soon)",
+                  "AI Task Breakdown (coming soon)",
+                  "Priority support",
+                ].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Button className="mt-8 w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90" asChild>
+                <Link to="/auth">Start Free Trial</Link>
+              </Button>
+            </div>
+
+            {/* Team */}
+            <div
+              className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+              style={{ transitionDelay: "350ms" }}
+            >
+              <h3 className="font-heading text-lg font-semibold">Team</h3>
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="font-heading text-4xl font-extrabold">$15</span>
+                <span className="text-sm text-muted-foreground">/ user / month</span>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">For small teams (min. 3 users)</p>
+              <ul className="mt-6 flex-1 space-y-3 text-sm">
+                {[
+                  "Everything in Pro",
+                  "Multi-user boards",
+                  "Shared workspaces",
+                  "Team activity feed",
+                  "Admin controls",
+                  "Weekly AI team report (coming soon)",
+                ].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4 text-primary" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Button variant="outline" className="mt-8 w-full" asChild>
+                <Link to="/auth">Contact Us</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
       <section className="border-t border-border/40 px-6 py-20">
         <div ref={proofReveal.ref} className="mx-auto max-w-6xl">
           <p
