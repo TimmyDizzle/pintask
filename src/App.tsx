@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import ProjectPage from "./pages/ProjectPage";
 import ReportsPage from "./pages/ReportsPage";
 import JVPage from "./pages/JVPage";
+import JVSalesPage from "./pages/JVSalesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
