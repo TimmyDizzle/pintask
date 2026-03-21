@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -98,6 +98,13 @@ const testimonials = [
 
 export default function LandingPage() {
   const [showAiBanner, setShowAiBanner] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const heroReveal = useScrollReveal({ threshold: 0.1 });
   const shotReveal = useScrollReveal({ threshold: 0.1 });
   const featuresReveal = useScrollReveal({ threshold: 0.1 });
@@ -109,7 +116,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
-      <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
+      <nav className={`sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "shadow-sm" : ""}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2 font-heading text-xl font-bold text-primary">
             <CheckSquare className="h-6 w-6" />
@@ -120,11 +127,14 @@ export default function LandingPage() {
               <a href="#features">Features</a>
             </Button>
             <Button variant="ghost" asChild>
+              <a href="#pricing">Pricing</a>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link to="/auth">Sign In</Link>
             </Button>
             <Button asChild>
               <Link to="/auth">
-                Try it Free <ArrowRight className="ml-1 h-4 w-4" />
+                Start Free — No Card Needed <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -293,7 +303,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section className="border-t border-border/40 px-6 py-20">
+      <section id="pricing" className="border-t border-border/40 px-6 py-20">
         <div ref={pricingReveal.ref} className="mx-auto max-w-6xl">
           <h2
             className={`text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
