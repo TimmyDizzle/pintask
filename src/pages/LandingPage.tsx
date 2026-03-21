@@ -269,6 +269,24 @@ export default function LandingPage() {
                 <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
               </div>
             ))}
+            {/* AI Assistant card */}
+            <div
+              className={`relative rounded-xl border border-primary/30 bg-card p-6 shadow-sm transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:shadow-md ${
+                featuresReveal.isVisible ? revealVisible : revealHidden
+              }`}
+              style={{ transitionDelay: `${150 + 6 * 80}ms` }}
+            >
+              <div className="absolute right-4 top-4 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                Coming Soon
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <BrainCircuit className="h-5 w-5" />
+              </div>
+              <h3 className="mt-4 font-heading text-lg font-semibold">AI Assistant</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Let AI write your daily briefing, break tasks into subtasks, and help you prioritize — all inside your board.
+              </p>
+            </div>
           </div>
         </div>
       </section>
