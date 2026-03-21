@@ -75,21 +75,21 @@ function RevealSection({
 const testimonials = [
   {
     quote:
-      "Pintask replaced three tools for us. The built-in timer alone saved our team hours of manual logging every week.",
-    name: "Mara Solano",
-    role: "Engineering Lead, Covalent Labs",
+      "I used the original Pintask.me for years. When it went away I tried everything — Trello, ClickUp, Notion. Nothing felt this clean again until now. This is exactly what I needed.",
+    name: "James R.",
+    role: "Freelance Developer",
   },
   {
     quote:
-      "I tried every Kanban app out there. Pintask is the first one that actually feels fast — keyboard shortcuts make all the difference.",
-    name: "Theo Acharya",
-    role: "Freelance Designer",
+      "The keyboard shortcuts alone make this worth it. I can add, move, and close tasks without ever touching my mouse. No other tool I've tried does this as well.",
+    name: "Priya M.",
+    role: "Product Designer",
   },
   {
     quote:
-      "We went from scattered sticky notes to a single board with real deadlines. Our sprint completion rate jumped 34% in the first month.",
-    name: "Lin Johansson",
-    role: "Product Manager, Meridian Health",
+      "I manage 4 client projects and my personal life in one place. The custom columns are a game changer — I have a 'Bills to Pay' board right next to my client work. No other app lets me do that this simply.",
+    name: "Derek T.",
+    role: "Independent Consultant",
   },
 ];
 
