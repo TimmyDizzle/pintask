@@ -400,6 +400,62 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Comparison */}
+      <section className="border-t border-border/40 bg-muted/30 px-6 py-20">
+        <div ref={comparisonReveal.ref} className="mx-auto max-w-4xl">
+          <h2
+            className={`text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
+          >
+            Why teams switch to Pintask
+          </h2>
+          <p
+            className={`mx-auto mt-4 max-w-xl text-center text-muted-foreground ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "80ms" }}
+          >
+            You don't need 200 features. You need the right 6.
+          </p>
+          <div
+            className={`mt-12 overflow-x-auto ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "160ms" }}
+          >
+            <table className="w-full min-w-[500px] text-sm">
+              <thead>
+                <tr className="border-b border-border/50">
+                  <th className="pb-3 pr-4 text-left font-medium text-muted-foreground">Feature</th>
+                  <th className="pb-3 px-4 text-center font-semibold text-primary bg-primary/5 rounded-t-lg">Pintask</th>
+                  <th className="pb-3 px-4 text-center font-medium text-muted-foreground">Trello</th>
+                  <th className="pb-3 px-4 text-center font-medium text-muted-foreground">Monday.com</th>
+                  <th className="pb-3 pl-4 text-center font-medium text-muted-foreground">Notion</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/30">
+                {[
+                  ["Setup time", "2 mins", "10 mins", "30+ mins", "1 hour"],
+                  ["Free boards", "3", "5", "1", "Unlimited"],
+                  ["Built-in timer", "✅", "❌", "✅ (paid)", "❌"],
+                  ["Keyboard shortcuts", "✅", "❌", "❌", "✅"],
+                  ["AI assistant", "✅", "❌", "❌", "❌"],
+                  ["Monthly cost (Pro)", "$8", "$5", "$9", "$8"],
+                ].map(([feature, ...vals]) => (
+                  <tr key={feature}>
+                    <td className="py-3 pr-4 font-medium">{feature}</td>
+                    <td className="py-3 px-4 text-center font-semibold bg-primary/5">{vals[0]}</td>
+                    <td className="py-3 px-4 text-center text-muted-foreground">{vals[1]}</td>
+                    <td className="py-3 px-4 text-center text-muted-foreground">{vals[2]}</td>
+                    <td className="py-3 pl-4 text-center text-muted-foreground">{vals[3]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p
+            className={`mt-6 text-center text-xs text-muted-foreground ${revealBase} ${comparisonReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "240ms" }}
+          >
+            Prices accurate as of 2026. Competitor features based on their free/starter plans.
+          </p>
+        </div>
+      </section>
 
       <section className="border-t border-border/40 px-6 py-20">
         <div ref={proofReveal.ref} className="mx-auto max-w-6xl">
