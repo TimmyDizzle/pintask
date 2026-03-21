@@ -303,7 +303,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section className="border-t border-border/40 px-6 py-20">
+      <section id="pricing" className="border-t border-border/40 px-6 py-20">
         <div ref={pricingReveal.ref} className="mx-auto max-w-6xl">
           <h2
             className={`text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
