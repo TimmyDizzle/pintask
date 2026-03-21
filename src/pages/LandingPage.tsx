@@ -98,6 +98,13 @@ const testimonials = [
 
 export default function LandingPage() {
   const [showAiBanner, setShowAiBanner] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const heroReveal = useScrollReveal({ threshold: 0.1 });
   const shotReveal = useScrollReveal({ threshold: 0.1 });
   const featuresReveal = useScrollReveal({ threshold: 0.1 });
