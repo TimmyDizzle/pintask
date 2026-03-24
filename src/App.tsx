@@ -11,6 +11,16 @@ import ReportsPage from "./pages/ReportsPage";
 import JVPage from "./pages/JVPage";
 import JVSalesPage from "./pages/JVSalesPage";
 import NotFound from "./pages/NotFound";
+import FeaturesPage from "./pages/FeaturesPage";
+import PricingPage from "./pages/PricingPage";
+import ExtensionsPage from "./pages/ExtensionsPage";
+import TrelloAlternativePage from "./pages/TrelloAlternativePage";
+import KanbanBoardPage from "./pages/KanbanBoardPage";
+import TaskTrackerPage from "./pages/TaskTrackerPage";
+import AboutPage from "./pages/AboutPage";
+import BlogPage from "./pages/BlogPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +39,16 @@ const App = () => (
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/jv" element={<JVPage />} />
             <Route path="/jvsalespage" element={<JVSalesPage />} />
+            <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/extensions" element={<ExtensionsPage />} />
+            <Route path="/trello-alternative" element={<TrelloAlternativePage />} />
+            <Route path="/kanban-board" element={<KanbanBoardPage />} />
+            <Route path="/task-tracker" element={<TaskTrackerPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
