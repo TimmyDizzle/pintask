@@ -2,8 +2,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import ProjectView from "@/pages/ProjectView";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function ProjectPage() {
+  useDocumentTitle("Project");
   const { user, loading } = useAuth();
 
   if (loading) {

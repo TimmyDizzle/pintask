@@ -7,6 +7,7 @@ import {
   ChevronDown, ChevronUp, Users, Rocket, TrendingUp,
   DollarSign, MousePointerClick, Sparkles, Target
 } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 // ─── Countdown Timer ───
 function CountdownTimer() {
@@ -91,6 +92,7 @@ function CtaBlock() {
 
 // ─── Main Page ───
 export default function JVSalesPage() {
+  useDocumentTitle("Get Pintask");
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 200);

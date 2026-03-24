@@ -5,6 +5,7 @@ import {
   CheckCircle2, ArrowRight, Shield, TrendingUp, Star,
   Keyboard, Brain, Timer, Tag
 } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const commissionTiers = [
   { label: "Front-End", rate: "70%", price: "$17–$27", color: "hsl(var(--primary))" },
@@ -47,6 +48,7 @@ const swipeAssets = [
 ];
 
 export default function JVPage() {
+  useDocumentTitle("JV Partner Program");
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}

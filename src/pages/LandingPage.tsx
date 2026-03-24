@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -107,6 +108,7 @@ const testimonials = [
 ];
 
 export default function LandingPage() {
+  useDocumentTitle();
   const [showAiBanner, setShowAiBanner] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
