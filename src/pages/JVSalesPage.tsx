@@ -7,6 +7,7 @@ import {
   ChevronDown, ChevronUp, Users, Rocket, TrendingUp,
   DollarSign, MousePointerClick, Sparkles, Target
 } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 // ─── Countdown Timer ───
 function CountdownTimer() {

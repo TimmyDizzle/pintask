@@ -2,8 +2,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import LandingPage from "@/pages/LandingPage";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const Index = () => {
+  useDocumentTitle("My Tasks");
   const { user, loading } = useAuth();
 
   if (loading) {

@@ -2,8 +2,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import Reports from "@/pages/Reports";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function ReportsPage() {
+  useDocumentTitle("Reports");
   const { user, loading } = useAuth();
 
   if (loading) {
