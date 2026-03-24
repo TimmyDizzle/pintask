@@ -51,7 +51,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
 
       {/* Footer */}
       <footer className="border-t border-border/20 bg-[hsl(230,25%,10%)] px-6 py-14">
-        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-4">
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-5">
           <div>
             <Link to="/" className="flex items-center gap-2 font-heading text-lg font-bold text-white">
               <CheckSquare className="h-5 w-5 text-primary" />
@@ -67,30 +67,38 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
               <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
               <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               <li><Link to="/extensions" className="hover:text-white transition-colors">Extensions Store</Link></li>
-              <li><Link to="/extensions#spire-club" className="hover:text-white transition-colors">Spire Club</Link></li>
-              <li><Link to="/auth" className="hover:text-white transition-colors">Sign In</Link></li>
+              <li><Link to="/kanban-board" className="hover:text-white transition-colors">Kanban Board</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-300">Use Cases</h4>
+            <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-300">Resources</h4>
             <ul className="mt-4 space-y-2 text-sm text-gray-400">
-              <li><Link to="/kanban-board" className="hover:text-white transition-colors">Kanban Board</Link></li>
-              <li><Link to="/task-tracker" className="hover:text-white transition-colors">Task Tracker</Link></li>
               <li><Link to="/trello-alternative" className="hover:text-white transition-colors">Trello Alternative</Link></li>
+              <li><Link to="/task-tracker" className="hover:text-white transition-colors">Task Tracker for Developers</Link></li>
               <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+              <li><a href="/api-docs" className="hover:text-white transition-colors">API Documentation</a></li>
             </ul>
           </div>
           <div>
             <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-300">Company</h4>
             <ul className="mt-4 space-y-2 text-sm text-gray-400">
               <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
+              <li><Link to="/extensions#spire-club" className="hover:text-white transition-colors">Spire Club</Link></li>
               <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
+          <div>
+            <h4 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-300">Get Started</h4>
+            <ul className="mt-4 space-y-2 text-sm text-gray-400">
+              <li><Link to="/auth" className="hover:text-white transition-colors">Sign In</Link></li>
+              <li><Link to="/auth" className="hover:text-white transition-colors">Create Free Account</Link></li>
+            </ul>
+          </div>
         </div>
-        <div className="mx-auto mt-10 max-w-6xl border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} Pintask. All rights reserved.
+        <div className="mx-auto mt-10 max-w-6xl border-t border-gray-800 pt-6 text-center">
+          <p className="text-sm font-medium text-gray-400">Pintask — The most customizable Kanban board on the web.</p>
+          <p className="mt-2 text-xs text-gray-500">© {new Date().getFullYear()} Pintask. All rights reserved.</p>
         </div>
       </footer>
     </div>
