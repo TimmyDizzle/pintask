@@ -48,6 +48,7 @@ const swipeAssets = [
 ];
 
 export default function JVPage() {
+  useDocumentTitle("JV Partner Program");
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}

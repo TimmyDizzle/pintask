@@ -11,6 +11,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
+  useDocumentTitle(isLogin ? "Log In" : "Sign Up");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");

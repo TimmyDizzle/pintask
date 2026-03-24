@@ -92,6 +92,7 @@ function CtaBlock() {
 
 // ─── Main Page ───
 export default function JVSalesPage() {
+  useDocumentTitle("Get Pintask");
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 200);
