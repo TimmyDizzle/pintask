@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://cdn.gpteng.co" crossorigin />
     <title>Pintask — Personal Task Tracker</title>
     <meta name="description" content="Pintask is a personal task tracker that helps you stay organized and focused. Pin, prioritize, and manage your tasks in one simple place." />
     <meta name="author" content="Pintask" />
@@ -21,6 +22,12 @@
   </head>
 
   <body>
+    <noscript>
+      <div style="padding: 2rem; text-align: center; font-family: sans-serif;">
+        <h1>Pintask</h1>
+        <p>This app requires JavaScript to run. Please enable JavaScript in your browser.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
