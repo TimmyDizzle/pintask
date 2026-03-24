@@ -66,7 +66,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <ul className="mt-4 space-y-2 text-sm text-gray-400">
               <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
               <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-              <li><Link to="/extensions" className="hover:text-white transition-colors">Extensions</Link></li>
+              <li><Link to="/extensions" className="hover:text-white transition-colors">Extensions Store</Link></li>
+              <li><Link to="/extensions#spire-club" className="hover:text-white transition-colors">Spire Club</Link></li>
               <li><Link to="/auth" className="hover:text-white transition-colors">Sign In</Link></li>
             </ul>
           </div>
