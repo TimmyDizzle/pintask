@@ -78,7 +78,7 @@ function FeatureGrid({ items, cols = 3 }: { items: typeof coreFeatures; cols?: n
                 <f.icon className="h-5 w-5" />
               </div>
               {"badge" in f && f.badge && (
-                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">{f.badge}</span>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">{(f as any).badge}</span>
               )}
             </div>
             <h3 className="mt-4 font-heading text-base font-semibold">{f.title}</h3>
