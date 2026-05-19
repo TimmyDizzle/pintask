@@ -4,6 +4,7 @@ import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, X, Shield, Zap, Code, Clock } from "lucide-react";
+import AdSlot from "@/components/AdSlot";
 
 const comparisonData = [
   { feature: "Kanban Boards", pintask: "✅ Free", trelloFree: "✅ Free", trelloPaid: "✅" },

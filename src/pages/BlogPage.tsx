@@ -6,6 +6,7 @@ import RevealSection from "@/components/RevealSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
+import AdSlot from "@/components/AdSlot";
 
 const categories = ["All", "Productivity", "Kanban", "Tutorials", "Product Updates"];
 
@@ -71,6 +72,10 @@ export default function BlogPage() {
             </RevealSection>
           )}
 
+          <AdSlot slot="1111111111" className="mb-8" />
+
+
+
           <div className="grid gap-6 md:grid-cols-3">
             {rest.map((post, i) => (
               <RevealSection key={post.title} delay={80 + i * 80}>
@@ -88,6 +93,14 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
+
+      <section className="px-6 pb-6">
+        <div className="mx-auto max-w-4xl">
+          <AdSlot slot="2222222222" />
+        </div>
+      </section>
+
+
 
       {/* Subscribe */}
       <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
