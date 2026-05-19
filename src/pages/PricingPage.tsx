@@ -84,11 +84,11 @@ export default function PricingPage() {
             </div>
           </RevealSection>
 
-          {/* Founder Lifetime — featured */}
+          {/* Co-Founder Lifetime — featured */}
           <RevealSection delay={220}>
             <div id="founder" className="relative flex flex-col rounded-xl border-2 border-primary bg-primary text-primary-foreground p-8 shadow-lg shadow-primary/20 h-full scroll-mt-24">
               <div className="rounded-full bg-primary-foreground/20 px-3 py-1 text-xs font-semibold self-start">Limited — 500 spots</div>
-              <h2 className="mt-4 font-heading text-lg font-semibold">Founder Lifetime</h2>
+              <h2 className="mt-4 font-heading text-lg font-semibold">Co-Founder Lifetime</h2>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="font-heading text-4xl font-extrabold">$39</span>
                 <span className="text-sm line-through opacity-60">$199</span>
@@ -101,7 +101,7 @@ export default function PricingPage() {
                   "Card & List Mirroring",
                   "Hands-Free Time Tracking",
                   "AI Daily Briefing + Task Breakdown",
-                  "Founders-only Slack community",
+                  "Co-Founders-only Slack community",
                   "Lifetime updates — no renewals",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
@@ -111,7 +111,7 @@ export default function PricingPage() {
               </ul>
               <div className="mt-8">
                 <Button size="lg" variant="secondary" className="w-full" asChild>
-                  <Link to="/auth?plan=founder">Claim Founder Spot <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  <Link to="/auth?plan=founder">Claim Co-Founder Spot <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
                 <p className="mt-3 text-center text-xs opacity-75">30-day money-back guarantee</p>
               </div>

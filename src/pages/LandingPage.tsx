@@ -427,7 +427,7 @@ export default function LandingPage() {
               </Button>
             </div>
 
-            {/* Founder LTD — featured */}
+            {/* Co-Founder LTD — featured */}
             <div
               className={`relative flex flex-col rounded-xl border-2 border-primary bg-primary p-8 text-primary-foreground shadow-lg shadow-primary/20 order-first md:order-none ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
               style={{ transitionDelay: "250ms" }}
@@ -435,7 +435,7 @@ export default function LandingPage() {
               <div className="absolute right-4 top-4 rounded-full bg-primary-foreground/20 px-2.5 py-0.5 text-xs font-semibold">
                 Limited — 500 spots
               </div>
-              <h3 className="font-heading text-lg font-semibold">Founder Lifetime</h3>
+              <h3 className="font-heading text-lg font-semibold">Co-Founder Lifetime</h3>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="font-heading text-4xl font-extrabold">$39</span>
                 <span className="text-sm line-through opacity-60">$199</span>
@@ -448,7 +448,7 @@ export default function LandingPage() {
                   "AI Daily Briefing",
                   "AI Task Breakdown",
                   "Time tracking + reports",
-                  "Founders Slack community",
+                  "Co-Founders Slack community",
                   "Lock in before public launch",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
@@ -457,7 +457,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Button className="mt-8 w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90" asChild>
-                <Link to="/pricing#founder">Claim Founder Spot</Link>
+                <Link to="/pricing#founder">Claim Co-Founder Spot</Link>
               </Button>
             </div>
 
