@@ -1,0 +1,1 @@
+ALTER TABLE public.waitlist_emails ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'landing_hero';
