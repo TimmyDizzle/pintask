@@ -144,6 +144,12 @@ export default function TaskTrackerPage() {
         </div>
       </section>
 
+      <section className="px-6 pb-4">
+        <div className="mx-auto max-w-4xl">
+          <AdSlot slot="4444444444" />
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
         <RevealSection className="mx-auto max-w-2xl text-center">
