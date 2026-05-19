@@ -63,10 +63,10 @@ export default function PricingPage() {
           {/* Free */}
           <RevealSection delay={100}>
             <div className="flex flex-col rounded-xl border-2 border-border/50 bg-card p-8 shadow-sm h-full">
-              <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary self-start">Free</div>
+              <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary self-start">Free Forever</div>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="font-heading text-4xl font-extrabold">$0</span>
-                <span className="text-sm text-muted-foreground">/ month</span>
+                <span className="text-sm text-muted-foreground">/ forever</span>
               </div>
               <p className="mt-3 text-sm text-muted-foreground">Everything you need to manage work.</p>
               <ul className="mt-6 flex-1 space-y-2.5">
@@ -77,34 +77,64 @@ export default function PricingPage() {
                 ))}
               </ul>
               <div className="mt-8">
-                <Button size="lg" className="w-full" asChild>
-                  <Link to="/auth">Start Free — No Card Required <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                <Button size="lg" className="w-full" variant="outline" asChild>
+                  <Link to="/auth">Start Free — No Card <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
               </div>
             </div>
           </RevealSection>
 
-          {/* Extensions */}
+          {/* Founder Lifetime — featured */}
           <RevealSection delay={220}>
-            <div className="relative flex flex-col rounded-xl border-2 border-primary bg-primary text-primary-foreground p-8 shadow-lg shadow-primary/20 h-full">
-              <div className="rounded-full bg-primary-foreground/20 px-3 py-1 text-xs font-semibold self-start">Most Popular</div>
-              <h2 className="mt-4 font-heading text-lg font-semibold">Extensions</h2>
-              <p className="mt-1 text-sm opacity-80">Priced individually</p>
-              <p className="mt-3 text-sm opacity-90">Add exactly what your team needs. Nothing more.</p>
-              <div className="mt-6 flex-1 space-y-4">
-                <div className="rounded-lg bg-primary-foreground/10 p-4">
-                  <div className="flex items-center gap-2"><Puzzle className="h-4 w-4" /><span className="font-medium text-sm">Card & List Mirroring</span></div>
-                  <p className="mt-1 text-xs opacity-80">Free trial → then monthly</p>
-                </div>
-                <div className="rounded-lg bg-primary-foreground/10 p-4">
-                  <div className="flex items-center gap-2"><Puzzle className="h-4 w-4" /><span className="font-medium text-sm">Hands-Free Time Tracking</span></div>
-                  <p className="mt-1 text-xs opacity-80">Free trial → then monthly</p>
-                </div>
-                <p className="text-xs opacity-70">Extensions install per user. Cancel anytime.</p>
+            <div id="founder" className="relative flex flex-col rounded-xl border-2 border-primary bg-primary text-primary-foreground p-8 shadow-lg shadow-primary/20 h-full scroll-mt-24">
+              <div className="rounded-full bg-primary-foreground/20 px-3 py-1 text-xs font-semibold self-start">Limited — 500 spots</div>
+              <h2 className="mt-4 font-heading text-lg font-semibold">Founder Lifetime</h2>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="font-heading text-4xl font-extrabold">$39</span>
+                <span className="text-sm line-through opacity-60">$199</span>
               </div>
+              <p className="mt-3 text-sm opacity-90">One payment. Forever access to every extension we ever ship.</p>
+              <ul className="mt-6 flex-1 space-y-2.5">
+                {[
+                  "Everything in Free, forever",
+                  "All current & future extensions",
+                  "Card & List Mirroring",
+                  "Hands-Free Time Tracking",
+                  "AI Daily Briefing + Task Breakdown",
+                  "Founders-only Slack community",
+                  "Lifetime updates — no renewals",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
               <div className="mt-8">
                 <Button size="lg" variant="secondary" className="w-full" asChild>
-                  <Link to="/extensions">Browse Extensions <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  <Link to="/auth?plan=founder">Claim Founder Spot <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                </Button>
+                <p className="mt-3 text-center text-xs opacity-75">30-day money-back guarantee</p>
+              </div>
+            </div>
+          </RevealSection>
+
+          {/* Spire Club */}
+          <RevealSection delay={340}>
+            <div className="flex flex-col rounded-xl border-2 border-border/50 bg-card p-8 shadow-sm h-full">
+              <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent self-start">Community</div>
+              <h2 className="mt-4 font-heading text-lg font-semibold">Spire Club</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Community pricing</p>
+              <p className="mt-3 text-sm text-muted-foreground">Co-fund the features your company needs.</p>
+              <ul className="mt-6 flex-1 space-y-2.5">
+                {["Propose feature ideas", "Co-fund builds with other members", "Lifelong access when extension ships", "Works for your whole company"].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{f}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8">
+                <Button size="lg" variant="outline" className="w-full" asChild>
+                  <Link to="/extensions#spire-club">Learn About Spire Club <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
               </div>
             </div>
