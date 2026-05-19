@@ -139,28 +139,6 @@ export default function PricingPage() {
               </div>
             </div>
           </RevealSection>
-
-          {/* Spire Club */}
-          <RevealSection delay={340}>
-            <div className="flex flex-col rounded-xl border-2 border-border/50 bg-card p-8 shadow-sm h-full">
-              <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent self-start">Community</div>
-              <h2 className="mt-4 font-heading text-lg font-semibold">Spire Club</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Community pricing</p>
-              <p className="mt-3 text-sm text-muted-foreground">Co-fund the features your company needs.</p>
-              <ul className="mt-6 flex-1 space-y-2.5">
-                {["Propose feature ideas", "Co-fund builds with other members", "Lifelong access when extension ships", "Works for your whole company"].map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{f}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8">
-                <Button size="lg" variant="outline" className="w-full" asChild>
-                  <Link to="/extensions#spire-club">Learn About Spire Club <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                </Button>
-              </div>
-            </div>
-          </RevealSection>
         </div>
       </section>
 
