@@ -27,6 +27,8 @@ import {
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import WaitlistForm from "@/components/WaitlistForm";
+import FounderLTDBanner from "@/components/FounderLTDBanner";
 
 const features = [
   {
@@ -201,44 +203,39 @@ export default function LandingPage() {
             className={`mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "200ms" }}
           >
-            Organize your work.
+            The Kanban Board That
             <br />
-            <span className="text-primary">Track your time.</span>
-            <br />
-            Ship faster.
+            <span className="text-primary">Actually Bends</span> to How You Work.
           </h1>
           <p
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "350ms" }}
           >
-            Same clean simplicity you loved, rebuilt from the ground up — now with
-            an AI assistant that writes your daily briefing, breaks down your tasks,
-            and keeps you moving.
+            Nested cards, custom extensions, full API access, AI assistant.
+            <span className="font-semibold text-foreground"> Free forever</span> — no per-seat trap.
           </p>
           <div
-            className={`mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            className={`mx-auto mt-8 max-w-md ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "500ms" }}
           >
-            <Button size="lg" className="h-12 px-8 text-base w-full sm:w-auto" asChild>
-              <Link to="/auth">
-                Try Pintask Free <ArrowRight className="ml-1.5 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 text-base w-full sm:w-auto" asChild>
-              <a href="#features">See Features</a>
-            </Button>
+            <WaitlistForm source="landing_hero" cta="Get Free Access" />
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              <span>✓ No credit card</span>
+              <span>✓ Free forever</span>
+              <span>✓ Import from Trello in 2 clicks</span>
+            </div>
           </div>
-          <p
-            className={`mt-3 text-sm text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+          <div
+            className={`mt-6 flex items-center justify-center ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "600ms" }}
           >
-            No credit card required. Free during beta.
-          </p>
+            <FounderLTDBanner compact />
+          </div>
           <p
-            className={`mt-2 text-xs text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            className={`mt-4 text-xs text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "650ms" }}
           >
-            Join <span className="font-bold text-primary">847</span> people already on the waitlist
+            Join <span className="font-bold text-primary">847</span> makers already on the waitlist
           </p>
         </div>
       </section>
@@ -391,103 +388,103 @@ export default function LandingPage() {
           <h2
             className={`text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
           >
-            Simple, honest pricing
+            Free forever. Pay only if you want more.
           </h2>
           <p
             className={`mx-auto mt-4 max-w-xl text-center text-muted-foreground ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "80ms" }}
           >
-            Free while we're in beta. Upgrade when you're ready.
+            No per-seat pricing. No bait-and-switch. Just a great free product — with optional power-ups.
           </p>
           <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {/* Pro — shown first on mobile via order */}
+            {/* Free Forever */}
+            <div
+              className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
+              style={{ transitionDelay: "150ms" }}
+            >
+              <h3 className="font-heading text-lg font-semibold">Free Forever</h3>
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="font-heading text-4xl font-extrabold">$0</span>
+                <span className="text-sm text-muted-foreground">/ forever</span>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">Everything you need to ship.</p>
+              <ul className="mt-6 flex-1 space-y-3 text-sm">
+                {[
+                  "Unlimited boards & cards",
+                  "Nested cards & subtasks",
+                  "Labels, comments, attachments",
+                  "Keyboard shortcuts",
+                  "Full API access",
+                  "Import from Trello",
+                ].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4 text-primary" /> {f}
+                  </li>
+                ))}
+              </ul>
+              <Button variant="outline" className="mt-8 w-full" asChild>
+                <Link to="/auth">Start Free</Link>
+              </Button>
+            </div>
+
+            {/* Founder LTD — featured */}
             <div
               className={`relative flex flex-col rounded-xl border-2 border-primary bg-primary p-8 text-primary-foreground shadow-lg shadow-primary/20 order-first md:order-none ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
               style={{ transitionDelay: "250ms" }}
             >
               <div className="absolute right-4 top-4 rounded-full bg-primary-foreground/20 px-2.5 py-0.5 text-xs font-semibold">
-                Most Popular
+                Limited — 500 spots
               </div>
-              <h3 className="font-heading text-lg font-semibold">Pro</h3>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-heading text-4xl font-extrabold">$8</span>
-                <span className="text-sm opacity-80">/ month</span>
+              <h3 className="font-heading text-lg font-semibold">Founder Lifetime</h3>
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-heading text-4xl font-extrabold">$39</span>
+                <span className="text-sm line-through opacity-60">$199</span>
               </div>
-              <p className="mt-2 text-sm opacity-80">For power users and freelancers</p>
+              <p className="mt-2 text-sm opacity-80">One payment. Lifetime access.</p>
               <ul className="mt-6 flex-1 space-y-3 text-sm">
                 {[
-                  "Unlimited boards",
-                  "Everything in Free",
-                  "Built-in time tracking",
-                  "Reports & insights",
-                  "AI Daily Briefing (coming soon)",
-                  "AI Task Breakdown (coming soon)",
-                  "Priority support",
+                  "Everything in Free, forever",
+                  "All current & future extensions",
+                  "AI Daily Briefing",
+                  "AI Task Breakdown",
+                  "Time tracking + reports",
+                  "Founders Slack community",
+                  "Lock in before public launch",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
-                    <CheckSquare className="h-4 w-4" />
-                    {f}
+                    <CheckSquare className="h-4 w-4" /> {f}
                   </li>
                 ))}
               </ul>
               <Button className="mt-8 w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90" asChild>
-                <Link to="/auth">Start Free Trial</Link>
-              </Button>
-            </div>
-            {/* Personal */}
-            <div
-              className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
-              style={{ transitionDelay: "150ms" }}
-            >
-              <h3 className="font-heading text-lg font-semibold">Personal</h3>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-heading text-4xl font-extrabold">$0</span>
-                <span className="text-sm text-muted-foreground">/ forever</span>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">Perfect for individuals</p>
-              <ul className="mt-6 flex-1 space-y-3 text-sm">
-                {["Up to 3 boards", "Unlimited tasks", "Kanban boards", "Labels & due dates", "Mobile access"].map((f) => (
-                  <li key={f} className="flex items-center gap-2">
-                    <CheckSquare className="h-4 w-4 text-primary" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="outline" className="mt-8 w-full" asChild>
-                <Link to="/auth">Get Started Free</Link>
+                <Link to="/pricing#founder">Claim Founder Spot</Link>
               </Button>
             </div>
 
-
-
-            {/* Team */}
+            {/* Spire Club */}
             <div
               className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
               style={{ transitionDelay: "350ms" }}
             >
-              <h3 className="font-heading text-lg font-semibold">Team</h3>
+              <h3 className="font-heading text-lg font-semibold">Spire Club</h3>
               <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-heading text-4xl font-extrabold">$15</span>
-                <span className="text-sm text-muted-foreground">/ user / month</span>
+                <span className="font-heading text-4xl font-extrabold">Co-fund</span>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">For small teams (min. 3 users)</p>
+              <p className="mt-2 text-sm text-muted-foreground">Build the extensions you actually need.</p>
               <ul className="mt-6 flex-1 space-y-3 text-sm">
                 {[
-                  "Everything in Pro",
-                  "Multi-user boards",
-                  "Shared workspaces",
-                  "Team activity feed",
-                  "Admin controls",
-                  "Weekly AI team report (coming soon)",
+                  "Propose features",
+                  "Co-fund with other members",
+                  "Lifelong access when shipped",
+                  "Works for your whole company",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
-                    <CheckSquare className="h-4 w-4 text-primary" />
-                    {f}
+                    <CheckSquare className="h-4 w-4 text-primary" /> {f}
                   </li>
                 ))}
               </ul>
               <Button variant="outline" className="mt-8 w-full" asChild>
-                <Link to="/auth">Contact Us</Link>
+                <Link to="/extensions#spire-club">Learn More</Link>
               </Button>
             </div>
           </div>
@@ -632,24 +629,27 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Founder LTD banner */}
+      <section className="border-t border-border/40 px-6 py-14">
+        <div className="mx-auto max-w-5xl">
+          <FounderLTDBanner />
+        </div>
+      </section>
+
       {/* Bottom CTA */}
-      <section className="border-t border-border/40 bg-muted/30 px-6 py-14">
+      <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
         <div
           ref={ctaReveal.ref}
           className={`mx-auto max-w-2xl text-center ${revealBase} duration-700 ${ctaReveal.isVisible ? revealVisible : revealHidden}`}
         >
           <h2 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
-            Ready to take control of your workflow?
+            Stop fighting your task manager.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Sign up in seconds. Free while we're in beta — no strings attached.
+            Get free access — we'll send you a link to start in 30 seconds.
           </p>
-          <div className="mt-8">
-            <Button size="lg" className="h-12 px-10 text-base w-full sm:w-auto" asChild>
-              <Link to="/auth">
-                Get Started Free <ArrowRight className="ml-1.5 h-4 w-4" />
-              </Link>
-            </Button>
+          <div className="mx-auto mt-8 max-w-md">
+            <WaitlistForm source="landing_bottom_cta" cta="Get My Free Account" />
           </div>
         </div>
       </section>
