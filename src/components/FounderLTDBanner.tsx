@@ -9,7 +9,7 @@ export default function FounderLTDBanner({ compact = false }: { compact?: boolea
         className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/10 transition-colors"
       >
         <Sparkles className="h-3 w-3" />
-        Founder Lifetime — $39 (limited)
+        Co-Founder Lifetime — $39 (limited)
         <ArrowRight className="h-3 w-3" />
       </Link>
     );
@@ -20,7 +20,7 @@ export default function FounderLTDBanner({ compact = false }: { compact?: boolea
       <div className="relative flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
-            <Sparkles className="h-3 w-3" /> Founding Member Offer
+            <Sparkles className="h-3 w-3" /> Co-Founding Member Offer
           </div>
           <h3 className="mt-3 font-heading text-2xl font-bold tracking-tight md:text-3xl">
             $39 lifetime. Everything we ever ship.
@@ -34,7 +34,7 @@ export default function FounderLTDBanner({ compact = false }: { compact?: boolea
           to="/pricing#founder"
           className="inline-flex h-12 items-center gap-2 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors whitespace-nowrap"
         >
-          Claim Founder Spot <ArrowRight className="h-4 w-4" />
+          Claim Co-Founder Spot <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </div>

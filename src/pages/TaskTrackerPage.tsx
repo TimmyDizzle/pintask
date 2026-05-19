@@ -4,6 +4,7 @@ import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code, Database, Store, Users, GitBranch, BarChart3, Bot, Eye } from "lucide-react";
+import AdSlot from "@/components/AdSlot";
 
 const specs = [
   { icon: Code, title: "JavaScript + Meteor API", desc: "Write extensions using the Meteor framework. Full access to board, list, card, and user data." },
@@ -140,6 +141,12 @@ export default function TaskTrackerPage() {
               </table>
             </div>
           </RevealSection>
+        </div>
+      </section>
+
+      <section className="px-6 pb-4">
+        <div className="mx-auto max-w-4xl">
+          <AdSlot slot="4444444444" />
         </div>
       </section>
 
