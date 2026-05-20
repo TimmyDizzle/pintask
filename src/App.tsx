@@ -19,6 +19,7 @@ import KanbanBoardPage from "./pages/KanbanBoardPage";
 import TaskTrackerPage from "./pages/TaskTrackerPage";
 import AboutPage from "./pages/AboutPage";
 import BlogPage from "./pages/BlogPage";
+import BlogPostPage from "./pages/BlogPostPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/task-tracker" element={<TaskTrackerPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="*" element={<NotFound />} />
