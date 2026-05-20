@@ -4,7 +4,7 @@ import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowRight, Check, Puzzle, Users } from "lucide-react";
+import { ArrowRight, Check, Infinity, Crown } from "lucide-react";
 
 const freePlan = [
   "Unlimited boards, lists & cards",
@@ -23,8 +23,9 @@ const freePlan = [
 
 const faqItems = [
   { q: "Is the free plan really free forever?", a: "Yes. The core Kanban board — including unlimited boards, nested cards, API access, and integrations — is free with no time limit and no catch." },
-  { q: "How do extensions work?", a: "Extensions install per user, like an app store. Paid extensions include a free trial. After the trial, subscribe monthly. Cancel anytime." },
-  { q: "Do my teammates need to pay for extensions too?", a: "Yes — extensions are per-user subscriptions. Each person controls their own extension setup." },
+  { q: "What's the Loyalty Club?", a: "Loyalty Club is a $8/month subscription that locks in your rate forever. Even when we raise prices later, you keep paying $8. It's our way of saying thank you to early supporters." },
+  { q: "Co-Founder Lifetime vs. Loyalty Club — which should I pick?", a: "Co-Founder Lifetime ($39 once) is the best value if you can afford the upfront payment. Loyalty Club ($8/mo) is for people who want to support us but prefer a smaller monthly commitment. Both get all extensions forever." },
+  { q: "Will my Loyalty Club price ever go up?", a: "Never. Your $8/month rate is grandfathered for life. Even if we raise prices to $15 or $20 for new members down the road, you stay at $8." },
   { q: "Can I build my own extensions for free?", a: "Yes. The full JavaScript + Meteor API and MongoDB browser access are included on the free plan." },
 ];
 
@@ -34,13 +35,13 @@ const comparisonData = [
   { feature: "API Access", pintask: "✅ Full JS", trello: "Limited", clickup: "Limited", asana: "Limited" },
   { feature: "Build Custom Features", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌" },
   { feature: "Starting Price", pintask: "$0", trello: "$0", clickup: "$0", asana: "$0" },
-  { feature: "Paid Plan From", pintask: "Extensions only", trello: "$5/user/mo", clickup: "$7/user/mo", asana: "$10.99/user/mo" },
+  { feature: "Paid Plan From", pintask: "$8/mo*", trello: "$5/user/mo", clickup: "$7/user/mo", asana: "$10.99/user/mo" },
 ];
 
 export default function PricingPage() {
   useDocumentTitle(
-    "Pintask Pricing — Free Kanban Board + Optional Paid Extensions",
-    "Pintask is free forever. Pay only for the extensions you actually need. No per-seat pricing. No surprise bills. Start free today."
+    "Pintask Pricing — Free Forever, Co-Founder Lifetime, or Loyalty Club",
+    "Free forever Kanban board. Co-Founder Lifetime for $39. Loyalty Club at $8/month locked in forever. Start free today."
   );
 
   return (
@@ -49,10 +50,10 @@ export default function PricingPage() {
       <section className="px-6 py-20 md:py-28">
         <RevealSection className="mx-auto max-w-3xl text-center">
           <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Free Forever. Pay Only For What You Actually Use.
+            Free Forever. Or Lock In A Price For Life.
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            Pintask's core Kanban board is free — forever. Extensions are optional add-ons you install only if you need them. No forced upgrades. No bloated plans.
+            Pintask's core Kanban board is free forever. Want more? Pick the Co-Founder Lifetime ($39 once) or the Loyalty Club ($8/mo — locked in forever, even when we raise prices).
           </p>
         </RevealSection>
       </section>
@@ -63,7 +64,7 @@ export default function PricingPage() {
           {/* Free */}
           <RevealSection delay={100}>
             <div className="flex flex-col rounded-xl border-2 border-border/50 bg-card p-8 shadow-sm h-full">
-              <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary self-start">Free Forever</div>
+              <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary self-start">Free For Now</div>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="font-heading text-4xl font-extrabold">$0</span>
                 <span className="text-sm text-muted-foreground">/ forever</span>
@@ -118,24 +119,40 @@ export default function PricingPage() {
             </div>
           </RevealSection>
 
-          {/* Spire Club */}
+          {/* Loyalty Club */}
           <RevealSection delay={340}>
-            <div className="flex flex-col rounded-xl border-2 border-border/50 bg-card p-8 shadow-sm h-full">
-              <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent self-start">Community</div>
-              <h2 className="mt-4 font-heading text-lg font-semibold">Spire Club</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Community pricing</p>
-              <p className="mt-3 text-sm text-muted-foreground">Co-fund the features your company needs.</p>
+            <div className="flex flex-col rounded-xl border-2 border-accent/50 bg-card p-8 shadow-sm h-full">
+              <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent self-start flex items-center gap-1">
+                <Infinity className="h-3 w-3" /> Grandfathered Forever
+              </div>
+              <h2 className="mt-4 font-heading text-lg font-semibold">Loyalty Club</h2>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="font-heading text-4xl font-extrabold">$8</span>
+                <span className="text-sm text-muted-foreground">/ month</span>
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Your $8 rate is locked in forever. Even when prices go up for new members, you never pay more.
+              </p>
               <ul className="mt-6 flex-1 space-y-2.5">
-                {["Propose feature ideas", "Co-fund builds with other members", "Lifelong access when extension ships", "Works for your whole company"].map((f) => (
+                {[
+                  "Everything in Free",
+                  "All current & future extensions",
+                  "Card & List Mirroring",
+                  "Hands-Free Time Tracking",
+                  "AI Daily Briefing + Task Breakdown",
+                  "Grandfathered at $8/mo forever",
+                  "Cancel anytime — no contracts",
+                ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{f}
                   </li>
                 ))}
               </ul>
               <div className="mt-8">
-                <Button size="lg" variant="outline" className="w-full" asChild>
-                  <Link to="/extensions#spire-club">Learn About Spire Club <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                <Button size="lg" variant="outline" className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground" asChild>
+                  <Link to="/auth?plan=loyalty">Join Loyalty Club <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
+                <p className="mt-3 text-center text-xs text-muted-foreground">Future price hikes don't apply to you</p>
               </div>
             </div>
           </RevealSection>
@@ -188,6 +205,7 @@ export default function PricingPage() {
                 </tbody>
               </table>
             </div>
+            <p className="mt-3 text-center text-xs text-muted-foreground">* Loyalty Club rate. Free plan available for everyone.</p>
           </RevealSection>
         </div>
       </section>
@@ -195,7 +213,7 @@ export default function PricingPage() {
       {/* Final CTA */}
       <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
         <RevealSection className="mx-auto max-w-2xl text-center">
-          <h2 className="font-heading text-3xl font-bold tracking-tight">Start free. Extend when you're ready.</h2>
+          <h2 className="font-heading text-3xl font-bold tracking-tight">Start free. Upgrade when you're ready.</h2>
           <div className="mt-8">
             <Button size="lg" className="h-12 px-10 text-base" asChild>
               <Link to="/auth">Create Your Free Board <ArrowRight className="ml-1.5 h-4 w-4" /></Link>

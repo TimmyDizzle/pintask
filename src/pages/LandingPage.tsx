@@ -397,12 +397,12 @@ export default function LandingPage() {
             No per-seat pricing. No bait-and-switch. Just a great free product — with optional power-ups.
           </p>
           <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {/* Free Forever */}
+            {/* Free For Now */}
             <div
               className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
               style={{ transitionDelay: "150ms" }}
             >
-              <h3 className="font-heading text-lg font-semibold">Free Forever</h3>
+              <h3 className="font-heading text-lg font-semibold">Free For Now</h3>
               <div className="mt-3 flex items-baseline gap-1">
                 <span className="font-heading text-4xl font-extrabold">$0</span>
                 <span className="text-sm text-muted-foreground">/ forever</span>
@@ -461,30 +461,37 @@ export default function LandingPage() {
               </Button>
             </div>
 
-            {/* Spire Club */}
+            {/* Loyalty Club */}
             <div
               className={`flex flex-col rounded-xl border border-border/50 bg-card p-8 shadow-sm ${revealBase} ${pricingReveal.isVisible ? revealVisible : revealHidden}`}
               style={{ transitionDelay: "350ms" }}
             >
-              <h3 className="font-heading text-lg font-semibold">Spire Club</h3>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-heading text-4xl font-extrabold">Co-fund</span>
+              <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent self-start">
+                Grandfathered Forever
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">Build the extensions you actually need.</p>
+              <h3 className="mt-3 font-heading text-lg font-semibold">Loyalty Club</h3>
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-heading text-4xl font-extrabold">$8</span>
+                <span className="text-sm text-muted-foreground">/ month</span>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">Locked in at $8 forever. Even when prices go up, you never pay more.</p>
               <ul className="mt-6 flex-1 space-y-3 text-sm">
                 {[
-                  "Propose features",
-                  "Co-fund with other members",
-                  "Lifelong access when shipped",
-                  "Works for your whole company",
+                  "Everything in Free",
+                  "All current & future extensions",
+                  "AI Daily Briefing",
+                  "AI Task Breakdown",
+                  "Time tracking + reports",
+                  "Grandfathered at $8/mo forever",
+                  "Cancel anytime",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
-                    <CheckSquare className="h-4 w-4 text-primary" /> {f}
+                    <CheckSquare className="h-4 w-4 text-accent" /> {f}
                   </li>
                 ))}
               </ul>
-              <Button variant="outline" className="mt-8 w-full" asChild>
-                <Link to="/extensions#spire-club">Learn More</Link>
+              <Button variant="outline" className="mt-8 w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground" asChild>
+                <Link to="/auth?plan=loyalty">Join Loyalty Club</Link>
               </Button>
             </div>
           </div>
