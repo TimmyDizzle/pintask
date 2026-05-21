@@ -1,146 +1,78 @@
+# Blog System with Admin Editor + Scheduled Publishing
 
-# gstack Review — Pintask
+## Goal
+Turn the current static blog (`src/data/blogPosts.ts`) into a database-backed blog with:
+- An admin-only editor where you log in and create/edit posts easily
+- All 10 supplied posts seeded
+- First 3 published immediately (dated 5/14/26, 5/20/26, 5/21/26)
+- Remaining 7 auto-publish 2/week over the next ~5 weeks
+- Public `/blog` and `/blog/:slug` continue to work, but only show posts where `status = 'published'` AND `published_at <= now()`
 
-**Roles active:** CEO (Office Hours) → Engineering Manager (Planning) → Designer → Release Manager.
+## A note on the domain
+The project currently runs on `pintask.online` (sitemap, JSON-LD, all internal links). Your brief uses `pintask.me`. I will keep using `pintask.online` everywhere unless you tell me otherwise — switching domains is a separate task (DNS + canonical/OG/sitemap rewrite). Tell me if you want me to swap.
 
----
+## What gets built
 
-## 1. Honest Completion Assessment
+### 1. Database (migration)
+- `blog_posts` table: `slug` (unique), `title`, `excerpt`, `content` (markdown), `category`, `read_time`, `featured` (bool), `status` ('draft' | 'scheduled' | 'published'), `published_at` (timestamptz), `author_id`, timestamps.
+- `user_roles` table + `app_role` enum (`admin`, `user`) + `has_role()` SECURITY DEFINER function — follows the standard secure pattern (roles never on profiles).
+- RLS on `blog_posts`:
+  - Public SELECT: only rows where `status = 'published'` AND `published_at <= now()`
+  - Admin SELECT/INSERT/UPDATE/DELETE: full access via `has_role(auth.uid(), 'admin')`
+- RLS on `user_roles`: users can read their own roles; only admins can write.
+- You'll be granted the `admin` role via a one-time insert after the migration.
 
-Your "70% complete" instinct is roughly right for **product**, but generous for **launch readiness**. Here's the breakdown:
-
-| Area | Status | Notes |
-|---|---|---|
-| Core Kanban (boards, cards, labels, comments, attachments) | ~85% | Solid foundation, works |
-| Auth + dashboard | ~80% | Functional |
-| Marketing site (10 pages, footer, SEO routes) | ~75% | Pages exist, copy varies in quality |
-| Landing page conversion polish | ~50% | Exists but generic — biggest gap |
-| Pricing strategy + signup funnel | ~40% | Unclear positioning (free + paid extensions is confusing) |
-| Email capture → nurture loop | ~30% | Waitlist table exists, no email sending |
-| Onboarding (first-run experience) | ~20% | Drops users into empty dashboard |
-| Analytics / conversion tracking | ~10% | Can't optimize what you can't measure |
-| Production polish (perf, a11y, mobile QA) | unknown | Needs QA pass |
-
-**Realistic number: ~60–65% to a *shippable, marketable* product.** Engine is built; the conversion funnel and onboarding aren't.
-
----
-
-## 2. Pricing Strategy — Research & Recommendation
-
-You proposed "100% free to build buzz + email list." That's valid, but let me lay out the proven options:
-
-### Options seen in SaaS/Kanban space
-
-1. **100% Free + email gate** — Trello's early playbook. Maximizes signups, but you get noise, no revenue runway, and monetization later is hard.
-2. **Freemium (free core + paid tiers)** — Trello, Notion, ClickUp today. Best long-term LTV; weak for early buzz.
-3. **Free + paid extensions (your current model)** — Wekan-style. Differentiated, but confusing to first-time visitors. Most don't know what an "extension" is worth.
-4. **Free during beta, paid at launch (waitlist + lifetime deal)** — AppSumo / Linear early days. Creates urgency + revenue.
-5. **Lifetime Deal launch (LTD)** — Sell $49–$79 lifetime on AppSumo/JVZoo (you already have JV pages!). Generates cash + raving fans + reviews.
-
-### My recommendation: **Hybrid "Free Forever Core + Launch LTD + Future Extensions"**
-
-- **Free forever:** unlimited boards, all core Kanban — captures the buzz you want.
-- **Launch offer (60–90 days):** $39 lifetime "Founder" deal → unlocks all current + future extensions. Pairs perfectly with your existing JVZoo funnel.
-- **Post-launch:** extensions become per-user monthly subs ($3–7 each).
-- **Email list compounding:** waitlist + free signup + LTD buyers → 3 segmented lists for nurture.
-
-This gives you **buzz (free) + cash (LTD) + recurring revenue path (extensions)** instead of picking one.
-
----
-
-## 3. Top Ideas to Make the App Better for Customers
-
-Prioritized by impact ÷ effort:
-
-**P0 — Ship blockers**
-- **Real onboarding flow:** Sample board + 3-step tour on first login. Empty dashboards kill activation.
-- **Landing page rebuild:** One focused hero, real product video/GIF, social proof slots, single CTA. (See section 4.)
-- **Email capture + welcome sequence:** Connect Resend via Lovable Cloud, send a 3-email welcome drip.
-- **Analytics:** Add PostHog or Plausible — measure signup → first-board → first-card funnel.
-
-**P1 — High-leverage features**
-- **Board templates** (Sprint, Content Calendar, Bug Tracker, Personal GTD) — instant value.
-- **Public/shareable read-only boards** — viral loop, every shared board = ad.
-- **AI quick-add** (you have parse-task edge function — surface it prominently as a "type naturally" input).
-- **Keyboard-first UX polish** (you have shortcuts; add a "?" overlay everywhere).
-
-**P2 — Differentiation**
-- **Nested cards demo** on landing (your real moat vs Trello).
-- **Import from Trello** — one-click migration is a kingmaker for switchers.
-- **Mobile PWA polish** — installable, offline-capable.
-
-**P3 — Growth loops**
-- **Referral credits** ("invite a teammate, unlock X extension free for 30 days").
-- **Spire Club** community page — currently just an anchor link; deserves its own page.
-
----
-
-## 4. Landing Page Plan (the "must ship" piece)
-
-Current `LandingPage.tsx` exists but is generic. Proposed rebuild structure:
+### 2. Seed the 10 posts
+Insert all 10 posts as rows. Publish dates:
 
 ```text
-[Sticky nav]
-[HERO]
-  H1: "The Kanban Board That Actually Bends to How You Work"
-  Sub: "Nested cards, custom extensions, full API — free forever."
-  CTA: Email + "Get Free Access" (primary)
-  Secondary: "See a live board →" (links to public demo board)
-  Trust strip: "No credit card · Free forever · Import from Trello in 2 clicks"
-[PRODUCT VISUAL]
-  Animated GIF / Lottie of drag-drop + nested card open
-[3-PILLAR VALUE PROPS]
-  Nested cards · Build your own extensions · Free forever
-[SOCIAL PROOF placeholder]
-  Logos / "Join 1,247 makers on the waitlist" counter
-[FEATURE DEEP-DIVE]
-  Alternating zigzag, 4 features with screenshots
-[COMPARISON TABLE]
-  vs Trello / ClickUp / Asana (reuse from PricingPage)
-[FOUNDER LTD OFFER BANNER]
-  "Founding Member: $39 lifetime — 100 spots left"
-[FAQ]
-[FINAL CTA + email]
-[Footer]
+Post 1  pintask-is-back                        2026-05-14  published
+Post 2  pintask-alternatives                   2026-05-20  published
+Post 3  why-visual-boards-beat-to-do-lists     2026-05-21  published
+Post 4  how-to-organize-saved-links            2026-05-25  scheduled
+Post 5  adhd-productivity-app                  2026-05-28  scheduled
+Post 6  pocket-vs-raindrop-vs-pintask          2026-06-01  scheduled
+Post 7  pinterest-is-not-a-productivity-tool   2026-06-04  scheduled
+Post 8  manage-multiple-projects               2026-06-08  scheduled
+Post 9  free-productivity-app-visual-thinkers  2026-06-11  scheduled
+Post 10 digital-pinboard-productivity          2026-06-15  scheduled
 ```
 
----
+(2 per week, Mon/Thu cadence starting the week after launch.)
 
-## 5. Proposed Execution Plan (ordered, ship-focused)
+### 3. Auto-publishing
+Scheduled posts flip to `published` automatically without an edge function — we use a Postgres view + RLS that treats `status='scheduled' AND published_at<=now()` as live. A lightweight `pg_cron` job also runs nightly to update `status` to `'published'` for cleanliness so the admin UI shows truth. No edge function needed, nothing for you to babysit.
 
-### Phase A — Landing + Pricing Repositioning (ship in 1 pass)
-1. Rebuild `LandingPage.tsx` with the structure above.
-2. Update `PricingPage.tsx` to show: **Free Forever** | **Founder LTD $39** | **Spire Club**.
-3. Add LTD banner component reusable across marketing pages.
-4. Wire email capture → `waitlist_emails` (already exists) + add `source` column to segment.
+### 4. Admin editor UI
+- New route `/admin/blog` (and `/admin/blog/:id` for edit). Guarded by `has_role` check — non-admins get redirected to `/`.
+- List view: table of all posts (draft/scheduled/published), with status badges, publish date, edit/delete actions, "New post" button.
+- Edit view: form with title, slug (auto-generated from title, editable), category dropdown, excerpt, read time, featured toggle, status, publish date, and a markdown content textarea with live preview (using the existing `BlogContent` renderer).
+- Sidebar gets an "Admin" section visible only to admins, linking to `/admin/blog`.
 
-### Phase B — Activation & Onboarding (next pass)
-5. First-login sample board + dismissible 3-step tour.
-6. 4 board templates on "New Project" modal.
-7. Connect Resend, send welcome email on signup + waitlist confirm.
+### 5. Public blog migration
+- `BlogPage` and `BlogPostPage` switch from importing `blogPosts` to fetching via React Query from Supabase (RLS filters to live posts automatically).
+- `src/data/blogPosts.ts` stays as a fallback type definition / can be deleted.
+- Existing ads, SEO tags, JSON-LD, related posts all keep working.
 
-### Phase C — Measure & Iterate (parallel)
-8. Add Plausible/PostHog snippet.
-9. Define and instrument funnel events (visit → signup → board_created → card_created → return_day_2).
+### 6. Menu
+The public `MarketingLayout` already links to `/blog`. The app sidebar gets a "Blog admin" entry under the existing nav, gated by admin role.
 
-### Phase D — Growth Hooks (after launch)
-10. Public shareable boards (read-only link).
-11. Trello importer.
-12. Referral loop.
+### 7. Sitemap
+Update `public/sitemap.xml` so it lists the 10 new slugs with correct `lastmod`. (Site is fully static-generated today, so I'll just edit the file. A generator script is a follow-up if you want auto-sync.)
 
----
+## Out of scope (call out if you want them)
+- Domain switch `pintask.online` → `pintask.me`
+- Submitting sitemap to Google Search Console (manual step you do)
+- Image uploads in the editor (current posts are text-only; can add later via the existing `attachments` bucket)
+- Rich-text WYSIWYG (using markdown textarea + preview, which matches how posts are stored today)
 
-## What I Need From You to Proceed
+## Implementation order
+1. Migration: tables, roles, RLS, `has_role`, pg_cron job
+2. Grant you admin (after you tell me your account email or user id)
+3. Seed the 10 posts
+4. Build admin pages + route guard
+5. Switch public blog to DB-backed queries
+6. Update sitemap
+7. Verify: public `/blog` shows 3 posts now, scheduled posts hidden, admin sees all 10
 
-Pick the scope for **this build**:
-
-- **Option 1 — Ship-focused (recommended):** Phase A only (landing rebuild + pricing reposition + email segmentation). ~1 build session. Gets you live and collecting signups this week.
-- **Option 2 — Ship + Activate:** Phase A + B. Bigger, but users who sign up actually stick.
-- **Option 3 — Everything:** A through D. Multi-session, but the full launch package.
-
-Also confirm:
-- **Pricing direction:** go with the Hybrid (Free + $39 LTD + future extensions)? Or pure 100% free?
-- **LTD price point:** $29 / $39 / $49 / $79?
-- **Headline angle:** "Most customizable Kanban" vs "Kanban that bends to you" vs your own?
-
-Once you answer, I'll switch to build mode and execute Phase A end-to-end.
+Approve and I'll start with the migration.

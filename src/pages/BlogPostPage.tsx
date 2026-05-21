@@ -1,4 +1,5 @@
 import { Link, useParams, Navigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
@@ -7,18 +8,25 @@ import AdSlot from "@/components/AdSlot";
 import { AD_SLOTS } from "@/config/adsense";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { blogPosts, getPostBySlug } from "@/data/blogPosts";
+import { fetchLivePosts, fetchPostBySlug, formatPostDate } from "@/lib/blog";
 
 export default function BlogPostPage() {
   const { slug = "" } = useParams();
-  const post = getPostBySlug(slug);
+
+  const { data: post, isLoading } = useQuery({
+    queryKey: ["blog-post", slug],
+    queryFn: () => fetchPostBySlug(slug),
+    enabled: !!slug,
+  });
+
+  const { data: allPosts = [] } = useQuery({
+    queryKey: ["blog-posts-public"],
+    queryFn: fetchLivePosts,
+  });
 
   const postUrl = post ? `https://pintask.online/blog/${post.slug}` : undefined;
-  // Best-effort ISO date from the human-readable "May 21, 2026" field; falls back to original string.
-  const publishedIso = post ? (() => {
-    const d = new Date(post.date);
-    return isNaN(d.getTime()) ? post.date : d.toISOString();
-  })() : undefined;
+  const publishedIso = post?.published_at ?? undefined;
+  const displayDate = formatPostDate(post?.published_at ?? null);
 
   useDocumentTitle(
     post ? `${post.title} — Pintask Blog` : "Pintask Blog",
@@ -67,9 +75,17 @@ export default function BlogPostPage() {
       : undefined,
   );
 
+  if (isLoading) {
+    return (
+      <MarketingLayout>
+        <div className="px-6 py-24 text-center text-muted-foreground">Loading…</div>
+      </MarketingLayout>
+    );
+  }
+
   if (!post) return <Navigate to="/blog" replace />;
 
-  const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
     <MarketingLayout>
@@ -86,8 +102,8 @@ export default function BlogPostPage() {
             <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
               {post.category}
             </span>
-            <span className="text-xs text-muted-foreground">{post.date}</span>
-            <span className="text-xs text-muted-foreground">· {post.readTime}</span>
+            <span className="text-xs text-muted-foreground">{displayDate}</span>
+            <span className="text-xs text-muted-foreground">· {post.read_time}</span>
           </div>
 
           <h1 className="mt-4 font-heading text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
@@ -129,7 +145,7 @@ export default function BlogPostPage() {
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             {related.map((p) => (
               <Link
-                key={p.slug}
+                key={p.id}
                 to={`/blog/${p.slug}`}
                 className="group rounded-xl border border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
               >
@@ -137,7 +153,7 @@ export default function BlogPostPage() {
                   <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
                     {p.category}
                   </span>
-                  <span className="text-xs text-muted-foreground">{p.readTime}</span>
+                  <span className="text-xs text-muted-foreground">{p.read_time}</span>
                 </div>
                 <h3 className="mt-3 font-heading text-base font-semibold flex-1 group-hover:text-primary transition-colors">
                   {p.title}
