@@ -131,6 +131,54 @@ export type Database = {
           },
         ]
       }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          featured: boolean
+          id: string
+          published_at: string | null
+          read_time: string
+          slug: string
+          status: Database["public"]["Enums"]["blog_post_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          published_at?: string | null
+          read_time?: string
+          slug: string
+          status?: Database["public"]["Enums"]["blog_post_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          featured?: boolean
+          id?: string
+          published_at?: string | null
+          read_time?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["blog_post_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       boards: {
         Row: {
           created_at: string
@@ -574,6 +622,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       waitlist_emails: {
         Row: {
           created_at: string
@@ -600,6 +669,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_first_admin: { Args: never; Returns: boolean }
       get_current_subscription: {
         Args: { _user_id: string }
         Returns: {
@@ -611,9 +681,19 @@ export type Database = {
           status: Database["public"]["Enums"]["subscription_status"]
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      publish_due_blog_posts: { Args: never; Returns: undefined }
     }
     Enums: {
+      app_role: "admin" | "user"
       billing_interval: "once" | "monthly" | "yearly"
+      blog_post_status: "draft" | "scheduled" | "published"
       subscription_plan: "free" | "loyalty" | "cofounder"
       subscription_status: "pending" | "active" | "past_due" | "canceled"
     }
@@ -743,7 +823,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "user"],
       billing_interval: ["once", "monthly", "yearly"],
+      blog_post_status: ["draft", "scheduled", "published"],
       subscription_plan: ["free", "loyalty", "cofounder"],
       subscription_status: ["pending", "active", "past_due", "canceled"],
     },
