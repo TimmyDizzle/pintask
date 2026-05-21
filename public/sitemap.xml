@@ -72,4 +72,18 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url><loc>https://pintask.online/blog/best-trello-alternatives-2026</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/build-custom-kanban-board-javascript</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/kanban-best-practices</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/migrate-from-trello-to-pintask</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/personal-task-management-guide</loc><lastmod>2026-05-21</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/kanban-wip-limits-explained</loc><lastmod>2026-05-18</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/weekly-review-system</loc><lastmod>2026-05-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/time-blocking-vs-task-lists</loc><lastmod>2026-05-12</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/eisenhower-matrix-with-kanban</loc><lastmod>2026-05-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/how-to-prioritize-tasks</loc><lastmod>2026-05-06</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/productivity-tools-for-developers</loc><lastmod>2026-05-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/async-work-task-tracking</loc><lastmod>2026-04-30</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/notion-vs-trello-vs-pintask</loc><lastmod>2026-04-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pintask.online/blog/getting-things-done-digital-setup</loc><lastmod>2026-04-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
