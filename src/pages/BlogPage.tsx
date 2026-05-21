@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
 import AdSlot from "@/components/AdSlot";
+import { AD_SLOTS } from "@/config/adsense";
 import { blogPosts } from "@/data/blogPosts";
 
 const categories = ["All", "Productivity", "Kanban", "Tutorials", "Product Updates"];
@@ -96,7 +97,7 @@ export default function BlogPage() {
             </RevealSection>
           )}
 
-          <AdSlot slot="1111111111" className="mb-8" />
+          <AdSlot slot={AD_SLOTS.blogIndexTop} className="mb-8" />
 
           <div className="grid gap-6 md:grid-cols-3">
             {rest.map((post, i) => (
@@ -129,7 +130,7 @@ export default function BlogPage() {
 
       <section className="px-6 pb-6">
         <div className="mx-auto max-w-4xl">
-          <AdSlot slot="2222222222" />
+          <AdSlot slot={AD_SLOTS.blogIndexInline} />
         </div>
       </section>
 

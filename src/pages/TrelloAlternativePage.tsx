@@ -5,6 +5,7 @@ import RevealSection from "@/components/RevealSection";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, X, Shield, Zap, Code, Clock } from "lucide-react";
 import AdSlot from "@/components/AdSlot";
+import { AD_SLOTS } from "@/config/adsense";
 
 const comparisonData = [
   { feature: "Kanban Boards", pintask: "✅ Free", trelloFree: "✅ Free", trelloPaid: "✅" },
@@ -130,7 +131,7 @@ export default function TrelloAlternativePage() {
 
       <section className="px-6 pb-4">
         <div className="mx-auto max-w-4xl">
-          <AdSlot slot="3333333333" />
+          <AdSlot slot={AD_SLOTS.trelloPage} />
         </div>
       </section>
 
