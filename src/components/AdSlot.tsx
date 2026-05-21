@@ -90,12 +90,13 @@ export default function AdSlot({ slot, format = "auto", className = "", label = 
     return () => io.disconnect();
   }, [visible]);
 
-  // Track impression on first visibility
+  // Track impression each time visibility OR consent changes (deduped by key),
+  // so we capture both "accepted" loads and "blocked" deferrals.
   useEffect(() => {
     if (!visible) return;
     const path = typeof window !== "undefined" ? window.location.pathname : "/";
-    trackImpression(slot, path);
-  }, [visible, slot]);
+    trackImpression(slot, path, consent);
+  }, [visible, slot, consent]);
 
   // Load AdSense + push ad once we have visibility + consent + client id
   useEffect(() => {
