@@ -10,6 +10,14 @@ interface AdSlotProps {
   label?: boolean;
 }
 
+/** Stable placeholder dimensions for each ad format to minimize CLS. */
+const SLOT_STYLE: Record<NonNullable<AdSlotProps["format"]>, React.CSSProperties> = {
+  auto:       { minHeight: 250, maxHeight: 300 },   // responsive — bounded range
+  rectangle:  { height: 250 },                       // 300×250
+  horizontal: { height: 90, maxHeight: 120 },        // leaderboard
+  vertical:   { height: 600 },                       // skyscraper / half-page
+};
+
 function getSessionId(): string {
   if (typeof window === "undefined") return "ssr";
   const KEY = "pt_ad_session";
@@ -39,15 +47,13 @@ async function trackImpression(slot: string, pagePath: string) {
 }
 
 /**
- * Google AdSense slot.
+ * Google AdSense slot with CLS-conscious placeholder sizing.
  *
  * Behavior:
- *   1. Renders an empty reserved space until visible in the viewport
- *      (IntersectionObserver, 200px rootMargin).
- *   2. Once visible AND the user has accepted cookies, loads the AdSense
- *      script (once globally) and pushes the ad.
- *   3. Impressions are tracked when the slot becomes visible — independent of
- *      consent — so you still measure traffic per page.
+ *   1. Reserves a fixed-size placeholder immediately (no layout shift).
+ *   2. Reveals via IntersectionObserver (200px rootMargin) to lazy-load.
+ *   3. Only pushes the ad to AdSense when consent === "accepted".
+ *   4. Tracks impressions on visibility regardless of consent.
  */
 export default function AdSlot({ slot, format = "auto", className = "", label = true }: AdSlotProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -55,8 +61,8 @@ export default function AdSlot({ slot, format = "auto", className = "", label = 
   const [visible, setVisible] = useState(false);
   const [consent, setConsentState] = useState(getConsent());
 
-  // Watch for consent changes (so an ad already scrolled into view fills in
-  // immediately after the user accepts).
+  const size = SLOT_STYLE[format];
+
   useEffect(() => onConsentChange(setConsentState), []);
 
   // Lazy reveal via IntersectionObserver
@@ -100,30 +106,39 @@ export default function AdSlot({ slot, format = "auto", className = "", label = 
     });
   }, [visible, consent]);
 
-  // If AdSense isn't configured at all, render nothing visible (but still keep
-  // the wrapper so impressions can be measured for empty placements? No — only
-  // render when configured to avoid layout shift on real pages).
   if (!ADSENSE_CLIENT) return null;
 
   const showAd = visible && consent === "accepted";
 
   return (
-    <div ref={wrapRef} className={`my-8 ${className}`} style={{ minHeight: 100 }}>
+    <div ref={wrapRef} className={`my-8 ${className}`}>
       {label && (
         <p className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground/70">
           Advertisement
         </p>
       )}
-      {showAd && (
-        <ins
-          className="adsbygoogle block"
-          style={{ display: "block" }}
-          data-ad-client={ADSENSE_CLIENT}
-          data-ad-slot={slot}
-          data-ad-format={format}
-          data-full-width-responsive="true"
-        />
-      )}
+      <div
+        className="relative overflow-hidden rounded-lg border border-border/30 bg-muted/20"
+        style={size}
+      >
+        {showAd ? (
+          <ins
+            className="adsbygoogle block w-full h-full"
+            style={{ display: "block" }}
+            data-ad-client={ADSENSE_CLIENT}
+            data-ad-slot={slot}
+            data-ad-format={format}
+            data-full-width-responsive="true"
+          />
+        ) : (
+          /* Placeholder keeps the reserved space consistent before/after load */
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="h-full w-full p-2">
+              <div className="h-full w-full rounded-md border border-dashed border-border/30" />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
