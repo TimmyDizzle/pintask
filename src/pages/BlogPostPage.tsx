@@ -12,22 +12,56 @@ export default function BlogPostPage() {
   const { slug = "" } = useParams();
   const post = getPostBySlug(slug);
 
+  const postUrl = post ? `https://pintask.online/blog/${post.slug}` : undefined;
+  // Best-effort ISO date from the human-readable "May 21, 2026" field; falls back to original string.
+  const publishedIso = post ? (() => {
+    const d = new Date(post.date);
+    return isNaN(d.getTime()) ? post.date : d.toISOString();
+  })() : undefined;
+
   useDocumentTitle(
     post ? `${post.title} — Pintask Blog` : "Pintask Blog",
     post?.excerpt,
     post
       ? {
           ogType: "article",
-          jsonLd: {
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline: post.title,
-            description: post.excerpt,
-            datePublished: post.date,
-            author: { "@type": "Organization", name: "Pintask" },
-            publisher: { "@type": "Organization", name: "Pintask" },
-            mainEntityOfPage: `https://pintask.online/blog/${post.slug}`,
+          keywords: [post.category, "Pintask", "Kanban", "productivity", "task management"].join(", "),
+          meta: {
+            "article:published_time": publishedIso || "",
+            "article:section": post.category,
+            "article:author": "Pintask",
+            "twitter:card": "summary_large_image",
+            "twitter:url": postUrl || "",
           },
+          jsonLd: [
+            {
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: post.title,
+              description: post.excerpt,
+              datePublished: publishedIso,
+              dateModified: publishedIso,
+              author: { "@type": "Organization", name: "Pintask", url: "https://pintask.online" },
+              publisher: {
+                "@type": "Organization",
+                name: "Pintask",
+                logo: { "@type": "ImageObject", url: "https://pintask.online/icon-512.png" },
+              },
+              image: "https://pintask.online/og-image.png",
+              mainEntityOfPage: { "@type": "WebPage", "@id": postUrl },
+              articleSection: post.category,
+              url: postUrl,
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://pintask.online/" },
+                { "@type": "ListItem", position: 2, name: "Blog", item: "https://pintask.online/blog" },
+                { "@type": "ListItem", position: 3, name: post.title, item: postUrl },
+              ],
+            },
+          ],
         }
       : undefined,
   );
