@@ -15,6 +15,21 @@ export default function BlogPostPage() {
   useDocumentTitle(
     post ? `${post.title} — Pintask Blog` : "Pintask Blog",
     post?.excerpt,
+    post
+      ? {
+          ogType: "article",
+          jsonLd: {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: post.excerpt,
+            datePublished: post.date,
+            author: { "@type": "Organization", name: "Pintask" },
+            publisher: { "@type": "Organization", name: "Pintask" },
+            mainEntityOfPage: `https://pintask.online/blog/${post.slug}`,
+          },
+        }
+      : undefined,
   );
 
   if (!post) return <Navigate to="/blog" replace />;
