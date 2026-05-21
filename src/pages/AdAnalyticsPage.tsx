@@ -177,11 +177,18 @@ export default function AdAnalyticsPage() {
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-4">
-          <Card><CardHeader className="pb-2"><CardTitle className="text-xs uppercase text-muted-foreground">Impressions</CardTitle></CardHeader><CardContent className="text-2xl font-bold">{totalImpressions.toLocaleString()}</CardContent></Card>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <Card><CardHeader className="pb-2"><CardTitle className="text-xs uppercase text-muted-foreground">Served</CardTitle></CardHeader><CardContent className="text-2xl font-bold">{totalServed.toLocaleString()}</CardContent></Card>
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-xs uppercase text-muted-foreground">Blocked (no consent)</CardTitle></CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalBlocked.toLocaleString()}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{blockedPct.toFixed(1)}% of views deferred</div>
+            </CardContent>
+          </Card>
           <Card><CardHeader className="pb-2"><CardTitle className="text-xs uppercase text-muted-foreground">Revenue</CardTitle></CardHeader><CardContent className="text-2xl font-bold">{formatUSD(totalRevenueCents)}</CardContent></Card>
           <Card><CardHeader className="pb-2"><CardTitle className="text-xs uppercase text-muted-foreground">Clicks</CardTitle></CardHeader><CardContent className="text-2xl font-bold">{totalClicks.toLocaleString()}</CardContent></Card>
-          <Card><CardHeader className="pb-2"><CardTitle className="text-xs uppercase text-muted-foreground">RPM</CardTitle></CardHeader><CardContent className="text-2xl font-bold">${rpm.toFixed(2)}</CardContent></Card>
+          <Card><CardHeader className="pb-2"><CardTitle className="text-xs uppercase text-muted-foreground">RPM (served)</CardTitle></CardHeader><CardContent className="text-2xl font-bold">${rpm.toFixed(2)}</CardContent></Card>
         </div>
 
         <Card>
@@ -191,7 +198,8 @@ export default function AdAnalyticsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Page</TableHead>
-                  <TableHead className="text-right">Impressions</TableHead>
+                  <TableHead className="text-right">Served</TableHead>
+                  <TableHead className="text-right">Blocked</TableHead>
                   <TableHead className="text-right">Slots</TableHead>
                   <TableHead className="text-right">Revenue</TableHead>
                   <TableHead className="text-right">RPM</TableHead>
@@ -200,18 +208,29 @@ export default function AdAnalyticsPage() {
               <TableBody>
                 {byPage.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                       No impressions in this range yet.
                     </TableCell>
                   </TableRow>
                 )}
                 {byPage.map((row) => {
                   const rev = revenueByPage.get(row.page_path)?.cents ?? 0;
-                  const pageRpm = row.impressions > 0 ? (rev / row.impressions) * 1000 / 100 : 0;
+                  const pageRpm = row.served > 0 ? (rev / row.served) * 1000 / 100 : 0;
+                  const blockedPctRow = row.impressions > 0 ? (row.blocked / row.impressions) * 100 : 0;
                   return (
                     <TableRow key={row.page_path}>
                       <TableCell className="font-mono text-xs">{row.page_path}</TableCell>
-                      <TableCell className="text-right">{row.impressions.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">{row.served.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">
+                        <span className={row.blocked > 0 ? "text-amber-600 dark:text-amber-400" : ""}>
+                          {row.blocked.toLocaleString()}
+                          {row.blocked > 0 && (
+                            <span className="text-muted-foreground text-xs ml-1">
+                              ({blockedPctRow.toFixed(0)}%)
+                            </span>
+                          )}
+                        </span>
+                      </TableCell>
                       <TableCell className="text-right">{row.slots}</TableCell>
                       <TableCell className="text-right">{formatUSD(rev)}</TableCell>
                       <TableCell className="text-right">${pageRpm.toFixed(2)}</TableCell>
@@ -222,6 +241,7 @@ export default function AdAnalyticsPage() {
             </Table>
           </CardContent>
         </Card>
+
 
         <Card>
           <CardHeader><CardTitle className="text-base">Log AdSense revenue</CardTitle></CardHeader>
