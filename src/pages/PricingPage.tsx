@@ -41,7 +41,18 @@ const comparisonData = [
 export default function PricingPage() {
   useDocumentTitle(
     "Pintask Pricing — Free Forever, Co-Founder Lifetime, or Loyalty Club",
-    "Free forever Kanban board. Co-Founder Lifetime for $39. Loyalty Club at $8/month locked in forever. Start free today."
+    "Free forever Kanban board. Co-Founder Lifetime for $39. Loyalty Club at $8/month locked in forever. Start free today.",
+    {
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqItems.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      },
+    }
   );
 
   return (

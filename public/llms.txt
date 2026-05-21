@@ -1,0 +1,20 @@
+# Pintask
+
+> Pintask is a personal task tracker with the most customizable free Kanban board on the web. Pin, prioritize, and manage your work — extend it with real JavaScript when you outgrow the defaults.
+
+## Pages
+
+- [Home](/): Overview of Pintask, the personal task tracker.
+- [Features](/features): Full feature list — Kanban boards, nested cards, time tracking, integrations.
+- [Pricing](/pricing): Free forever, Co-Founder Lifetime ($39), and Loyalty Club ($8/mo grandfathered).
+- [Extensions](/extensions): Optional paid extensions (mirroring, time tracking, AI briefing).
+- [Trello Alternative](/trello-alternative): How Pintask compares to Trello.
+- [Kanban Board](/kanban-board): Guide to using Pintask as a Kanban board.
+- [Task Tracker](/task-tracker): Guide to using Pintask as a personal task tracker.
+- [About](/about): The story and beliefs behind Pintask.
+- [Blog](/blog): Productivity, Kanban, and task management articles.
+
+## Optional
+
+- [Privacy](/privacy): Privacy policy.
+- [Terms](/terms): Terms of service.
