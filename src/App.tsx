@@ -24,6 +24,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import BillingPage from "./pages/BillingPage";
 import AdAnalyticsPage from "./pages/AdAnalyticsPage";
+import CookieConsentBanner from "./components/CookieConsentBanner";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <CookieConsentBanner />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
