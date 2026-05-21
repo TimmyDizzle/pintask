@@ -53,7 +53,7 @@ export default function AdAnalyticsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("ad_impressions")
-        .select("slot_id, page_path, created_at")
+        .select("slot_id, page_path, created_at, consent_state")
         .gte("created_at", daysAgo(range))
         .limit(10000);
       if (error) throw error;
