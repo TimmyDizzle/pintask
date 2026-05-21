@@ -33,18 +33,13 @@ import {
   Plus,
   LogOut,
   User,
-  CheckSquare,
-  LayoutDashboard,
-  FolderKanban,
-  Plus,
-  LogOut,
-  User,
   Moon,
   Sun,
   X,
   Check,
   Clock,
   CreditCard,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function AppSidebar() {
