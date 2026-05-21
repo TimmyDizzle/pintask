@@ -24,6 +24,8 @@ import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import BillingPage from "./pages/BillingPage";
 import AdAnalyticsPage from "./pages/AdAnalyticsPage";
+import AdminBlogList from "./pages/AdminBlogList";
+import AdminBlogEditor from "./pages/AdminBlogEditor";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 
 const queryClient = new QueryClient();
@@ -57,6 +59,8 @@ const App = () => (
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/billing" element={<BillingPage />} />
             <Route path="/ad-analytics" element={<AdAnalyticsPage />} />
+            <Route path="/admin/blog" element={<AdminBlogList />} />
+            <Route path="/admin/blog/:id" element={<AdminBlogEditor />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

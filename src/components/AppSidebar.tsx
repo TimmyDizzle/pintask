@@ -40,8 +40,10 @@ import {
   Clock,
   CreditCard,
   BarChart3,
+  FileText,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export function AppSidebar() {
   const { state } = useSidebar();
