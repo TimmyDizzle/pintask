@@ -1,20 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ADSENSE_CLIENT } from "@/config/adsense";
+import { getConsent, loadAdsenseScript, onConsentChange } from "@/lib/adsense";
 
 interface AdSlotProps {
-  /** AdSense ad unit slot ID (the numeric `data-ad-slot`). */
   slot: string;
-  /** Ad format. "auto" responds to container size. */
   format?: "auto" | "rectangle" | "horizontal" | "vertical";
-  /** Optional className for the wrapper. */
   className?: string;
-  /** Show a label above the ad. Required by some ad networks / good UX. */
   label?: boolean;
 }
 
-// Get-or-create a per-tab session id so the same visitor doesn't inflate impression counts
-// across rapid re-renders. Reset when the tab is closed.
 function getSessionId(): string {
   if (typeof window === "undefined") return "ssr";
   const KEY = "pt_ad_session";
@@ -26,7 +21,6 @@ function getSessionId(): string {
   return sid;
 }
 
-// In-memory dedupe so we only log one impression per slot per page view in a session.
 const logged = new Set<string>();
 
 async function trackImpression(slot: string, pagePath: string) {
@@ -40,53 +34,96 @@ async function trackImpression(slot: string, pagePath: string) {
       session_id: getSessionId(),
     });
   } catch {
-    /* swallow — analytics must never break the page */
+    /* analytics must never break the page */
   }
 }
 
 /**
- * Lightweight Google AdSense slot with built-in impression tracking.
+ * Google AdSense slot.
  *
- * Renders nothing until ADSENSE_CLIENT is configured, but still records the
- * impression to the `ad_impressions` table so you can measure traffic per
- * page even before AdSense approval.
+ * Behavior:
+ *   1. Renders an empty reserved space until visible in the viewport
+ *      (IntersectionObserver, 200px rootMargin).
+ *   2. Once visible AND the user has accepted cookies, loads the AdSense
+ *      script (once globally) and pushes the ad.
+ *   3. Impressions are tracked when the slot becomes visible — independent of
+ *      consent — so you still measure traffic per page.
  */
 export default function AdSlot({ slot, format = "auto", className = "", label = true }: AdSlotProps) {
-  const ref = useRef<HTMLModElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const pushedRef = useRef(false);
+  const [visible, setVisible] = useState(false);
+  const [consent, setConsentState] = useState(getConsent());
 
+  // Watch for consent changes (so an ad already scrolled into view fills in
+  // immediately after the user accepts).
+  useEffect(() => onConsentChange(setConsentState), []);
+
+  // Lazy reveal via IntersectionObserver
   useEffect(() => {
+    const el = wrapRef.current;
+    if (!el || visible) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            setVisible(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: "200px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [visible]);
+
+  // Track impression on first visibility
+  useEffect(() => {
+    if (!visible) return;
     const path = typeof window !== "undefined" ? window.location.pathname : "/";
     trackImpression(slot, path);
-  }, [slot]);
+  }, [visible, slot]);
 
+  // Load AdSense + push ad once we have visibility + consent + client id
   useEffect(() => {
-    if (!ADSENSE_CLIENT) return;
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-    } catch {
-      /* swallow — adblock or script not yet loaded */
-    }
-  }, [slot]);
+    if (!visible || consent !== "accepted" || !ADSENSE_CLIENT || pushedRef.current) return;
+    pushedRef.current = true;
+    loadAdsenseScript().then(() => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      } catch {
+        /* adblock or load failure */
+      }
+    });
+  }, [visible, consent]);
 
+  // If AdSense isn't configured at all, render nothing visible (but still keep
+  // the wrapper so impressions can be measured for empty placements? No — only
+  // render when configured to avoid layout shift on real pages).
   if (!ADSENSE_CLIENT) return null;
 
+  const showAd = visible && consent === "accepted";
+
   return (
-    <div className={`my-8 ${className}`}>
+    <div ref={wrapRef} className={`my-8 ${className}`} style={{ minHeight: 100 }}>
       {label && (
         <p className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground/70">
           Advertisement
         </p>
       )}
-      <ins
-        ref={ref}
-        className="adsbygoogle block"
-        style={{ display: "block" }}
-        data-ad-client={ADSENSE_CLIENT}
-        data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive="true"
-      />
+      {showAd && (
+        <ins
+          className="adsbygoogle block"
+          style={{ display: "block" }}
+          data-ad-client={ADSENSE_CLIENT}
+          data-ad-slot={slot}
+          data-ad-format={format}
+          data-full-width-responsive="true"
+        />
+      )}
     </div>
   );
 }
