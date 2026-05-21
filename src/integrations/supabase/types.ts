@@ -257,6 +257,57 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          billing_interval: Database["public"]["Enums"]["billing_interval"]
+          canceled_at: string | null
+          created_at: string
+          currency: string
+          current_period_end: string | null
+          id: string
+          locked_at: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          price_cents: number
+          provider: string | null
+          provider_subscription_id: string | null
+          status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          billing_interval: Database["public"]["Enums"]["billing_interval"]
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          id?: string
+          locked_at?: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          price_cents: number
+          provider?: string | null
+          provider_subscription_id?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          billing_interval?: Database["public"]["Enums"]["billing_interval"]
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string
+          current_period_end?: string | null
+          id?: string
+          locked_at?: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          price_cents?: number
+          provider?: string | null
+          provider_subscription_id?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       task_comments: {
         Row: {
           content: string
@@ -483,10 +534,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_subscription: {
+        Args: { _user_id: string }
+        Returns: {
+          billing_interval: Database["public"]["Enums"]["billing_interval"]
+          currency: string
+          locked_at: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          price_cents: number
+          status: Database["public"]["Enums"]["subscription_status"]
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      billing_interval: "once" | "monthly" | "yearly"
+      subscription_plan: "free" | "loyalty" | "cofounder"
+      subscription_status: "pending" | "active" | "past_due" | "canceled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -613,6 +676,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      billing_interval: ["once", "monthly", "yearly"],
+      subscription_plan: ["free", "loyalty", "cofounder"],
+      subscription_status: ["pending", "active", "past_due", "canceled"],
+    },
   },
 } as const
