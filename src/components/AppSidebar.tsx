@@ -39,6 +39,7 @@ import {
   Check,
   Clock,
   CreditCard,
+  BarChart3,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -170,6 +171,14 @@ export function AppSidebar() {
                   <NavLink to="/reports" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
                     <Clock className="h-4 w-4 mr-2 shrink-0" />
                     {!collapsed && <span>Reports</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/ad-analytics" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
+                    <BarChart3 className="h-4 w-4 mr-2 shrink-0" />
+                    {!collapsed && <span>Ad analytics</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>

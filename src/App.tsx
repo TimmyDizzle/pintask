@@ -23,6 +23,7 @@ import BlogPostPage from "./pages/BlogPostPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import BillingPage from "./pages/BillingPage";
+import AdAnalyticsPage from "./pages/AdAnalyticsPage";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/billing" element={<BillingPage />} />
+            <Route path="/ad-analytics" element={<AdAnalyticsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
