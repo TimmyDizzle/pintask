@@ -31,8 +31,12 @@ function getSessionId(): string {
 
 const logged = new Set<string>();
 
-async function trackImpression(slot: string, pagePath: string) {
-  const key = `${slot}|${pagePath}`;
+async function trackImpression(
+  slot: string,
+  pagePath: string,
+  consentState: "accepted" | "declined" | "unknown",
+) {
+  const key = `${slot}|${pagePath}|${consentState}`;
   if (logged.has(key)) return;
   logged.add(key);
   try {
@@ -40,6 +44,7 @@ async function trackImpression(slot: string, pagePath: string) {
       slot_id: slot,
       page_path: pagePath,
       session_id: getSessionId(),
+      consent_state: consentState,
     });
   } catch {
     /* analytics must never break the page */
