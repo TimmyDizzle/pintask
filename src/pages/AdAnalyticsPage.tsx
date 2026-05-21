@@ -107,19 +107,22 @@ export default function AdAnalyticsPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["ad_revenue_daily"] }),
   });
 
-  // Aggregate impressions by page
+  // Aggregate impressions by page, splitting served vs blocked-by-consent.
   const byPage = useMemo(() => {
-    const map = new Map<string, { impressions: number; slots: Set<string> }>();
+    const map = new Map<string, { served: number; blocked: number; slots: Set<string> }>();
     for (const r of impressions) {
-      const entry = map.get(r.page_path) ?? { impressions: 0, slots: new Set() };
-      entry.impressions += 1;
+      const entry = map.get(r.page_path) ?? { served: 0, blocked: 0, slots: new Set() };
+      if (r.consent_state === "accepted") entry.served += 1;
+      else entry.blocked += 1;
       entry.slots.add(r.slot_id);
       map.set(r.page_path, entry);
     }
     return Array.from(map.entries())
       .map(([page_path, v]) => ({
         page_path,
-        impressions: v.impressions,
+        served: v.served,
+        blocked: v.blocked,
+        impressions: v.served + v.blocked,
         slots: v.slots.size,
       }))
       .sort((a, b) => b.impressions - a.impressions);
@@ -138,10 +141,13 @@ export default function AdAnalyticsPage() {
     return map;
   }, [revenue]);
 
+  const totalServed = impressions.filter((i) => i.consent_state === "accepted").length;
+  const totalBlocked = impressions.length - totalServed;
   const totalImpressions = impressions.length;
+  const blockedPct = totalImpressions > 0 ? (totalBlocked / totalImpressions) * 100 : 0;
   const totalRevenueCents = revenue.reduce((s, r) => s + r.revenue_cents, 0);
   const totalClicks = revenue.reduce((s, r) => s + r.clicks, 0);
-  const rpm = totalImpressions > 0 ? (totalRevenueCents / totalImpressions) * 1000 / 100 : 0;
+  const rpm = totalServed > 0 ? (totalRevenueCents / totalServed) * 1000 / 100 : 0;
 
   if (loading) return null;
   if (!user) return <Navigate to="/auth" replace />;
