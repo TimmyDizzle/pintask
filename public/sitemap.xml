@@ -25,9 +25,4 @@
   <url><loc>https://pintask.online/blog/free-productivity-app-visual-thinkers</loc><lastmod>2026-06-11</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://pintask.online/blog/digital-pinboard-productivity</loc><lastmod>2026-06-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <!-- Legacy blog posts -->
-  <url><loc>https://pintask.online/blog/best-trello-alternatives-2026</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://pintask.online/blog/build-custom-kanban-board-javascript</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://pintask.online/blog/kanban-best-practices</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://pintask.online/blog/migrate-from-trello-to-pintask</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
