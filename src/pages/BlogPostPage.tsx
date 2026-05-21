@@ -4,6 +4,7 @@ import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
 import BlogContent from "@/components/BlogContent";
 import AdSlot from "@/components/AdSlot";
+import { AD_SLOTS } from "@/config/adsense";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { blogPosts, getPostBySlug } from "@/data/blogPosts";
@@ -100,7 +101,7 @@ export default function BlogPostPage() {
         </div>
 
         <div className="mx-auto mt-12 max-w-3xl">
-          <AdSlot slot="5555555555" />
+          <AdSlot slot={AD_SLOTS.blogPost} />
         </div>
 
         <div className="mx-auto mt-12 max-w-3xl rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-8">
