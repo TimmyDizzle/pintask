@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_impressions: {
+        Row: {
+          created_at: string
+          id: string
+          page_path: string
+          session_id: string | null
+          slot_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          page_path: string
+          session_id?: string | null
+          slot_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          page_path?: string
+          session_id?: string | null
+          slot_id?: string
+        }
+        Relationships: []
+      }
+      ad_revenue_daily: {
+        Row: {
+          clicks: number
+          created_at: string
+          date: string
+          id: string
+          impressions_reported: number
+          page_path: string
+          revenue_cents: number
+          slot_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clicks?: number
+          created_at?: string
+          date: string
+          id?: string
+          impressions_reported?: number
+          page_path?: string
+          revenue_cents?: number
+          slot_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clicks?: number
+          created_at?: string
+          date?: string
+          id?: string
+          impressions_reported?: number
+          page_path?: string
+          revenue_cents?: number
+          slot_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       attachments: {
         Row: {
           content_type: string | null
