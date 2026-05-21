@@ -34,8 +34,8 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <CookieConsentBanner />
         <BrowserRouter>
+          <CookieConsentBanner />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Index />} />
