@@ -264,6 +264,10 @@ export function AppSidebar() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="start" className="w-48">
+              <DropdownMenuItem onClick={() => navigate("/billing")}>
+                <CreditCard className="h-4 w-4 mr-2" />
+                Billing & plan
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={toggleDarkMode}>
                 {darkMode ? <Sun className="h-4 w-4 mr-2" /> : <Moon className="h-4 w-4 mr-2" />}
                 {darkMode ? "Light mode" : "Dark mode"}
