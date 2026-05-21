@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       ad_impressions: {
         Row: {
+          consent_state: string
           created_at: string
           id: string
           page_path: string
@@ -23,6 +24,7 @@ export type Database = {
           slot_id: string
         }
         Insert: {
+          consent_state?: string
           created_at?: string
           id?: string
           page_path: string
@@ -30,6 +32,7 @@ export type Database = {
           slot_id: string
         }
         Update: {
+          consent_state?: string
           created_at?: string
           id?: string
           page_path?: string
