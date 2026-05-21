@@ -26,7 +26,17 @@ function upsertLink(rel: string, href: string) {
 
 type JsonLd = Record<string, unknown> | Record<string, unknown>[];
 
-export function useDocumentTitle(title?: string, description?: string, options?: { jsonLd?: JsonLd; ogType?: string; ogImage?: string }) {
+interface UseDocumentTitleOptions {
+  jsonLd?: JsonLd;
+  ogType?: string;
+  ogImage?: string;
+  /** Additional route-specific meta tags. Keys with ":" use [property], others use [name]. */
+  meta?: Record<string, string>;
+  /** Keywords meta (comma-joined). */
+  keywords?: string;
+}
+
+export function useDocumentTitle(title?: string, description?: string, options?: UseDocumentTitleOptions) {
   useEffect(() => {
     const finalTitle = title || BASE_TITLE;
     document.title = finalTitle;
@@ -48,6 +58,31 @@ export function useDocumentTitle(title?: string, description?: string, options?:
     if (description) upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", description);
     upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", ogImage);
 
+    // Track route-scoped tags so they don't leak across navigations.
+    const routeMeta: HTMLMetaElement[] = [];
+
+    if (options?.keywords) {
+      const el = document.createElement("meta");
+      el.setAttribute("name", "keywords");
+      el.setAttribute("content", options.keywords);
+      el.setAttribute("data-route-meta", "true");
+      document.head.appendChild(el);
+      routeMeta.push(el);
+    }
+
+    if (options?.meta) {
+      for (const [key, value] of Object.entries(options.meta)) {
+        if (!value) continue;
+        const attr: "property" | "name" = key.includes(":") ? "property" : "name";
+        const el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        el.setAttribute("content", value);
+        el.setAttribute("data-route-meta", "true");
+        document.head.appendChild(el);
+        routeMeta.push(el);
+      }
+    }
+
     let jsonLdEl: HTMLScriptElement | null = null;
     if (options?.jsonLd) {
       jsonLdEl = document.createElement("script");
@@ -60,6 +95,7 @@ export function useDocumentTitle(title?: string, description?: string, options?:
     return () => {
       document.title = BASE_TITLE;
       if (jsonLdEl && jsonLdEl.parentNode) jsonLdEl.parentNode.removeChild(jsonLdEl);
+      routeMeta.forEach((el) => el.parentNode?.removeChild(el));
     };
-  }, [title, description, options?.ogType, options?.ogImage, JSON.stringify(options?.jsonLd)]);
+  }, [title, description, options?.ogType, options?.ogImage, options?.keywords, JSON.stringify(options?.meta), JSON.stringify(options?.jsonLd)]);
 }
