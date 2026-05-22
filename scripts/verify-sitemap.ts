@@ -26,15 +26,30 @@ const SUPABASE_URL = "https://zieqfktltyolazltppjo.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppZXFma3RsdHlvbGF6bHRwcGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NzMzNTEsImV4cCI6MjA4OTA0OTM1MX0.FXT6Z1M1etqUAArjviKycltG3y9zTvU-kQA36PNcuNU";
 
+type RedirectHop = { from: string; to: string; status: number };
+type CheckResult = {
+  url: string;
+  status: number;
+  ok: boolean;
+  contentType: string | null;
+  contentTypeOk: boolean;
+  latencyMs: number;
+  redirects: RedirectHop[];
+  finalUrl: string;
+  error?: string;
+};
 type CacheEntry = {
   lastmod: string | null;
   status: number;
   ok: boolean;
   contentType: string | null;
   contentTypeOk: boolean;
+  latencyMs: number;
+  redirects: RedirectHop[];
+  finalUrl: string;
   checkedAt: number;
 };
-type Cache = { version: 1; entries: Record<string, CacheEntry> };
+type Cache = { version: 2; entries: Record<string, CacheEntry> };
 
 function loadCache(): Cache {
   if (!existsSync(CACHE_PATH)) return { version: 1, entries: {} };
