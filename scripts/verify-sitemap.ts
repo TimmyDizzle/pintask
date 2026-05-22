@@ -131,29 +131,53 @@ function expectedContentType(url: string): { kind: "html" | "xml" | "image" | "a
   return { kind: "html", matcher: /text\/html|application\/xhtml\+xml/i };
 }
 
-async function checkUrl(url: string): Promise<{
-  url: string; status: number; ok: boolean; contentType: string | null; contentTypeOk: boolean; error?: string;
-}> {
+const MAX_REDIRECTS = 10;
+
+async function checkUrl(url: string): Promise<CheckResult> {
   const expected = expectedContentType(url);
-  const attempt = async (method: "HEAD" | "GET") => {
-    const res = await fetch(url, { method, redirect: "follow", headers: { "user-agent": "sitemap-verifier/1.0" } });
-    return { status: res.status, ct: res.headers.get("content-type") };
+  const headers = { "user-agent": "sitemap-verifier/1.0" } as const;
+
+  const fetchChain = async (method: "HEAD" | "GET") => {
+    const redirects: RedirectHop[] = [];
+    let current = url;
+    let res: Response | null = null;
+    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+      res = await fetch(current, { method, redirect: "manual", headers });
+      if (res.status >= 300 && res.status < 400 && res.headers.get("location")) {
+        const next = new URL(res.headers.get("location")!, current).toString();
+        redirects.push({ from: current, to: next, status: res.status });
+        current = next;
+        continue;
+      }
+      break;
+    }
+    return { res: res!, redirects, finalUrl: current };
   };
+
   let lastErr = "";
   for (let i = 0; i < 3; i++) {
+    const started = performance.now();
     try {
-      let r = await attempt("HEAD");
+      let { res, redirects, finalUrl } = await fetchChain("HEAD");
+      let ct = res.headers.get("content-type");
       // HEAD often lacks/wrong content-type; promote to GET if status needs retry OR ct missing.
-      if (r.status === 405 || r.status === 403 || !r.ct) r = await attempt("GET");
-      const ok = r.status >= 200 && r.status < 400;
-      const contentTypeOk = !!r.ct && expected.matcher.test(r.ct);
-      return { url, status: r.status, ok, contentType: r.ct, contentTypeOk };
+      if (res.status === 405 || res.status === 403 || !ct) {
+        ({ res, redirects, finalUrl } = await fetchChain("GET"));
+        ct = res.headers.get("content-type");
+      }
+      const latencyMs = Math.round(performance.now() - started);
+      const ok = res.status >= 200 && res.status < 400;
+      const contentTypeOk = !!ct && expected.matcher.test(ct);
+      return { url, status: res.status, ok, contentType: ct, contentTypeOk, latencyMs, redirects, finalUrl };
     } catch (e) {
       lastErr = (e as Error).message;
       await new Promise((r) => setTimeout(r, 600 * (i + 1)));
     }
   }
-  return { url, status: 0, ok: false, contentType: null, contentTypeOk: false, error: lastErr };
+  return {
+    url, status: 0, ok: false, contentType: null, contentTypeOk: false,
+    latencyMs: 0, redirects: [], finalUrl: url, error: lastErr,
+  };
 }
 
 async function runPool<T, R>(items: T[], n: number, worker: (t: T) => Promise<R>): Promise<R[]> {
