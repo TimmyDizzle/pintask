@@ -43,7 +43,7 @@ export function useDocumentTitle(title?: string, description?: string, options?:
     const finalTitle = title || BASE_TITLE;
     document.title = finalTitle;
 
-    const url = `${SITE_ORIGIN}${window.location.pathname}`;
+    const url = options?.canonical || `${SITE_ORIGIN}${window.location.pathname}`;
     const ogType = options?.ogType || "website";
     const ogImage = options?.ogImage || DEFAULT_OG_IMAGE;
 
