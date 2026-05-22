@@ -24,16 +24,22 @@ export default function BlogPostPage() {
     queryFn: fetchLivePosts,
   });
 
-  const postUrl = post ? `https://pintask.online/blog/${post.slug}` : undefined;
+  const defaultUrl = post ? `https://pintask.online/blog/${post.slug}` : undefined;
+  const postUrl = post?.canonical_url || defaultUrl;
+  const ogImage = post?.og_image || "https://pintask.online/og-image.png";
+  const metaTitle = post?.seo_title || (post ? `${post.title} — Pintask Blog` : "Pintask Blog");
+  const metaDescription = post?.seo_description || post?.excerpt;
   const publishedIso = post?.published_at ?? undefined;
   const displayDate = formatPostDate(post?.published_at ?? null);
 
   useDocumentTitle(
-    post ? `${post.title} — Pintask Blog` : "Pintask Blog",
-    post?.excerpt,
+    metaTitle,
+    metaDescription,
     post
       ? {
           ogType: "article",
+          ogImage,
+          canonical: postUrl,
           keywords: [post.category, "Pintask", "Kanban", "productivity", "task management"].join(", "),
           meta: {
             "article:published_time": publishedIso || "",
@@ -41,13 +47,14 @@ export default function BlogPostPage() {
             "article:author": "Pintask",
             "twitter:card": "summary_large_image",
             "twitter:url": postUrl || "",
+            "twitter:image": ogImage,
           },
           jsonLd: [
             {
               "@context": "https://schema.org",
               "@type": "Article",
               headline: post.title,
-              description: post.excerpt,
+              description: metaDescription,
               datePublished: publishedIso,
               dateModified: publishedIso,
               author: { "@type": "Organization", name: "Pintask", url: "https://pintask.online" },
@@ -56,7 +63,7 @@ export default function BlogPostPage() {
                 name: "Pintask",
                 logo: { "@type": "ImageObject", url: "https://pintask.online/icon-512.png" },
               },
-              image: "https://pintask.online/og-image.png",
+              image: ogImage,
               mainEntityOfPage: { "@type": "WebPage", "@id": postUrl },
               articleSection: post.category,
               url: postUrl,

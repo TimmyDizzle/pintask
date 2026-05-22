@@ -30,6 +30,8 @@ interface UseDocumentTitleOptions {
   jsonLd?: JsonLd;
   ogType?: string;
   ogImage?: string;
+  /** Override canonical URL (defaults to current pathname under SITE_ORIGIN). */
+  canonical?: string;
   /** Additional route-specific meta tags. Keys with ":" use [property], others use [name]. */
   meta?: Record<string, string>;
   /** Keywords meta (comma-joined). */
@@ -41,7 +43,7 @@ export function useDocumentTitle(title?: string, description?: string, options?:
     const finalTitle = title || BASE_TITLE;
     document.title = finalTitle;
 
-    const url = `${SITE_ORIGIN}${window.location.pathname}`;
+    const url = options?.canonical || `${SITE_ORIGIN}${window.location.pathname}`;
     const ogType = options?.ogType || "website";
     const ogImage = options?.ogImage || DEFAULT_OG_IMAGE;
 
@@ -97,5 +99,5 @@ export function useDocumentTitle(title?: string, description?: string, options?:
       if (jsonLdEl && jsonLdEl.parentNode) jsonLdEl.parentNode.removeChild(jsonLdEl);
       routeMeta.forEach((el) => el.parentNode?.removeChild(el));
     };
-  }, [title, description, options?.ogType, options?.ogImage, options?.keywords, JSON.stringify(options?.meta), JSON.stringify(options?.jsonLd)]);
+  }, [title, description, options?.ogType, options?.ogImage, options?.canonical, options?.keywords, JSON.stringify(options?.meta), JSON.stringify(options?.jsonLd)]);
 }
