@@ -74,6 +74,10 @@ function AdminBlogEditorInner() {
       setFeatured(existing.featured);
       setStatus(existing.status);
       setPublishedAt(toLocalInput(existing.published_at));
+      setSeoTitle(existing.seo_title ?? "");
+      setSeoDescription(existing.seo_description ?? "");
+      setOgImage(existing.og_image ?? "");
+      setCanonicalUrl(existing.canonical_url ?? "");
       setSlugTouched(true);
     }
   }, [existing]);
@@ -95,6 +99,10 @@ function AdminBlogEditorInner() {
         featured,
         status,
         published_at: publishedAt ? new Date(publishedAt).toISOString() : null,
+        seo_title: seoTitle.trim() || null,
+        seo_description: seoDescription.trim() || null,
+        og_image: ogImage.trim() || null,
+        canonical_url: canonicalUrl.trim() || null,
       };
       if (!payload.title || !payload.slug) throw new Error("Title and slug are required");
 
