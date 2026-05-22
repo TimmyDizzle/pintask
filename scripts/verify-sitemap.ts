@@ -257,7 +257,7 @@ async function main() {
   }
 
   console.log(`\nCache: ${CACHE_PATH}`);
-  const exit = failed.length > 0 || leaked.length > 0 ? 1 : 0;
+  const exit = failedStatus.length > 0 || failedCT.length > 0 || leaked.length > 0 ? 1 : 0;
   console.log(`Exit code: ${exit}`);
   process.exit(exit);
 }
