@@ -213,18 +213,24 @@ async function main() {
   console.log(`Found ${sitemaps.length} sitemap file(s): ${sitemaps.join(", ")}`);
   console.log(`Total unique URLs: ${urls.length}`);
 
-  const cache = FORCE ? { version: 1 as const, entries: {} } : loadCache();
+  const cache = FORCE ? { version: 2 as const, entries: {} } : loadCache();
   const now = Date.now();
 
   // Partition: cached-hit vs needs-check
   const toCheck: string[] = [];
-  const cached: Array<{ url: string; status: number; ok: boolean; contentType: string | null; contentTypeOk: boolean }> = [];
+  const cached: CheckResult[] = [];
   for (const url of urls) {
     const lastmod = entries.get(url) ?? null;
     const c = cache.entries[url];
     const fresh = c && c.ok && c.contentTypeOk && c.lastmod === lastmod && now - c.checkedAt < CACHE_TTL_MS;
-    if (fresh) cached.push({ url, status: c.status, ok: c.ok, contentType: c.contentType, contentTypeOk: c.contentTypeOk });
-    else toCheck.push(url);
+    if (fresh) {
+      cached.push({
+        url, status: c.status, ok: c.ok, contentType: c.contentType, contentTypeOk: c.contentTypeOk,
+        latencyMs: c.latencyMs, redirects: c.redirects ?? [], finalUrl: c.finalUrl ?? url,
+      });
+    } else {
+      toCheck.push(url);
+    }
   }
   console.log(`From cache: ${cached.length}   To check: ${toCheck.length}\n`);
 
@@ -251,6 +257,9 @@ async function main() {
       ok: r.ok,
       contentType: r.contentType,
       contentTypeOk: r.contentTypeOk,
+      latencyMs: r.latencyMs,
+      redirects: r.redirects,
+      finalUrl: r.finalUrl,
       checkedAt: now,
     };
   }
@@ -260,18 +269,37 @@ async function main() {
   }
   saveCache(cache);
 
-  const results = [...cached, ...checked];
+  const results: CheckResult[] = [...cached, ...checked].sort((a, b) => a.url.localeCompare(b.url));
   const failedStatus = results.filter((r) => !r.ok);
   const failedCT = results.filter((r) => r.ok && !r.contentTypeOk);
   const ok = results.filter((r) => r.ok && r.contentTypeOk).length;
+  const latencies = results.map((r) => r.latencyMs).filter((n) => n > 0).sort((a, b) => a - b);
+  const pct = (p: number) => latencies.length ? latencies[Math.min(latencies.length - 1, Math.floor(p * latencies.length))] : 0;
+  const summary = {
+    generatedAt: new Date(now).toISOString(),
+    site: SITE_URL,
+    sitemaps,
+    totals: { urls: results.length, ok, failedStatus: failedStatus.length, failedContentType: failedCT.length, cached: cached.length, fetched: checked.length },
+    latencyMs: { p50: pct(0.5), p95: pct(0.95), max: latencies.at(-1) ?? 0 },
+    draftLeaks: leaked,
+  };
+
+  // Write reports
+  const reportsDir = join(process.cwd(), "scripts", "reports");
+  mkdirSync(reportsDir, { recursive: true });
+  const jsonPath = join(reportsDir, "verify-sitemap.json");
+  const htmlPath = join(reportsDir, "verify-sitemap.html");
+  writeFileSync(jsonPath, JSON.stringify({ summary, results }, null, 2));
+  writeFileSync(htmlPath, renderHtmlReport(summary, results));
 
   console.log(`\n--- Results ---`);
   console.log(`OK (2xx + content-type): ${ok}/${results.length}  (${cached.length} cached, ${checked.length} fetched)`);
   console.log(`Failed status:           ${failedStatus.length}`);
   console.log(`Wrong content-type:      ${failedCT.length}`);
+  console.log(`Latency:                 p50=${summary.latencyMs.p50}ms  p95=${summary.latencyMs.p95}ms  max=${summary.latencyMs.max}ms`);
   if (failedStatus.length) {
     console.log(`\nFailing URLs (status):`);
-    for (const f of failedStatus) console.log(`  [${f.status || "ERR"}] ${f.url}${(f as any).error ? ` (${(f as any).error})` : ""}`);
+    for (const f of failedStatus) console.log(`  [${f.status || "ERR"}] ${f.url}${f.error ? ` (${f.error})` : ""}`);
   }
   if (failedCT.length) {
     console.log(`\nFailing URLs (content-type):`);
@@ -280,6 +308,9 @@ async function main() {
       console.log(`  [expected ${exp}, got ${f.contentType ?? "none"}] ${f.url}`);
     }
   }
+  console.log(`\nReports written:`);
+  console.log(`  ${jsonPath}`);
+  console.log(`  ${htmlPath}`);
 
   console.log(`\n--- Draft leak check ---`);
   if (publishedSlugs.size === 0) {
