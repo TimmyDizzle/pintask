@@ -269,7 +269,9 @@ function renderHtmlReport(summary: any, results: CheckResult[]): string {
     <div class="card"><div class="n">${summary.latencyMs.p50}ms</div><div class="l">p50 latency</div></div>
     <div class="card"><div class="n">${summary.latencyMs.p95}ms</div><div class="l">p95 latency</div></div>
   </div>
-  ${summary.draftLeaks.length ? `<div class="leaks"><strong>${summary.draftLeaks.length} draft URL(s) leaked:</strong><ul>${summary.draftLeaks.map((u: string) => `<li>${escapeHtml(u)}</li>`).join("")}</ul></div>` : ""}
+  ${summary.draftLeaks.length ? `<div class="leaks"><strong>${summary.draftLeaks.length} draft/scheduled-future slug(s) leaked into the sitemap:</strong><ul>${summary.draftLeaks.map((l: { slug: string; url: string }) => `<li><code>${escapeHtml(l.slug)}</code> — <a href="${escapeHtml(l.url)}">${escapeHtml(l.url)}</a></li>`).join("")}</ul></div>` : ""}
+  ${summary.orphanSlugs.length ? `<div class="leaks" style="border-color:#d4882a;background:#d4882a11"><strong>${summary.orphanSlugs.length} live slug(s) missing from the sitemap:</strong><ul>${summary.orphanSlugs.map((s: string) => `<li><code>${escapeHtml(s)}</code></li>`).join("")}</ul></div>` : ""}
+  ${summary.dbCheckSkipped ? `<div class="leaks" style="border-color:#888;background:#8881"><strong>Slug-level leak check skipped:</strong> ${escapeHtml(summary.dbCheckSkipped)}</div>` : ""}
   <table>
     <thead><tr><th>Status</th><th>URL</th><th>Content-Type</th><th>Latency</th><th>Redirects / error</th></tr></thead>
     <tbody>${rows}</tbody>
