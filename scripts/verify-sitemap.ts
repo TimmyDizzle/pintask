@@ -307,14 +307,29 @@ async function main() {
   }
   console.log(`From cache: ${cached.length}   To check: ${toCheck.length}\n`);
 
-  // Draft leak check
+  // ---- Slug-level draft leak detection ----
+  // 1. Collect every /blog/<slug> URL in the sitemap.
+  // 2. Ask Supabase for every slug visible to anon (RLS is the source of
+  //    truth — it already enforces published OR scheduled-and-due).
+  // 3. Leaks       = sitemap slugs that RLS does NOT expose (draft/scheduled-future).
+  //    Orphans     = RLS-live slugs that are MISSING from the sitemap.
   const blogUrls = urls.filter((u) => u.includes("/blog/") && !u.endsWith("/blog"));
-  const publishedSlugs = await getPublishedSlugs();
-  const leaked: string[] = [];
-  if (publishedSlugs.size > 0) {
-    for (const u of blogUrls) {
-      const slug = u.replace(/\/$/, "").split("/").pop()!;
-      if (!publishedSlugs.has(slug)) leaked.push(u);
+  const sitemapSlugToUrl = new Map<string, string>();
+  for (const u of blogUrls) sitemapSlugToUrl.set(slugFromBlogUrl(u), u);
+
+  const liveResult = await getLiveSlugs();
+  const leaked: Array<{ slug: string; url: string }> = [];
+  const orphans: string[] = [];
+  let dbCheckSkipped: string | null = null;
+
+  if (!liveResult.ok) {
+    dbCheckSkipped = liveResult.reason;
+  } else {
+    for (const [slug, url] of sitemapSlugToUrl) {
+      if (!liveResult.slugs.has(slug)) leaked.push({ slug, url });
+    }
+    for (const slug of liveResult.slugs) {
+      if (!sitemapSlugToUrl.has(slug)) orphans.push(slug);
     }
   }
 
