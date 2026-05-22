@@ -195,14 +195,23 @@ async function runPool<T, R>(items: T[], n: number, worker: (t: T) => Promise<R>
   return results;
 }
 
-async function getPublishedSlugs(): Promise<Set<string>> {
+/**
+ * Returns the set of blog slugs that are LIVE according to RLS — i.e. what
+ * an unauthenticated visitor (and therefore the sitemap) is allowed to see.
+ *
+ * We deliberately do NOT re-filter by `status` client-side. RLS already
+ * encodes the "live" definition (published OR scheduled with due date),
+ * so trusting the RLS-returned slugs is the single source of truth.
+ */
+async function getLiveSlugs(): Promise<{ ok: true; slugs: Set<string> } | { ok: false; reason: string }> {
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const { data, error } = await supabase.from("blog_posts").select("slug,status");
-  if (error) {
-    console.warn(`! Could not fetch posts via anon (RLS): ${error.message}`);
-    return new Set();
-  }
-  return new Set((data ?? []).filter((p: any) => p.status === "published").map((p: any) => p.slug));
+  const { data, error } = await supabase.from("blog_posts").select("slug");
+  if (error) return { ok: false, reason: error.message };
+  return { ok: true, slugs: new Set((data ?? []).map((p: any) => p.slug as string)) };
+}
+
+function slugFromBlogUrl(u: string): string {
+  return u.replace(/\/$/, "").split("/").pop()!;
 }
 
 function escapeHtml(s: string): string {
@@ -260,7 +269,9 @@ function renderHtmlReport(summary: any, results: CheckResult[]): string {
     <div class="card"><div class="n">${summary.latencyMs.p50}ms</div><div class="l">p50 latency</div></div>
     <div class="card"><div class="n">${summary.latencyMs.p95}ms</div><div class="l">p95 latency</div></div>
   </div>
-  ${summary.draftLeaks.length ? `<div class="leaks"><strong>${summary.draftLeaks.length} draft URL(s) leaked:</strong><ul>${summary.draftLeaks.map((u: string) => `<li>${escapeHtml(u)}</li>`).join("")}</ul></div>` : ""}
+  ${summary.draftLeaks.length ? `<div class="leaks"><strong>${summary.draftLeaks.length} draft/scheduled-future slug(s) leaked into the sitemap:</strong><ul>${summary.draftLeaks.map((l: { slug: string; url: string }) => `<li><code>${escapeHtml(l.slug)}</code> — <a href="${escapeHtml(l.url)}">${escapeHtml(l.url)}</a></li>`).join("")}</ul></div>` : ""}
+  ${summary.orphanSlugs.length ? `<div class="leaks" style="border-color:#d4882a;background:#d4882a11"><strong>${summary.orphanSlugs.length} live slug(s) missing from the sitemap:</strong><ul>${summary.orphanSlugs.map((s: string) => `<li><code>${escapeHtml(s)}</code></li>`).join("")}</ul></div>` : ""}
+  ${summary.dbCheckSkipped ? `<div class="leaks" style="border-color:#888;background:#8881"><strong>Slug-level leak check skipped:</strong> ${escapeHtml(summary.dbCheckSkipped)}</div>` : ""}
   <table>
     <thead><tr><th>Status</th><th>URL</th><th>Content-Type</th><th>Latency</th><th>Redirects / error</th></tr></thead>
     <tbody>${rows}</tbody>
@@ -298,14 +309,29 @@ async function main() {
   }
   console.log(`From cache: ${cached.length}   To check: ${toCheck.length}\n`);
 
-  // Draft leak check
+  // ---- Slug-level draft leak detection ----
+  // 1. Collect every /blog/<slug> URL in the sitemap.
+  // 2. Ask Supabase for every slug visible to anon (RLS is the source of
+  //    truth — it already enforces published OR scheduled-and-due).
+  // 3. Leaks       = sitemap slugs that RLS does NOT expose (draft/scheduled-future).
+  //    Orphans     = RLS-live slugs that are MISSING from the sitemap.
   const blogUrls = urls.filter((u) => u.includes("/blog/") && !u.endsWith("/blog"));
-  const publishedSlugs = await getPublishedSlugs();
-  const leaked: string[] = [];
-  if (publishedSlugs.size > 0) {
-    for (const u of blogUrls) {
-      const slug = u.replace(/\/$/, "").split("/").pop()!;
-      if (!publishedSlugs.has(slug)) leaked.push(u);
+  const sitemapSlugToUrl = new Map<string, string>();
+  for (const u of blogUrls) sitemapSlugToUrl.set(slugFromBlogUrl(u), u);
+
+  const liveResult = await getLiveSlugs();
+  const leaked: Array<{ slug: string; url: string }> = [];
+  const orphans: string[] = [];
+  let dbCheckSkipped: string | null = null;
+
+  if (!liveResult.ok) {
+    dbCheckSkipped = liveResult.reason;
+  } else {
+    for (const [slug, url] of sitemapSlugToUrl) {
+      if (!liveResult.slugs.has(slug)) leaked.push({ slug, url });
+    }
+    for (const slug of liveResult.slugs) {
+      if (!sitemapSlugToUrl.has(slug)) orphans.push(slug);
     }
   }
 
@@ -346,6 +372,10 @@ async function main() {
     totals: { urls: results.length, ok, failedStatus: failedStatus.length, failedContentType: failedCT.length, cached: cached.length, fetched: checked.length },
     latencyMs: { p50: pct(0.5), p95: pct(0.95), max: latencies.at(-1) ?? 0 },
     draftLeaks: leaked,
+    orphanSlugs: orphans,
+    liveSlugCount: liveResult.ok ? liveResult.slugs.size : null,
+    blogUrlCount: blogUrls.length,
+    dbCheckSkipped,
   };
 
   // Write reports
@@ -376,22 +406,28 @@ async function main() {
   console.log(`  ${jsonPath}`);
   console.log(`  ${htmlPath}`);
 
-  console.log(`\n--- Draft leak check ---`);
-  if (publishedSlugs.size === 0) {
-    console.log(`Skipped (could not verify against database).`);
+  console.log(`\n--- Draft leak check (slug-level, cross-checked against RLS) ---`);
+  if (dbCheckSkipped) {
+    console.log(`Skipped — could not query blog_posts via anon: ${dbCheckSkipped}`);
   } else {
-    console.log(`Published blog posts visible to anon: ${publishedSlugs.size}`);
-    console.log(`Blog URLs in sitemap:                ${blogUrls.length}`);
+    console.log(`Live slugs visible to anon (RLS): ${liveResult.ok ? liveResult.slugs.size : 0}`);
+    console.log(`Blog URLs in sitemap:             ${blogUrls.length}`);
     if (leaked.length === 0) {
-      console.log(`No draft URLs leaked into the sitemap.`);
+      console.log(`✓ No draft/scheduled-future slugs leaked into the sitemap.`);
     } else {
-      console.log(`!! ${leaked.length} suspicious (non-published) URL(s) found in sitemap:`);
-      for (const u of leaked) console.log(`  ${u}`);
+      console.log(`!! ${leaked.length} sitemap URL(s) point to slugs NOT exposed by RLS (draft or scheduled-future):`);
+      for (const { slug, url } of leaked) console.log(`  [${slug}] ${url}`);
+    }
+    if (orphans.length === 0) {
+      console.log(`✓ Every live slug is included in the sitemap.`);
+    } else {
+      console.log(`!! ${orphans.length} live slug(s) MISSING from sitemap:`);
+      for (const slug of orphans) console.log(`  ${slug}`);
     }
   }
 
   console.log(`\nCache: ${CACHE_PATH}`);
-  const exit = failedStatus.length > 0 || failedCT.length > 0 || leaked.length > 0 ? 1 : 0;
+  const exit = failedStatus.length > 0 || failedCT.length > 0 || leaked.length > 0 || orphans.length > 0 ? 1 : 0;
   console.log(`Exit code: ${exit}`);
   process.exit(exit);
 }
