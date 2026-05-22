@@ -99,5 +99,5 @@ export function useDocumentTitle(title?: string, description?: string, options?:
       if (jsonLdEl && jsonLdEl.parentNode) jsonLdEl.parentNode.removeChild(jsonLdEl);
       routeMeta.forEach((el) => el.parentNode?.removeChild(el));
     };
-  }, [title, description, options?.ogType, options?.ogImage, options?.keywords, JSON.stringify(options?.meta), JSON.stringify(options?.jsonLd)]);
+  }, [title, description, options?.ogType, options?.ogImage, options?.canonical, options?.keywords, JSON.stringify(options?.meta), JSON.stringify(options?.jsonLd)]);
 }
