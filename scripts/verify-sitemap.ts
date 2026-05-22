@@ -52,14 +52,14 @@ type CacheEntry = {
 type Cache = { version: 2; entries: Record<string, CacheEntry> };
 
 function loadCache(): Cache {
-  if (!existsSync(CACHE_PATH)) return { version: 1, entries: {} };
+  if (!existsSync(CACHE_PATH)) return { version: 2, entries: {} };
   try {
     const parsed = JSON.parse(readFileSync(CACHE_PATH, "utf8"));
-    if (parsed?.version === 1 && parsed.entries) return parsed as Cache;
+    if (parsed?.version === 2 && parsed.entries) return parsed as Cache;
   } catch {
     /* ignore */
   }
-  return { version: 1, entries: {} };
+  return { version: 2, entries: {} };
 }
 
 function saveCache(cache: Cache) {
