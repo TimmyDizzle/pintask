@@ -404,22 +404,28 @@ async function main() {
   console.log(`  ${jsonPath}`);
   console.log(`  ${htmlPath}`);
 
-  console.log(`\n--- Draft leak check ---`);
-  if (publishedSlugs.size === 0) {
-    console.log(`Skipped (could not verify against database).`);
+  console.log(`\n--- Draft leak check (slug-level, cross-checked against RLS) ---`);
+  if (dbCheckSkipped) {
+    console.log(`Skipped — could not query blog_posts via anon: ${dbCheckSkipped}`);
   } else {
-    console.log(`Published blog posts visible to anon: ${publishedSlugs.size}`);
-    console.log(`Blog URLs in sitemap:                ${blogUrls.length}`);
+    console.log(`Live slugs visible to anon (RLS): ${liveResult.ok ? liveResult.slugs.size : 0}`);
+    console.log(`Blog URLs in sitemap:             ${blogUrls.length}`);
     if (leaked.length === 0) {
-      console.log(`No draft URLs leaked into the sitemap.`);
+      console.log(`✓ No draft/scheduled-future slugs leaked into the sitemap.`);
     } else {
-      console.log(`!! ${leaked.length} suspicious (non-published) URL(s) found in sitemap:`);
-      for (const u of leaked) console.log(`  ${u}`);
+      console.log(`!! ${leaked.length} sitemap URL(s) point to slugs NOT exposed by RLS (draft or scheduled-future):`);
+      for (const { slug, url } of leaked) console.log(`  [${slug}] ${url}`);
+    }
+    if (orphans.length === 0) {
+      console.log(`✓ Every live slug is included in the sitemap.`);
+    } else {
+      console.log(`!! ${orphans.length} live slug(s) MISSING from sitemap:`);
+      for (const slug of orphans) console.log(`  ${slug}`);
     }
   }
 
   console.log(`\nCache: ${CACHE_PATH}`);
-  const exit = failedStatus.length > 0 || failedCT.length > 0 || leaked.length > 0 ? 1 : 0;
+  const exit = failedStatus.length > 0 || failedCT.length > 0 || leaked.length > 0 || orphans.length > 0 ? 1 : 0;
   console.log(`Exit code: ${exit}`);
   process.exit(exit);
 }
