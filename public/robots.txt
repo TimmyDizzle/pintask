@@ -13,6 +13,5 @@ Allow: /
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /ad-analytics/
 
 Sitemap: https://pintask.online/sitemap.xml
