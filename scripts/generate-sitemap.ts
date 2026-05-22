@@ -30,6 +30,11 @@ interface SitemapEntry {
     | "yearly"
     | "never";
   priority?: string;
+  image?: {
+    loc: string;
+    title?: string;
+    caption?: string;
+  };
 }
 
 const today = new Date().toISOString().slice(0, 10);
@@ -51,7 +56,7 @@ const staticEntries: SitemapEntry[] = [
 
 async function fetchLivePosts(): Promise<SitemapEntry[]> {
   // RLS already filters to live posts (published, or scheduled with published_at <= now).
-  const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,published_at,updated_at&order=published_at.desc.nullslast`;
+  const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,published_at,updated_at,og_image&order=published_at.desc.nullslast`;
   try {
     const res = await fetch(url, {
       headers: {
@@ -65,14 +70,22 @@ async function fetchLivePosts(): Promise<SitemapEntry[]> {
     }
     const rows = (await res.json()) as Array<{
       slug: string;
+      title: string;
       published_at: string | null;
       updated_at: string | null;
+      og_image: string | null;
     }>;
     return rows.map((r) => ({
       path: `/blog/${r.slug}`,
       lastmod: (r.updated_at || r.published_at || "").slice(0, 10) || undefined,
       changefreq: "monthly" as const,
       priority: "0.7",
+      image: r.og_image
+        ? {
+            loc: r.og_image.startsWith("http") ? r.og_image : `${BASE_URL}${r.og_image}`,
+            title: r.title,
+          }
+        : undefined,
     }));
   } catch (err) {
     console.warn("[sitemap] Error fetching blog posts:", err);
@@ -88,6 +101,17 @@ function renderUrlset(entries: SitemapEntry[]) {
       e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
+      e.image
+        ? [
+            `    <image:image>`,
+            `      <image:loc>${e.image.loc}</image:loc>`,
+            e.image.title ? `      <image:title>${escapeXml(e.image.title)}</image:title>` : null,
+            e.image.caption ? `      <image:caption>${escapeXml(e.image.caption)}</image:caption>` : null,
+            `    </image:image>`,
+          ]
+            .filter(Boolean)
+            .join("\n")
+        : null,
       `  </url>`,
     ]
       .filter(Boolean)
@@ -96,11 +120,20 @@ function renderUrlset(entries: SitemapEntry[]) {
 
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`,
     ...urls,
     `</urlset>`,
     ``,
   ].join("\n");
+}
+
+function escapeXml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 function renderIndex(files: Array<{ name: string; lastmod: string }>) {
