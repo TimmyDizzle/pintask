@@ -103,23 +103,42 @@ async function collectAllUrls(): Promise<{
   return { entries, sitemaps };
 }
 
-async function checkUrl(url: string): Promise<{ url: string; status: number; ok: boolean; error?: string }> {
+function expectedContentType(url: string): { kind: "html" | "xml" | "image" | "any"; matcher: RegExp } {
+  const path = (() => {
+    try { return new URL(url).pathname; } catch { return url; }
+  })();
+  const ext = path.toLowerCase().match(/\.([a-z0-9]+)$/)?.[1] ?? "";
+  if (ext === "xml") return { kind: "xml", matcher: /(application|text)\/xml|\+xml/i };
+  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "avif"].includes(ext)) {
+    return { kind: "image", matcher: /^image\// i };
+  }
+  // Default: HTML pages (including extensionless routes).
+  return { kind: "html", matcher: /text\/html|application\/xhtml\+xml/i };
+}
+
+async function checkUrl(url: string): Promise<{
+  url: string; status: number; ok: boolean; contentType: string | null; contentTypeOk: boolean; error?: string;
+}> {
+  const expected = expectedContentType(url);
   const attempt = async (method: "HEAD" | "GET") => {
     const res = await fetch(url, { method, redirect: "follow", headers: { "user-agent": "sitemap-verifier/1.0" } });
-    return res.status;
+    return { status: res.status, ct: res.headers.get("content-type") };
   };
   let lastErr = "";
   for (let i = 0; i < 3; i++) {
     try {
-      let status = await attempt("HEAD");
-      if (status === 405 || status === 403) status = await attempt("GET");
-      return { url, status, ok: status >= 200 && status < 400 };
+      let r = await attempt("HEAD");
+      // HEAD often lacks/wrong content-type; promote to GET if status needs retry OR ct missing.
+      if (r.status === 405 || r.status === 403 || !r.ct) r = await attempt("GET");
+      const ok = r.status >= 200 && r.status < 400;
+      const contentTypeOk = !!r.ct && expected.matcher.test(r.ct);
+      return { url, status: r.status, ok, contentType: r.ct, contentTypeOk };
     } catch (e) {
       lastErr = (e as Error).message;
       await new Promise((r) => setTimeout(r, 600 * (i + 1)));
     }
   }
-  return { url, status: 0, ok: false, error: lastErr };
+  return { url, status: 0, ok: false, contentType: null, contentTypeOk: false, error: lastErr };
 }
 
 async function runPool<T, R>(items: T[], n: number, worker: (t: T) => Promise<R>): Promise<R[]> {
