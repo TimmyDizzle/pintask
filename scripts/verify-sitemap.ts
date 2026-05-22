@@ -49,16 +49,22 @@ async function collectAllUrls(): Promise<{ urls: string[]; sitemaps: string[] }>
 }
 
 async function checkUrl(url: string): Promise<{ url: string; status: number; ok: boolean; error?: string }> {
-  try {
-    // Try HEAD first; fall back to GET if not allowed
-    let res = await fetch(url, { method: "HEAD", redirect: "follow" });
-    if (res.status === 405 || res.status === 403) {
-      res = await fetch(url, { method: "GET", redirect: "follow" });
+  const attempt = async (method: "HEAD" | "GET") => {
+    const res = await fetch(url, { method, redirect: "follow", headers: { "user-agent": "sitemap-verifier/1.0" } });
+    return res.status;
+  };
+  let lastErr = "";
+  for (let i = 0; i < 3; i++) {
+    try {
+      let status = await attempt("HEAD");
+      if (status === 405 || status === 403) status = await attempt("GET");
+      return { url, status, ok: status >= 200 && status < 400 };
+    } catch (e) {
+      lastErr = (e as Error).message;
+      await new Promise((r) => setTimeout(r, 600 * (i + 1)));
     }
-    return { url, status: res.status, ok: res.status >= 200 && res.status < 300 };
-  } catch (e) {
-    return { url, status: 0, ok: false, error: (e as Error).message };
   }
+  return { url, status: 0, ok: false, error: lastErr };
 }
 
 async function runPool<T, R>(items: T[], n: number, worker: (t: T) => Promise<R>): Promise<R[]> {
