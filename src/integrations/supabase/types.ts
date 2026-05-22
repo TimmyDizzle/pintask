@@ -134,14 +134,18 @@ export type Database = {
       blog_posts: {
         Row: {
           author_id: string | null
+          canonical_url: string | null
           category: string
           content: string
           created_at: string
           excerpt: string
           featured: boolean
           id: string
+          og_image: string | null
           published_at: string | null
           read_time: string
+          seo_description: string | null
+          seo_title: string | null
           slug: string
           status: Database["public"]["Enums"]["blog_post_status"]
           title: string
@@ -149,14 +153,18 @@ export type Database = {
         }
         Insert: {
           author_id?: string | null
+          canonical_url?: string | null
           category?: string
           content?: string
           created_at?: string
           excerpt?: string
           featured?: boolean
           id?: string
+          og_image?: string | null
           published_at?: string | null
           read_time?: string
+          seo_description?: string | null
+          seo_title?: string | null
           slug: string
           status?: Database["public"]["Enums"]["blog_post_status"]
           title: string
@@ -164,14 +172,18 @@ export type Database = {
         }
         Update: {
           author_id?: string | null
+          canonical_url?: string | null
           category?: string
           content?: string
           created_at?: string
           excerpt?: string
           featured?: boolean
           id?: string
+          og_image?: string | null
           published_at?: string | null
           read_time?: string
+          seo_description?: string | null
+          seo_title?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["blog_post_status"]
           title?: string
