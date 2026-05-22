@@ -30,6 +30,8 @@ interface UseDocumentTitleOptions {
   jsonLd?: JsonLd;
   ogType?: string;
   ogImage?: string;
+  /** Override canonical URL (defaults to current pathname under SITE_ORIGIN). */
+  canonical?: string;
   /** Additional route-specific meta tags. Keys with ":" use [property], others use [name]. */
   meta?: Record<string, string>;
   /** Keywords meta (comma-joined). */
