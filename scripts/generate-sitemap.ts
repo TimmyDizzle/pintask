@@ -101,6 +101,17 @@ function renderUrlset(entries: SitemapEntry[]) {
       e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
+      e.image
+        ? [
+            `    <image:image>`,
+            `      <image:loc>${e.image.loc}</image:loc>`,
+            e.image.title ? `      <image:title>${escapeXml(e.image.title)}</image:title>` : null,
+            e.image.caption ? `      <image:caption>${escapeXml(e.image.caption)}</image:caption>` : null,
+            `    </image:image>`,
+          ]
+            .filter(Boolean)
+            .join("\n")
+        : null,
       `  </url>`,
     ]
       .filter(Boolean)
@@ -109,11 +120,20 @@ function renderUrlset(entries: SitemapEntry[]) {
 
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`,
     ...urls,
     `</urlset>`,
     ``,
   ].join("\n");
+}
+
+function escapeXml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 function renderIndex(files: Array<{ name: string; lastmod: string }>) {
