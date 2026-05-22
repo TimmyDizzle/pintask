@@ -195,14 +195,23 @@ async function runPool<T, R>(items: T[], n: number, worker: (t: T) => Promise<R>
   return results;
 }
 
-async function getPublishedSlugs(): Promise<Set<string>> {
+/**
+ * Returns the set of blog slugs that are LIVE according to RLS — i.e. what
+ * an unauthenticated visitor (and therefore the sitemap) is allowed to see.
+ *
+ * We deliberately do NOT re-filter by `status` client-side. RLS already
+ * encodes the "live" definition (published OR scheduled with due date),
+ * so trusting the RLS-returned slugs is the single source of truth.
+ */
+async function getLiveSlugs(): Promise<{ ok: true; slugs: Set<string> } | { ok: false; reason: string }> {
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const { data, error } = await supabase.from("blog_posts").select("slug,status");
-  if (error) {
-    console.warn(`! Could not fetch posts via anon (RLS): ${error.message}`);
-    return new Set();
-  }
-  return new Set((data ?? []).filter((p: any) => p.status === "published").map((p: any) => p.slug));
+  const { data, error } = await supabase.from("blog_posts").select("slug");
+  if (error) return { ok: false, reason: error.message };
+  return { ok: true, slugs: new Set((data ?? []).map((p: any) => p.slug as string)) };
+}
+
+function slugFromBlogUrl(u: string): string {
+  return u.replace(/\/$/, "").split("/").pop()!;
 }
 
 function escapeHtml(s: string): string {
