@@ -48,6 +48,10 @@ function AdminBlogEditorInner() {
   const [status, setStatus] = useState<Status>("draft");
   const [publishedAt, setPublishedAt] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [seoTitle, setSeoTitle] = useState("");
+  const [seoDescription, setSeoDescription] = useState("");
+  const [ogImage, setOgImage] = useState("");
+  const [canonicalUrl, setCanonicalUrl] = useState("");
 
   const { data: existing } = useQuery({
     queryKey: ["blog-post-edit", id],
