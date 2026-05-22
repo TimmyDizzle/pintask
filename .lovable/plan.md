@@ -1,78 +1,105 @@
-# Blog System with Admin Editor + Scheduled Publishing
 
 ## Goal
-Turn the current static blog (`src/data/blogPosts.ts`) into a database-backed blog with:
-- An admin-only editor where you log in and create/edit posts easily
-- All 10 supplied posts seeded
-- First 3 published immediately (dated 5/14/26, 5/20/26, 5/21/26)
-- Remaining 7 auto-publish 2/week over the next ~5 weeks
-- Public `/blog` and `/blog/:slug` continue to work, but only show posts where `status = 'published'` AND `published_at <= now()`
 
-## A note on the domain
-The project currently runs on `pintask.online` (sitemap, JSON-LD, all internal links). Your brief uses `pintask.me`. I will keep using `pintask.online` everywhere unless you tell me otherwise — switching domains is a separate task (DNS + canonical/OG/sitemap rewrite). Tell me if you want me to swap.
+Treat the six deployed Supabase edge functions as "the API" and verify every one end-to-end (auth, happy path, error paths, CORS). Then drive the live preview browser through the `/extensions` page to confirm what the "Free Extensions" buttons actually do — because right now they don't do anything, and the test needs to surface that honestly rather than fake a pass.
 
-## What gets built
+## Scope
 
-### 1. Database (migration)
-- `blog_posts` table: `slug` (unique), `title`, `excerpt`, `content` (markdown), `category`, `read_time`, `featured` (bool), `status` ('draft' | 'scheduled' | 'published'), `published_at` (timestamptz), `author_id`, timestamps.
-- `user_roles` table + `app_role` enum (`admin`, `user`) + `has_role()` SECURITY DEFINER function — follows the standard secure pattern (roles never on profiles).
-- RLS on `blog_posts`:
-  - Public SELECT: only rows where `status = 'published'` AND `published_at <= now()`
-  - Admin SELECT/INSERT/UPDATE/DELETE: full access via `has_role(auth.uid(), 'admin')`
-- RLS on `user_roles`: users can read their own roles; only admins can write.
-- You'll be granted the `admin` role via a one-time insert after the migration.
+**API surface under test** (all under `supabase/functions/`):
 
-### 2. Seed the 10 posts
-Insert all 10 posts as rows. Publish dates:
+| Function | Auth | Method | Purpose |
+|---|---|---|---|
+| `sitemap` | public | GET | Dynamic sitemap (index + `/static` + `/blog/:n`) |
+| `parse-task` | public | POST | Claude-powered NLP task parser |
+| `daily-briefing` | user JWT | POST | Per-user task briefing |
+| `weekly-report` | user JWT | POST | Per-user weekly summary |
+| `cancel-subscription` | user JWT | POST | Cancels user's active subscription |
+| `send-due-date-reminders` | service-role (cron) | POST | Reads tasks, sends reminder emails |
+
+**Free-extensions UX under test**: the two "Install Free" buttons on `/extensions` ("Checklist Boards", "Quick Card Actions") and the "Browse Extensions" / "Start Free Trial" CTAs.
+
+## What I will build
+
+### 1. Deno test files (one per function)
+
+Created next to each function so `supabase--test_edge_functions` picks them up:
+
+- `supabase/functions/sitemap/index.test.ts`
+- `supabase/functions/parse-task/index.test.ts`
+- `supabase/functions/daily-briefing/index.test.ts`
+- `supabase/functions/weekly-report/index.test.ts`
+- `supabase/functions/cancel-subscription/index.test.ts`
+- `supabase/functions/send-due-date-reminders/index.test.ts`
+
+Each file uses `Deno.test()` and hits the **deployed** function URL via `fetch` (matching the existing `verify-sitemap` style). Pattern per function:
 
 ```text
-Post 1  pintask-is-back                        2026-05-14  published
-Post 2  pintask-alternatives                   2026-05-20  published
-Post 3  why-visual-boards-beat-to-do-lists     2026-05-21  published
-Post 4  how-to-organize-saved-links            2026-05-25  scheduled
-Post 5  adhd-productivity-app                  2026-05-28  scheduled
-Post 6  pocket-vs-raindrop-vs-pintask          2026-06-01  scheduled
-Post 7  pinterest-is-not-a-productivity-tool   2026-06-04  scheduled
-Post 8  manage-multiple-projects               2026-06-08  scheduled
-Post 9  free-productivity-app-visual-thinkers  2026-06-11  scheduled
-Post 10 digital-pinboard-productivity          2026-06-15  scheduled
+- OPTIONS preflight → 200 + CORS headers present
+- Missing auth (where required) → 401
+- Invalid auth token → 401
+- Malformed body / wrong method → 400 or 405 with CORS
+- Happy path with a real anon user JWT (minted in setup) → 2xx + expected JSON shape
+- Response body always consumed (await res.text()) to avoid Deno resource leaks
 ```
 
-(2 per week, Mon/Thu cadence starting the week after launch.)
+Auth-required functions get a per-suite setup that signs up a throwaway test user via `supabase.auth.signUp`, captures the JWT, and tears down (deletes the test user via service role) on `addEventListener("unload")`. The service-role-only `send-due-date-reminders` is invoked with the service-role key from `Deno.env`.
 
-### 3. Auto-publishing
-Scheduled posts flip to `published` automatically without an edge function — we use a Postgres view + RLS that treats `status='scheduled' AND published_at<=now()` as live. A lightweight `pg_cron` job also runs nightly to update `status` to `'published'` for cleanliness so the admin UI shows truth. No edge function needed, nothing for you to babysit.
+Per-function specifics:
 
-### 4. Admin editor UI
-- New route `/admin/blog` (and `/admin/blog/:id` for edit). Guarded by `has_role` check — non-admins get redirected to `/`.
-- List view: table of all posts (draft/scheduled/published), with status badges, publish date, edit/delete actions, "New post" button.
-- Edit view: form with title, slug (auto-generated from title, editable), category dropdown, excerpt, read time, featured toggle, status, publish date, and a markdown content textarea with live preview (using the existing `BlogContent` renderer).
-- Sidebar gets an "Admin" section visible only to admins, linking to `/admin/blog`.
+- **sitemap**: assert `/sitemap` returns `<sitemapindex>`, `/sitemap/static` and `/sitemap/blog/1` return `<urlset>`, all with `application/xml`, and that `/sitemap/blog/999` returns an empty urlset (not a 500).
+- **parse-task**: send `{ text: "Email the client tomorrow at 5pm, urgent" }`, assert response has `title`, `dueDate` (ISO), `label: "urgent"`, `priority` ∈ {high,medium,low}. Also test the no-`ANTHROPIC_API_KEY` fallback shape with `{ text: "" }` → empty title default.
+- **daily-briefing / weekly-report**: signed-in user with zero projects → 200 with the "no projects" message; user with one project + one task → 200 with non-empty `briefing`/report text. Verify it does NOT leak other users' data (create a second user, fetch the first user's briefing with the second user's token — must not contain first user's task titles).
+- **cancel-subscription**: user with no subscription → 404; user with seeded `active` subscription → 200 and the row's `status` becomes `canceled` and `canceled_at` is set; cofounder lifetime → 4xx with the "cannot cancel" message.
+- **send-due-date-reminders**: seed one task due tomorrow for the test user, hit the function with service-role auth, assert the JSON reports `emailsSent >= 0` and the function returns 200. (We don't assert SMTP — that's downstream.)
 
-### 5. Public blog migration
-- `BlogPage` and `BlogPostPage` switch from importing `blogPosts` to fetching via React Query from Supabase (RLS filters to live posts automatically).
-- `src/data/blogPosts.ts` stays as a fallback type definition / can be deleted.
-- Existing ads, SEO tags, JSON-LD, related posts all keep working.
+### 2. Helper for shared test setup
 
-### 6. Menu
-The public `MarketingLayout` already links to `/blog`. The app sidebar gets a "Blog admin" entry under the existing nav, gated by admin role.
+`supabase/functions/_shared/test-utils.ts` (test-only) with:
 
-### 7. Sitemap
-Update `public/sitemap.xml` so it lists the 10 new slugs with correct `lastmod`. (Site is fully static-generated today, so I'll just edit the file. A generator script is a follow-up if you want auto-sync.)
+- `createTestUser()` / `deleteTestUser(id)` using service-role
+- `getAnonJwt(email, password)` for signing in
+- `functionUrl(name, sub?)` helper that reads `SUPABASE_URL` from env
 
-## Out of scope (call out if you want them)
-- Domain switch `pintask.online` → `pintask.me`
-- Submitting sitemap to Google Search Console (manual step you do)
-- Image uploads in the editor (current posts are text-only; can add later via the existing `attachments` bucket)
-- Rich-text WYSIWYG (using markdown textarea + preview, which matches how posts are stored today)
+Credentials come from `.env` via the `dotenv/load.ts` import documented in the testing guide — no hardcoded secrets, no `process.env`.
 
-## Implementation order
-1. Migration: tables, roles, RLS, `has_role`, pg_cron job
-2. Grant you admin (after you tell me your account email or user id)
-3. Seed the 10 posts
-4. Build admin pages + route guard
-5. Switch public blog to DB-backed queries
-6. Update sitemap
-7. Verify: public `/blog` shows 3 posts now, scheduled posts hidden, admin sees all 10
+### 3. Live browser walkthrough
 
-Approve and I'll start with the migration.
+After the Deno tests pass, drive the preview browser:
+
+1. `navigate_to_sandbox` to `/extensions`
+2. `observe` the "Install Free" buttons for Checklist Boards and Quick Card Actions
+3. Try `act` → click each. Capture: does anything happen? Network request? Toast? Navigation? (Expected: nothing — they're decorative.)
+4. Click "Start Free Trial" and "Browse Extensions" — confirm they route to `/auth`.
+5. Screenshot the final state.
+
+The walkthrough's job is to **document reality**, not to pretend the buttons work. The test report will say plainly: "Install Free buttons have no handler; clicking them is a no-op. No download occurs because no extension artifact exists in the repo or storage."
+
+### 4. Final report
+
+Written to `/mnt/documents/api-and-extensions-e2e-report.md` (and surfaced via `<presentation-artifact>`) containing:
+
+- Per-function pass/fail table with status code, latency, and response shape notes
+- CORS coverage summary
+- Browser walkthrough findings with screenshot reference
+- A short "Gap analysis" section flagging that the `/extensions` page advertises features (extensions store, install flow, JS+Meteor API, MongoDB browser) that are not implemented anywhere in the codebase — with a recommendation to either build them or revise the copy
+
+## Out of scope
+
+- Building the actual "Checklist Boards" / "Quick Card Actions" extensions (separate effort — would need the scope decision you already declined)
+- Modifying any production data — all tests use throwaway users and clean up
+- SMTP / email delivery verification for `send-due-date-reminders` (we only assert the function's HTTP contract)
+- Load / performance testing
+
+## Risks and how I'll handle them
+
+- **`send-due-date-reminders` mutates emails via Supabase's admin API**: I'll point it at a test user with a non-deliverable address (`+test@` alias) and check return shape only.
+- **`cancel-subscription` requires a seeded `subscriptions` row**: seeding via service-role bypasses the `enforce_subscription_price_lock` trigger only on INSERT (it fires on UPDATE of locked fields). Safe to seed and then call cancel.
+- **`parse-task` depends on Claude**: if `ANTHROPIC_API_KEY` is unset or the upstream is down, the function returns a fallback shape — the test asserts that fallback explicitly so it doesn't flake on outages.
+- **Test user cleanup**: each test registers an `unload` handler that deletes its user; if a run crashes mid-flight, the next run's setup detects and deletes orphans by email prefix (`e2e-test-…@`).
+
+## Deliverables
+
+- 6 new `*.test.ts` files + 1 shared helper under `supabase/functions/`
+- Test run output (via `supabase--test_edge_functions`)
+- Browser screenshots in the chat
+- `/mnt/documents/api-and-extensions-e2e-report.md` summarizing everything
