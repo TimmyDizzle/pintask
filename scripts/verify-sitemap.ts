@@ -370,6 +370,10 @@ async function main() {
     totals: { urls: results.length, ok, failedStatus: failedStatus.length, failedContentType: failedCT.length, cached: cached.length, fetched: checked.length },
     latencyMs: { p50: pct(0.5), p95: pct(0.95), max: latencies.at(-1) ?? 0 },
     draftLeaks: leaked,
+    orphanSlugs: orphans,
+    liveSlugCount: liveResult.ok ? liveResult.slugs.size : null,
+    blogUrlCount: blogUrls.length,
+    dbCheckSkipped,
   };
 
   // Write reports
