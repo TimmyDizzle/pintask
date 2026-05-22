@@ -224,6 +224,66 @@ function AdminBlogEditorInner() {
               <Switch id="featured" checked={featured} onCheckedChange={setFeatured} />
             </div>
           </div>
+
+          <div className="rounded-lg border border-border bg-card p-4 space-y-4">
+            <div>
+              <h2 className="font-semibold text-sm">SEO</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Overrides for search engines & social previews. Leave blank to use the title / excerpt.
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="seo_title">Meta title</Label>
+              <Input
+                id="seo_title"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+                placeholder={title ? `${title} — Pintask Blog` : "Defaults to post title"}
+                maxLength={70}
+              />
+              <p className="text-xs text-muted-foreground mt-1">{seoTitle.length}/70</p>
+            </div>
+            <div>
+              <Label htmlFor="seo_description">Meta description</Label>
+              <Textarea
+                id="seo_description"
+                value={seoDescription}
+                onChange={(e) => setSeoDescription(e.target.value)}
+                rows={3}
+                placeholder="Defaults to excerpt"
+                maxLength={180}
+              />
+              <p className="text-xs text-muted-foreground mt-1">{seoDescription.length}/180</p>
+            </div>
+            <div>
+              <Label htmlFor="og_image">OpenGraph image URL</Label>
+              <Input
+                id="og_image"
+                value={ogImage}
+                onChange={(e) => setOgImage(e.target.value)}
+                placeholder="https://…/social-card.png"
+              />
+              {ogImage && (
+                <img
+                  src={ogImage}
+                  alt="OG preview"
+                  className="mt-2 w-full rounded border border-border object-cover aspect-[1200/630]"
+                />
+              )}
+            </div>
+            <div>
+              <Label htmlFor="canonical_url">Canonical URL</Label>
+              <Input
+                id="canonical_url"
+                value={canonicalUrl}
+                onChange={(e) => setCanonicalUrl(e.target.value)}
+                placeholder={`https://pintask.online/blog/${slug || "your-slug"}`}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Only set this if the post is republished elsewhere.
+              </p>
+            </div>
+          </div>
         </aside>
       </div>
     </div>
