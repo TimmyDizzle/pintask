@@ -1,7 +1,10 @@
 // Runs before `vite dev` and `vite build` (predev/prebuild hooks).
-// Writes public/sitemap.xml with static routes + every live blog post from the DB.
+// Writes public/sitemap.xml as a sitemap index that references:
+//   - public/sitemap-static.xml  (marketing routes)
+//   - public/sitemap-blog-N.xml  (blog posts, chunked)
+// Splitting kicks in automatically as blog post count grows.
 
-import { writeFileSync } from "fs";
+import { writeFileSync, readdirSync, unlinkSync } from "fs";
 import { resolve } from "path";
 
 const BASE_URL = "https://pintask.online";
@@ -10,6 +13,10 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppZXFma3RsdHlvbGF6bHRwcGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NzMzNTEsImV4cCI6MjA4OTA0OTM1MX0.FXT6Z1M1etqUAArjviKycltG3y9zTvU-kQA36PNcuNU";
+
+// Sitemaps spec hard limit is 50,000 URLs per file. Keep chunks well under
+// that so we never trip the limit even with rapid growth.
+const POSTS_PER_SITEMAP = 5000;
 
 interface SitemapEntry {
   path: string;
@@ -73,7 +80,7 @@ async function fetchLivePosts(): Promise<SitemapEntry[]> {
   }
 }
 
-function generateSitemap(entries: SitemapEntry[]) {
+function renderUrlset(entries: SitemapEntry[]) {
   const urls = entries.map((e) =>
     [
       `  <url>`,
@@ -96,12 +103,71 @@ function generateSitemap(entries: SitemapEntry[]) {
   ].join("\n");
 }
 
+function renderIndex(files: Array<{ name: string; lastmod: string }>) {
+  const items = files.map((f) =>
+    [
+      `  <sitemap>`,
+      `    <loc>${BASE_URL}/${f.name}</loc>`,
+      `    <lastmod>${f.lastmod}</lastmod>`,
+      `  </sitemap>`,
+    ].join("\n"),
+  );
+  return [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    ...items,
+    `</sitemapindex>`,
+    ``,
+  ].join("\n");
+}
+
+function cleanOldBlogSitemaps() {
+  try {
+    for (const f of readdirSync(resolve("public"))) {
+      if (/^sitemap-blog-\d+\.xml$/.test(f)) {
+        unlinkSync(resolve("public", f));
+      }
+    }
+  } catch {
+    // ignore
+  }
+}
+
 async function main() {
   const posts = await fetchLivePosts();
-  const entries = [...staticEntries, ...posts];
-  writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries));
+
+  cleanOldBlogSitemaps();
+
+  // Static sitemap
+  writeFileSync(resolve("public/sitemap-static.xml"), renderUrlset(staticEntries));
+
+  // Blog sitemaps, chunked
+  const chunks: SitemapEntry[][] = [];
+  for (let i = 0; i < posts.length; i += POSTS_PER_SITEMAP) {
+    chunks.push(posts.slice(i, i + POSTS_PER_SITEMAP));
+  }
+  // Always emit at least one blog sitemap (empty is valid) so the index is stable.
+  if (chunks.length === 0) chunks.push([]);
+
+  const blogFiles: Array<{ name: string; lastmod: string }> = [];
+  chunks.forEach((chunk, idx) => {
+    const name = `sitemap-blog-${idx + 1}.xml`;
+    writeFileSync(resolve("public", name), renderUrlset(chunk));
+    const lastmod =
+      chunk.map((c) => c.lastmod).filter(Boolean).sort().pop() || today;
+    blogFiles.push({ name, lastmod });
+  });
+
+  // Index references the static + all blog sitemaps
+  const indexFiles = [
+    { name: "sitemap-static.xml", lastmod: today },
+    ...blogFiles,
+  ];
+  writeFileSync(resolve("public/sitemap.xml"), renderIndex(indexFiles));
+
   console.log(
-    `sitemap.xml written (${entries.length} entries: ${staticEntries.length} static + ${posts.length} blog posts)`,
+    `sitemap index written: ${indexFiles.length} child sitemaps (` +
+      `${staticEntries.length} static + ${posts.length} blog posts across ${chunks.length} file(s))`,
   );
 }
 
