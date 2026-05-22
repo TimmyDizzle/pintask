@@ -56,7 +56,7 @@ const staticEntries: SitemapEntry[] = [
 
 async function fetchLivePosts(): Promise<SitemapEntry[]> {
   // RLS already filters to live posts (published, or scheduled with published_at <= now).
-  const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,published_at,updated_at&order=published_at.desc.nullslast`;
+  const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,published_at,updated_at,og_image&order=published_at.desc.nullslast`;
   try {
     const res = await fetch(url, {
       headers: {
@@ -70,14 +70,22 @@ async function fetchLivePosts(): Promise<SitemapEntry[]> {
     }
     const rows = (await res.json()) as Array<{
       slug: string;
+      title: string;
       published_at: string | null;
       updated_at: string | null;
+      og_image: string | null;
     }>;
     return rows.map((r) => ({
       path: `/blog/${r.slug}`,
       lastmod: (r.updated_at || r.published_at || "").slice(0, 10) || undefined,
       changefreq: "monthly" as const,
       priority: "0.7",
+      image: r.og_image
+        ? {
+            loc: r.og_image.startsWith("http") ? r.og_image : `${BASE_URL}${r.og_image}`,
+            title: r.title,
+          }
+        : undefined,
     }));
   } catch (err) {
     console.warn("[sitemap] Error fetching blog posts:", err);
