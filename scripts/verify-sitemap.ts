@@ -110,7 +110,7 @@ function expectedContentType(url: string): { kind: "html" | "xml" | "image" | "a
   const ext = path.toLowerCase().match(/\.([a-z0-9]+)$/)?.[1] ?? "";
   if (ext === "xml") return { kind: "xml", matcher: /(application|text)\/xml|\+xml/i };
   if (["png", "jpg", "jpeg", "gif", "webp", "svg", "avif"].includes(ext)) {
-    return { kind: "image", matcher: /^image\// i };
+    return { kind: "image", matcher: /^image\//i };
   }
   // Default: HTML pages (including extensionless routes).
   return { kind: "html", matcher: /text\/html|application\/xhtml\+xml/i };
