@@ -179,12 +179,12 @@ async function main() {
 
   // Partition: cached-hit vs needs-check
   const toCheck: string[] = [];
-  const cached: Array<{ url: string; status: number; ok: boolean }> = [];
+  const cached: Array<{ url: string; status: number; ok: boolean; contentType: string | null; contentTypeOk: boolean }> = [];
   for (const url of urls) {
     const lastmod = entries.get(url) ?? null;
     const c = cache.entries[url];
-    const fresh = c && c.ok && c.lastmod === lastmod && now - c.checkedAt < CACHE_TTL_MS;
-    if (fresh) cached.push({ url, status: c.status, ok: c.ok });
+    const fresh = c && c.ok && c.contentTypeOk && c.lastmod === lastmod && now - c.checkedAt < CACHE_TTL_MS;
+    if (fresh) cached.push({ url, status: c.status, ok: c.ok, contentType: c.contentType, contentTypeOk: c.contentTypeOk });
     else toCheck.push(url);
   }
   console.log(`From cache: ${cached.length}   To check: ${toCheck.length}\n`);
@@ -210,6 +210,8 @@ async function main() {
       lastmod: entries.get(r.url) ?? null,
       status: r.status,
       ok: r.ok,
+      contentType: r.contentType,
+      contentTypeOk: r.contentTypeOk,
       checkedAt: now,
     };
   }
@@ -220,15 +222,24 @@ async function main() {
   saveCache(cache);
 
   const results = [...cached, ...checked];
-  const failed = results.filter((r) => !r.ok);
-  const ok = results.length - failed.length;
+  const failedStatus = results.filter((r) => !r.ok);
+  const failedCT = results.filter((r) => r.ok && !r.contentTypeOk);
+  const ok = results.filter((r) => r.ok && r.contentTypeOk).length;
 
   console.log(`\n--- Results ---`);
-  console.log(`OK (2xx):   ${ok}/${results.length}  (${cached.length} cached, ${checked.length} fetched)`);
-  console.log(`Failed:     ${failed.length}`);
-  if (failed.length) {
-    console.log(`\nFailing URLs:`);
-    for (const f of failed) console.log(`  [${f.status || "ERR"}] ${f.url}${(f as any).error ? ` (${(f as any).error})` : ""}`);
+  console.log(`OK (2xx + content-type): ${ok}/${results.length}  (${cached.length} cached, ${checked.length} fetched)`);
+  console.log(`Failed status:           ${failedStatus.length}`);
+  console.log(`Wrong content-type:      ${failedCT.length}`);
+  if (failedStatus.length) {
+    console.log(`\nFailing URLs (status):`);
+    for (const f of failedStatus) console.log(`  [${f.status || "ERR"}] ${f.url}${(f as any).error ? ` (${(f as any).error})` : ""}`);
+  }
+  if (failedCT.length) {
+    console.log(`\nFailing URLs (content-type):`);
+    for (const f of failedCT) {
+      const exp = expectedContentType(f.url).kind;
+      console.log(`  [expected ${exp}, got ${f.contentType ?? "none"}] ${f.url}`);
+    }
   }
 
   console.log(`\n--- Draft leak check ---`);
