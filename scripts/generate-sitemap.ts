@@ -30,6 +30,11 @@ interface SitemapEntry {
     | "yearly"
     | "never";
   priority?: string;
+  image?: {
+    loc: string;
+    title?: string;
+    caption?: string;
+  };
 }
 
 const today = new Date().toISOString().slice(0, 10);
