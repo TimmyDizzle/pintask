@@ -189,7 +189,7 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-16 pt-20 md:pt-28">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
+        <AnimatedHeroBackground />
         <div
           ref={heroReveal.ref}
           className={`mx-auto max-w-3xl text-center ${revealBase} duration-1000 ${heroReveal.isVisible ? revealVisible : revealHidden}`}
