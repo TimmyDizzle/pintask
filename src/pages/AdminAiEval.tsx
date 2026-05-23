@@ -196,6 +196,80 @@ function AdminAiEvalInner() {
         </header>
 
         <section className="space-y-3">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <h2 className="text-xl font-semibold">Spend by function</h2>
+            <div className="flex items-center gap-1">
+              {RANGES.map((r) => (
+                <Button
+                  key={r.label}
+                  size="sm"
+                  variant={rangeHours === r.hours ? "default" : "outline"}
+                  onClick={() => setRangeHours(r.hours)}
+                >
+                  {r.label}
+                </Button>
+              ))}
+              <Button size="sm" variant="ghost" onClick={loadUsage} disabled={usageLoading}>
+                <RefreshCw className={`h-3.5 w-3.5 ${usageLoading ? "animate-spin" : ""}`} />
+              </Button>
+            </div>
+          </div>
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/40 text-xs uppercase text-muted-foreground">
+                    <tr>
+                      <th className="text-left px-3 py-2">Function</th>
+                      <th className="text-left px-3 py-2">Model</th>
+                      <th className="text-right px-3 py-2">Calls</th>
+                      <th className="text-right px-3 py-2">Prompt</th>
+                      <th className="text-right px-3 py-2">Completion</th>
+                      <th className="text-right px-3 py-2">Total tok</th>
+                      <th className="text-right px-3 py-2">Avg ms</th>
+                      <th className="text-right px-3 py-2">Est. cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {usage.length === 0 ? (
+                      <tr><td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">
+                        {usageLoading ? "Loading…" : "No usage recorded in this window yet."}
+                      </td></tr>
+                    ) : usage.map((r, i) => (
+                      <tr key={i} className="border-t border-border">
+                        <td className="px-3 py-2 font-medium">{r.function_name}</td>
+                        <td className="px-3 py-2 text-muted-foreground text-xs">{r.model}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.calls}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.prompt_tokens.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.completion_tokens.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.total_tokens.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.avg_latency_ms ?? "—"}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{fmtUsd(r.cost_micro_usd)}</td>
+                      </tr>
+                    ))}
+                    {usage.length > 0 && (
+                      <tr className="border-t border-border bg-muted/30 font-medium">
+                        <td className="px-3 py-2" colSpan={2}>Total</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.calls, 0)}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.prompt_tokens, 0).toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.completion_tokens, 0).toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.total_tokens, 0).toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right text-muted-foreground">—</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{fmtUsd(usage.reduce((s, r) => s + r.cost_micro_usd, 0))}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+          <p className="text-xs text-muted-foreground">
+            Costs are estimated from token counts × per-model pricing. Update pricing in each edge function's <code>PRICING</code> table.
+          </p>
+        </section>
+
+
+        <section className="space-y-3">
           <div className="flex items-baseline justify-between">
             <h2 className="text-xl font-semibold">parse-task</h2>
             <span className="text-xs text-muted-foreground">Structured tool-call output</span>
