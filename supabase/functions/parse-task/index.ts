@@ -1,60 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logUsage } from "../_shared/aiUsage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-// USD per 1M tokens. Update as Lovable AI gateway pricing changes.
-const PRICING: Record<string, { in: number; out: number }> = {
-  "google/gemini-3-flash-preview": { in: 0.075, out: 0.30 },
-  "google/gemini-2.5-flash": { in: 0.075, out: 0.30 },
-  "google/gemini-2.5-flash-lite": { in: 0.04, out: 0.15 },
-  "google/gemini-2.5-pro": { in: 1.25, out: 5.00 },
-  "openai/gpt-5-mini": { in: 0.25, out: 2.00 },
-  "openai/gpt-5": { in: 1.25, out: 10.00 },
-};
-
-function estimateMicroUsd(model: string, promptTokens: number, completionTokens: number) {
-  const p = PRICING[model];
-  if (!p) return 0;
-  // micro-USD = (tokens / 1_000_000) * pricePerM * 1_000_000 = tokens * pricePerM
-  return Math.round(promptTokens * p.in + completionTokens * p.out);
-}
-
-async function logUsage(opts: {
-  userId: string | null;
-  functionName: string;
-  provider: string;
-  model: string;
-  usage: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | undefined;
-  latencyMs: number;
-}) {
-  try {
-    const url = Deno.env.get("SUPABASE_URL");
-    const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!url || !key) return;
-    const promptTokens = opts.usage?.prompt_tokens ?? 0;
-    const completionTokens = opts.usage?.completion_tokens ?? 0;
-    const totalTokens = opts.usage?.total_tokens ?? promptTokens + completionTokens;
-    const admin = createClient(url, key);
-    await admin.from("ai_usage").insert({
-      user_id: opts.userId,
-      function_name: opts.functionName,
-      provider: opts.provider,
-      model: opts.model,
-      prompt_tokens: promptTokens,
-      completion_tokens: completionTokens,
-      total_tokens: totalTokens,
-      cost_micro_usd: estimateMicroUsd(opts.model, promptTokens, completionTokens),
-      latency_ms: opts.latencyMs,
-    });
-  } catch (e) {
-    console.error("logUsage failed:", e);
-  }
-}
 
 const fallback = (title: string) => ({
   title,

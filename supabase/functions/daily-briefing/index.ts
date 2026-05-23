@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logUsage } from "../_shared/aiUsage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -182,32 +183,14 @@ serve(async (req) => {
     const aiData = await aiResponse.json();
     const briefing = aiData.choices?.[0]?.message?.content || "Unable to generate briefing.";
 
-    // Log usage (best-effort, fire-and-forget)
-    try {
-      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-      if (serviceKey) {
-        const PRICING: Record<string, { in: number; out: number }> = {
-          "google/gemini-3-flash-preview": { in: 0.075, out: 0.30 },
-        };
-        const p = PRICING[model] ?? { in: 0, out: 0 };
-        const pt = aiData.usage?.prompt_tokens ?? 0;
-        const ct = aiData.usage?.completion_tokens ?? 0;
-        const admin = createClient(supabaseUrl, serviceKey);
-        await admin.from("ai_usage").insert({
-          user_id: user.id,
-          function_name: "daily-briefing",
-          provider: "lovable",
-          model,
-          prompt_tokens: pt,
-          completion_tokens: ct,
-          total_tokens: aiData.usage?.total_tokens ?? pt + ct,
-          cost_micro_usd: Math.round(pt * p.in + ct * p.out),
-          latency_ms: latencyMs,
-        });
-      }
-    } catch (logErr) {
-      console.error("ai_usage log failed:", logErr);
-    }
+    await logUsage({
+      userId: user.id,
+      functionName: "daily-briefing",
+      provider: "lovable",
+      model,
+      usage: aiData.usage,
+      latencyMs,
+    });
 
     return new Response(JSON.stringify({ briefing }), {
       status: 200,

@@ -1,6 +1,7 @@
 // Personal AI Assistant — streaming chat with per-user monthly quota.
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { estimateMicroUsd } from "../_shared/aiUsage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,19 +14,6 @@ const SYSTEM_PROMPT =
   "You are Pintask Assistant, a concise and friendly productivity helper. " +
   "You help the user think through tasks, draft text, summarize ideas, and brainstorm. " +
   "Use markdown when helpful. Keep answers tight unless the user asks for depth.";
-
-// Same pricing table used elsewhere — keep in sync.
-const PRICING: Record<string, { in: number; out: number }> = {
-  "google/gemini-3-flash-preview": { in: 0.075, out: 0.30 },
-  "google/gemini-2.5-flash": { in: 0.075, out: 0.30 },
-  "google/gemini-2.5-pro": { in: 1.25, out: 5.00 },
-};
-
-function microUsd(model: string, prompt: number, completion: number) {
-  const p = PRICING[model];
-  if (!p) return 0;
-  return Math.round(prompt * p.in + completion * p.out);
-}
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -208,7 +196,7 @@ serve(async (req) => {
               prompt_tokens: pt,
               completion_tokens: ct,
               total_tokens: tt,
-              cost_micro_usd: microUsd(MODEL, pt, ct),
+              cost_micro_usd: estimateMicroUsd(MODEL, pt, ct),
               latency_ms: latencyMs,
             });
             await admin
