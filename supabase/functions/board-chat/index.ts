@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logUsage } from "../_shared/aiUsage.ts";
+
+const MODEL = "google/gemini-3-flash-preview";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -206,6 +209,7 @@ serve(async (req) => {
 
     // Tool-call loop (non-streamed) — when the model wants final text, switch to streaming.
     for (let i = 0; i < 5; i++) {
+      const t0 = performance.now();
       const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -213,11 +217,12 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: MODEL,
           messages: convo,
           tools,
         }),
       });
+      const latencyMs = Math.round(performance.now() - t0);
 
       if (!resp.ok) {
         if (resp.status === 429) {
@@ -238,12 +243,21 @@ serve(async (req) => {
       }
 
       const data = await resp.json();
+      logUsage({
+        userId: user.id,
+        functionName: "board-chat",
+        provider: "lovable",
+        model: MODEL,
+        usage: data.usage,
+        latencyMs,
+      });
       const msg = data.choices?.[0]?.message;
       if (!msg) break;
 
       const toolCalls = msg.tool_calls;
       if (!toolCalls || toolCalls.length === 0) {
-        // No more tools — stream the final answer
+        // No more tools — stream the final answer (token usage not available with streaming response;
+        // logged on the prior non-stream calls above, which dominate the spend).
         const finalResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -251,7 +265,7 @@ serve(async (req) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "google/gemini-3-flash-preview",
+            model: MODEL,
             messages: [...convo, { role: "system", content: "Now reply to the user in markdown. Keep it short." }],
             stream: true,
           }),

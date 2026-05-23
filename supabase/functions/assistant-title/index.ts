@@ -1,6 +1,7 @@
 // Generates a short 3–5 word title for an assistant conversation.
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { estimateMicroUsd } from "../_shared/aiUsage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -94,7 +95,7 @@ serve(async (req) => {
       prompt_tokens: u.prompt_tokens ?? 0,
       completion_tokens: u.completion_tokens ?? 0,
       total_tokens: u.total_tokens ?? 0,
-      cost_micro_usd: Math.round((u.prompt_tokens ?? 0) * 0.075 + (u.completion_tokens ?? 0) * 0.30),
+      cost_micro_usd: estimateMicroUsd(MODEL, u.prompt_tokens ?? 0, u.completion_tokens ?? 0),
       latency_ms: latencyMs,
     });
 

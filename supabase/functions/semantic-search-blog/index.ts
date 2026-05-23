@@ -1,4 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logUsage, getUserIdFromAuthHeader } from "../_shared/aiUsage.ts";
+
+const EMBED_MODEL = "openai/text-embedding-3-small";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,6 +34,7 @@ Deno.serve(async (req) => {
       });
     }
 
+    const t0 = performance.now();
     const embedRes = await fetch("https://ai.gateway.lovable.dev/v1/embeddings", {
       method: "POST",
       headers: {
@@ -38,11 +42,12 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "openai/text-embedding-3-small",
+        model: EMBED_MODEL,
         input: query,
         dimensions: 1536,
       }),
     });
+    const latencyMs = Math.round(performance.now() - t0);
 
     if (!embedRes.ok) {
       const status = embedRes.status;
@@ -65,8 +70,19 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { data } = await embedRes.json();
-    const queryEmbedding: number[] = data[0].embedding;
+    const embedJson = await embedRes.json();
+    const queryEmbedding: number[] = embedJson.data[0].embedding;
+
+    // Best-effort usage log (search is public — userId may be null)
+    const userId = await getUserIdFromAuthHeader(req.headers.get("Authorization"));
+    logUsage({
+      userId,
+      functionName: "semantic-search-blog",
+      provider: "lovable",
+      model: EMBED_MODEL,
+      usage: embedJson.usage,
+      latencyMs,
+    });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,

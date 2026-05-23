@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logUsage } from "../_shared/aiUsage.ts";
+
+const IMAGE_MODEL = "google/gemini-2.5-flash-image";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,6 +51,7 @@ serve(async (req) => {
       return json({ error: "Prompt must be 3-1000 characters" }, 400);
     }
 
+    const t0 = performance.now();
     const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -55,7 +59,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
+        model: IMAGE_MODEL,
         messages: [
           {
             role: "user",
@@ -66,6 +70,7 @@ serve(async (req) => {
         modalities: ["image", "text"],
       }),
     });
+    const latencyMs = Math.round(performance.now() - t0);
 
     if (!aiResp.ok) {
       if (aiResp.status === 429) return json({ error: "Rate limit exceeded, try again shortly." }, 429);
@@ -81,6 +86,17 @@ serve(async (req) => {
       console.error("No image in AI response", JSON.stringify(aiData).slice(0, 500));
       return json({ error: "No image returned by AI" }, 500);
     }
+
+    // Log image generation cost (per-image pricing, tokens not relevant)
+    logUsage({
+      userId: user.id,
+      functionName: "generate-blog-thumbnail",
+      provider: "lovable",
+      model: IMAGE_MODEL,
+      usage: aiData.usage,
+      latencyMs,
+      images: 1,
+    });
 
     const m = dataUrl.match(/^data:(image\/[^;]+);base64,(.+)$/);
     if (!m) return json({ error: "Bad image payload" }, 500);
