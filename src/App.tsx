@@ -62,6 +62,7 @@ const App = () => (
             <Route path="/ad-analytics" element={<AdAnalyticsPage />} />
             <Route path="/admin/blog" element={<AdminBlogList />} />
             <Route path="/admin/blog/:id" element={<AdminBlogEditor />} />
+            <Route path="/admin/ai-eval" element={<AdminAiEval />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
