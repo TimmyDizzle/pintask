@@ -4,7 +4,7 @@ import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowRight, Check, Infinity, Crown } from "lucide-react";
+import { ArrowRight, Check, Infinity, Crown, X, Minus, Sparkles, Trophy } from "lucide-react";
 
 const freePlan = [
   "Unlimited boards, lists & cards",
@@ -29,14 +29,106 @@ const faqItems = [
   { q: "Can I build my own extensions for free?", a: "Yes. The full JavaScript + Meteor API and MongoDB browser access are included on the free plan." },
 ];
 
-const comparisonData = [
-  { feature: "Free Kanban Board", pintask: "✅ Unlimited", trello: "✅ Limited", clickup: "✅ Limited", asana: "✅ Limited" },
-  { feature: "Nested Cards", pintask: "✅ Free", trello: "❌", clickup: "✅ Paid", asana: "❌" },
-  { feature: "API Access", pintask: "✅ Full JS", trello: "Limited", clickup: "Limited", asana: "Limited" },
-  { feature: "Build Custom Features", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌" },
-  { feature: "Starting Price", pintask: "$0", trello: "$0", clickup: "$0", asana: "$0" },
-  { feature: "Paid Plan From", pintask: "$8/mo*", trello: "$5/user/mo", clickup: "$7/user/mo", asana: "$10.99/user/mo" },
+type Cell =
+  | { kind: "yes"; note?: string }
+  | { kind: "no" }
+  | { kind: "partial"; note?: string }
+  | { kind: "text"; value: string; highlight?: boolean };
+
+const competitors = ["Pintask", "Trello", "ClickUp", "Asana"] as const;
+
+const comparisonRows: { feature: string; pintaskWins?: boolean; cells: [Cell, Cell, Cell, Cell] }[] = [
+  {
+    feature: "Free Kanban Board",
+    cells: [
+      { kind: "yes", note: "Unlimited" },
+      { kind: "partial", note: "Limited" },
+      { kind: "partial", note: "Limited" },
+      { kind: "partial", note: "Limited" },
+    ],
+    pintaskWins: true,
+  },
+  {
+    feature: "Nested Cards",
+    cells: [
+      { kind: "yes", note: "Free" },
+      { kind: "no" },
+      { kind: "partial", note: "Paid only" },
+      { kind: "no" },
+    ],
+    pintaskWins: true,
+  },
+  {
+    feature: "API Access",
+    cells: [
+      { kind: "yes", note: "Full JS" },
+      { kind: "partial", note: "Limited" },
+      { kind: "partial", note: "Limited" },
+      { kind: "partial", note: "Limited" },
+    ],
+    pintaskWins: true,
+  },
+  {
+    feature: "Build Custom Features",
+    cells: [{ kind: "yes" }, { kind: "no" }, { kind: "no" }, { kind: "no" }],
+    pintaskWins: true,
+  },
+  {
+    feature: "Starting Price",
+    cells: [
+      { kind: "text", value: "$0", highlight: true },
+      { kind: "text", value: "$0" },
+      { kind: "text", value: "$0" },
+      { kind: "text", value: "$0" },
+    ],
+  },
+  {
+    feature: "Paid Plan From",
+    cells: [
+      { kind: "text", value: "$8/mo*", highlight: true },
+      { kind: "text", value: "$5/user/mo" },
+      { kind: "text", value: "$7/user/mo" },
+      { kind: "text", value: "$10.99/user/mo" },
+    ],
+    pintaskWins: true,
+  },
 ];
+
+function ComparisonCell({ cell, isPintask }: { cell: Cell; isPintask: boolean }) {
+  const tone = isPintask ? "text-primary" : "text-muted-foreground";
+  if (cell.kind === "yes") {
+    return (
+      <div className="flex flex-col items-center gap-1">
+        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${isPintask ? "bg-primary/15 text-primary" : "bg-emerald-500/10 text-emerald-500"}`}>
+          <Check className="h-4 w-4" strokeWidth={3} />
+        </span>
+        {cell.note && <span className={`text-xs font-medium ${tone}`}>{cell.note}</span>}
+      </div>
+    );
+  }
+  if (cell.kind === "no") {
+    return (
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-muted-foreground/60">
+        <X className="h-4 w-4" strokeWidth={2.5} />
+      </span>
+    );
+  }
+  if (cell.kind === "partial") {
+    return (
+      <div className="flex flex-col items-center gap-1">
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+          <Minus className="h-4 w-4" strokeWidth={3} />
+        </span>
+        {cell.note && <span className="text-xs text-muted-foreground">{cell.note}</span>}
+      </div>
+    );
+  }
+  return (
+    <span className={`font-heading text-base font-semibold tabular-nums ${cell.highlight ? "text-primary" : "text-foreground/80"}`}>
+      {cell.value}
+    </span>
+  );
+}
 
 export default function PricingPage() {
   useDocumentTitle(
