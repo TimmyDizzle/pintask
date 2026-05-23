@@ -26,6 +26,7 @@ import BillingPage from "./pages/BillingPage";
 import AdAnalyticsPage from "./pages/AdAnalyticsPage";
 import AdminBlogList from "./pages/AdminBlogList";
 import AdminBlogEditor from "./pages/AdminBlogEditor";
+import AdminAiEval from "./pages/AdminAiEval";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 
 const queryClient = new QueryClient();
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/ad-analytics" element={<AdAnalyticsPage />} />
             <Route path="/admin/blog" element={<AdminBlogList />} />
             <Route path="/admin/blog/:id" element={<AdminBlogEditor />} />
+            <Route path="/admin/ai-eval" element={<AdminAiEval />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
