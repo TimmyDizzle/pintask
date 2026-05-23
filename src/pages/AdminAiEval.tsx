@@ -70,6 +70,58 @@ function AdminAiEvalInner() {
   const [briefA, setBriefA] = useState<RunState>(initial);
   const [briefB, setBriefB] = useState<RunState>(initial);
 
+  const [usage, setUsage] = useState<UsageRow[]>([]);
+  const [usageLoading, setUsageLoading] = useState(false);
+  const [rangeHours, setRangeHours] = useState(24);
+
+  const loadUsage = useCallback(async () => {
+    setUsageLoading(true);
+    try {
+      const since = new Date(Date.now() - rangeHours * 3600 * 1000).toISOString();
+      const { data, error } = await supabase
+        .from("ai_usage" as any)
+        .select("function_name, provider, model, prompt_tokens, completion_tokens, total_tokens, cost_micro_usd, latency_ms")
+        .gte("created_at", since)
+        .limit(1000);
+      if (error) throw error;
+      const groups = new Map<string, UsageRow>();
+      for (const r of (data ?? []) as any[]) {
+        const key = `${r.function_name}|${r.provider}|${r.model}`;
+        const g = groups.get(key) ?? {
+          function_name: r.function_name,
+          provider: r.provider,
+          model: r.model,
+          calls: 0,
+          prompt_tokens: 0,
+          completion_tokens: 0,
+          total_tokens: 0,
+          cost_micro_usd: 0,
+          avg_latency_ms: 0,
+        };
+        g.calls += 1;
+        g.prompt_tokens += r.prompt_tokens ?? 0;
+        g.completion_tokens += r.completion_tokens ?? 0;
+        g.total_tokens += r.total_tokens ?? 0;
+        g.cost_micro_usd += r.cost_micro_usd ?? 0;
+        g.avg_latency_ms = (g.avg_latency_ms ?? 0) + (r.latency_ms ?? 0);
+        groups.set(key, g);
+      }
+      const rows = Array.from(groups.values()).map((g) => ({
+        ...g,
+        avg_latency_ms: g.calls > 0 ? Math.round((g.avg_latency_ms ?? 0) / g.calls) : null,
+      }));
+      rows.sort((a, b) => b.cost_micro_usd - a.cost_micro_usd);
+      setUsage(rows);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUsageLoading(false);
+    }
+  }, [rangeHours]);
+
+  useEffect(() => { loadUsage(); }, [loadUsage]);
+
+
   const runParse = async () => {
     setParseA({ loading: true });
     setParseB({ loading: true });
