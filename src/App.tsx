@@ -26,6 +26,7 @@ import BillingPage from "./pages/BillingPage";
 import AdAnalyticsPage from "./pages/AdAnalyticsPage";
 import AdminBlogList from "./pages/AdminBlogList";
 import AdminBlogEditor from "./pages/AdminBlogEditor";
+import AdminAiEval from "./pages/AdminAiEval";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 
 const queryClient = new QueryClient();
