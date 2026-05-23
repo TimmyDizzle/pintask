@@ -41,6 +41,7 @@ import {
   CreditCard,
   BarChart3,
   FileText,
+  Sparkles,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -174,6 +175,14 @@ export function AppSidebar() {
                   <NavLink to="/reports" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
                     <Clock className="h-4 w-4 mr-2 shrink-0" />
                     {!collapsed && <span>Reports</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/assistant" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
+                    <Sparkles className="h-4 w-4 mr-2 shrink-0" />
+                    {!collapsed && <span>Assistant</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
