@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
+import BlogSemanticSearch from "@/components/BlogSemanticSearch";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Store, Code, Users, Copy as CopyIcon, Clock, CheckSquare, Zap, ArrowDown } from "lucide-react";
 
