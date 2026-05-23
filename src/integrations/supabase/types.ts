@@ -122,6 +122,95 @@ export type Database = {
         }
         Relationships: []
       }
+      assistant_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      assistant_messages: {
+        Row: {
+          completion_tokens: number
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          prompt_tokens: number
+          role: string
+          user_id: string
+        }
+        Insert: {
+          completion_tokens?: number
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          prompt_tokens?: number
+          role: string
+          user_id: string
+        }
+        Update: {
+          completion_tokens?: number
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          prompt_tokens?: number
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assistant_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "assistant_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assistant_quotas: {
+        Row: {
+          created_at: string
+          monthly_token_limit: number
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          monthly_token_limit?: number
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          monthly_token_limit?: number
+          tier?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       attachments: {
         Row: {
           content_type: string | null
@@ -736,6 +825,15 @@ export type Database = {
           plan: Database["public"]["Enums"]["subscription_plan"]
           price_cents: number
           status: Database["public"]["Enums"]["subscription_status"]
+        }[]
+      }
+      get_user_assistant_usage: {
+        Args: { _user_id: string }
+        Returns: {
+          period_end: string
+          period_start: string
+          tokens_limit: number
+          tokens_used: number
         }[]
       }
       has_role: {
