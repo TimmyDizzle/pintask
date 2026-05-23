@@ -52,6 +52,33 @@ function AdminBlogEditorInner() {
   const [seoDescription, setSeoDescription] = useState("");
   const [ogImage, setOgImage] = useState("");
   const [canonicalUrl, setCanonicalUrl] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiPreview, setAiPreview] = useState<string | null>(null);
+  const [aiBusy, setAiBusy] = useState(false);
+
+  const generateThumbnail = async () => {
+    const prompt = (aiPrompt || excerpt || title).trim();
+    if (prompt.length < 3) {
+      toast({ title: "Add a prompt, title, or excerpt first", variant: "destructive" });
+      return;
+    }
+    setAiBusy(true);
+    setAiPreview(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-blog-thumbnail", {
+        body: { prompt, slug: slug || "post" },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const url = (data as any)?.url as string;
+      setAiPreview(url);
+      toast({ title: "Thumbnail generated", description: "Click 'Use as OG image' to attach it." });
+    } catch (e: any) {
+      toast({ title: "Generation failed", description: e.message, variant: "destructive" });
+    } finally {
+      setAiBusy(false);
+    }
+  };
 
   const { data: existing } = useQuery({
     queryKey: ["blog-post-edit", id],
@@ -269,6 +296,46 @@ function AdminBlogEditorInner() {
                   alt="OG preview"
                   className="mt-2 w-full rounded border border-border object-cover aspect-[1200/630]"
                 />
+              )}
+            </div>
+
+            <div className="rounded-md border border-dashed border-border p-3 space-y-2">
+              <Label htmlFor="ai_prompt" className="text-xs uppercase tracking-wide text-muted-foreground">
+                Generate with AI
+              </Label>
+              <Textarea
+                id="ai_prompt"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                rows={2}
+                placeholder={excerpt || title || "Describe the thumbnail you want…"}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={generateThumbnail}
+                disabled={aiBusy}
+                className="w-full"
+              >
+                {aiBusy ? "Generating…" : "Generate thumbnail"}
+              </Button>
+              {aiPreview && (
+                <>
+                  <img
+                    src={aiPreview}
+                    alt="AI thumbnail preview"
+                    className="w-full rounded border border-border object-cover aspect-[1200/630]"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => { setOgImage(aiPreview); toast({ title: "Set as OG image" }); }}
+                    className="w-full"
+                  >
+                    Use as OG image
+                  </Button>
+                </>
               )}
             </div>
             <div>
