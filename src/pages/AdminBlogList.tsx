@@ -47,6 +47,42 @@ function ClaimAdminBanner() {
   );
 }
 
+function BackfillEmbeddingsButton() {
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const run = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("embed-blog-post", {
+        body: { all: true },
+      });
+      if (error) throw error;
+      toast({
+        title: "Search index updated",
+        description: `Embedded ${data?.embedded ?? 0} post(s).`,
+      });
+    } catch (e: any) {
+      toast({
+        title: "Backfill failed",
+        description: e?.message ?? "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <Button variant="outline" onClick={run} disabled={loading}>
+      {loading ? (
+        <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+      ) : (
+        <Sparkles className="h-4 w-4 mr-1" />
+      )}
+      Rebuild search index
+    </Button>
+  );
+}
+
 function AdminBlogListInner() {
   useDocumentTitle("Blog admin — Pintask");
   const qc = useQueryClient();
