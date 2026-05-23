@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -40,12 +40,29 @@ export function ImageAttachments({ taskId, projectId }: ImageAttachmentsProps) {
     },
   });
 
-  const getPublicUrl = (filePath: string) => {
-    const { data } = supabase.storage
-      .from("attachments")
-      .getPublicUrl(filePath);
-    return data.publicUrl;
-  };
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchUrls = async () => {
+      const paths = attachments.map((a: any) => a.file_path).filter(Boolean);
+      if (paths.length === 0) return;
+      const { data } = await supabase.storage
+        .from("attachments")
+        .createSignedUrls(paths, 3600);
+      if (cancelled || !data) return;
+      const map: Record<string, string> = {};
+      data.forEach((d: any) => {
+        if (d.path && d.signedUrl) map[d.path] = d.signedUrl;
+      });
+      setSignedUrls(map);
+    };
+    fetchUrls();
+    return () => { cancelled = true; };
+  }, [attachments]);
+
+  const getUrl = (filePath: string) => signedUrls[filePath] || "";
+
 
   const uploadImage = useMutation({
     mutationFn: async (file: File) => {
@@ -155,11 +172,11 @@ export function ImageAttachments({ taskId, projectId }: ImageAttachmentsProps) {
               className="group flex items-center gap-3 rounded-lg bg-muted/30 p-2 hover:bg-muted/50 transition-colors"
             >
               <button
-                onClick={() => setPreviewUrl(getPublicUrl(att.file_path))}
+                onClick={() => setPreviewUrl(getUrl(att.file_path))}
                 className="shrink-0"
               >
                 <img
-                  src={getPublicUrl(att.file_path)}
+                  src={getUrl(att.file_path)}
                   alt={att.file_name}
                   className="h-12 w-12 rounded object-cover border border-border"
                 />
