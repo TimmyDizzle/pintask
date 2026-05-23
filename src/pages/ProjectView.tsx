@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { KanbanBoard } from "@/components/KanbanBoard";
+import { BoardAssistant } from "@/components/BoardAssistant";
 import { ImageAttachments } from "@/components/ImageAttachments";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -208,7 +209,10 @@ export default function ProjectView() {
 
       {/* Board */}
       {board ? (
-        <KanbanBoard boardId={board.id} projectId={projectId!} />
+        <>
+          <KanbanBoard boardId={board.id} projectId={projectId!} />
+          <BoardAssistant boardId={board.id} />
+        </>
       ) : (
         <div className="flex items-center justify-center flex-1 text-muted-foreground">
           Loading board...
