@@ -172,11 +172,11 @@ export function ImageAttachments({ taskId, projectId }: ImageAttachmentsProps) {
               className="group flex items-center gap-3 rounded-lg bg-muted/30 p-2 hover:bg-muted/50 transition-colors"
             >
               <button
-                onClick={() => setPreviewUrl(getPublicUrl(att.file_path))}
+                onClick={() => setPreviewUrl(getUrl(att.file_path))}
                 className="shrink-0"
               >
                 <img
-                  src={getPublicUrl(att.file_path)}
+                  src={getUrl(att.file_path)}
                   alt={att.file_name}
                   className="h-12 w-12 rounded object-cover border border-border"
                 />
