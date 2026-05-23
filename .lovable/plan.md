@@ -1,94 +1,86 @@
-## Goal
+## What you already have
 
-Give every logged-in user a **Personal AI Assistant** — a private chat powered by Lovable AI, with a per-user monthly token quota. Admin pages (`/admin/blog`, `/admin/ai-eval`, ad revenue) stay locked down exactly as they are today.
+The `ai_usage` table and `/admin/ai-eval` dashboard already track tokens, cost (micro-USD), latency, provider, model, function, and user. Three functions log into it:
 
-## What the user gets
+- ✅ `parse-task`
+- ✅ `daily-briefing`
+- ✅ `assistant-chat`
+- ✅ `assistant-title`
 
-- New route `/assistant` (auth-required, in the app sidebar)
-- A clean chat UI: message list, streaming responses, markdown rendering, "New chat" button
-- Conversations are saved and listed in a left rail so users can resume them
-- A quota meter at the top: "12,400 / 50,000 tokens used this month — resets Dec 1"
-- Friendly empty-state with 3 suggested prompts ("Summarize my overdue tasks", "Draft an email about…", "Brainstorm names for…")
-- When quota is hit: assistant politely refuses and shows an "Upgrade" link (placeholder for now — wired to your existing billing page)
+## What's missing
 
-## What stays the same
+Five AI-calling functions write zero rows to `ai_usage`, so their spend is invisible:
 
-- `/admin/blog`, `/admin/blog/:id`, `/admin/ai-eval`, ad revenue views — **unchanged**, still gated by `AdminGuard`
-- Existing `parse-task`, `daily-briefing`, `weekly-report`, `board-chat` functions — untouched
+- ❌ `board-chat` — chat completions
+- ❌ `weekly-report` — chat completions
+- ❌ `embed-blog-post` — embeddings
+- ❌ `semantic-search-blog` — embeddings
+- ❌ `generate-blog-thumbnail` — image generation
 
-## Architecture
+Also: the pricing table is copy-pasted in each function (and incomplete — only Gemini Flash). One source of truth needed.
 
-```text
-[Sidebar: "Assistant"] ──► /assistant page
-                                │
-                                │ streams via fetch
-                                ▼
-                        assistant-chat edge function
-                          1. verify JWT (user.id)
-                          2. check quota (this month's tokens)
-                          3. if over → 402-style refusal
-                          4. else → stream from Lovable AI
-                          5. on done → log usage to ai_usage
-                                              + assistant_messages
-```
+## Plan
 
-## Database changes
+### 1. Shared pricing helper
 
-Three small additions, all RLS-scoped to `auth.uid()`:
+New file: `supabase/functions/_shared/aiUsage.ts`
 
-| Table | Purpose |
-|---|---|
-| `assistant_conversations` | One row per chat thread. Columns: `user_id`, `title` (auto-generated from first message), timestamps |
-| `assistant_messages` | One row per message. Columns: `conversation_id`, `user_id`, `role` ('user' / 'assistant'), `content`, `prompt_tokens`, `completion_tokens` |
-| `assistant_quotas` | Per-user monthly tier + override. Columns: `user_id` (PK), `tier` ('free' / 'pro'), `monthly_token_limit` (int), `period_start` (date). Default row auto-created on first chat with free tier = **50,000 tokens / month** |
+- `PRICING` map: USD per 1M tokens for every model currently in use plus image pricing (per-image, since image models bill per-output not per-token).
+  - `google/gemini-3-flash-preview`: in 0.075 / out 0.30
+  - `google/gemini-2.5-flash`, `gemini-2.5-flash-lite`, `gemini-2.5-pro`, `openai/gpt-5-mini`, `openai/gpt-5` — values already in `parse-task`
+  - `google/gemini-embedding-001`: per-token rate
+  - `google/gemini-2.5-flash-image` (Nano Banana): per-image rate
+- `estimateMicroUsd(model, prompt, completion, images?)` — handles both token-priced and image-priced models.
+- `logUsage({ supabaseUrl, serviceKey, userId, functionName, provider, model, usage, latencyMs, images? })` — fire-and-forget insert into `ai_usage`. Swallows errors so AI requests never fail because of logging.
 
-A SQL helper `get_user_assistant_usage(_user_id)` returns `{ tokens_used, tokens_limit, period_end }` so the client can render the meter with a single RPC call.
+All five new + existing functions will import from this file. (Existing four get migrated to it in the same pass to delete the duplicated `PRICING` blocks.)
 
-## Edge functions
+### 2. Wire each function
 
-1. **`assistant-chat`** (new)
-   - JWT-validates the caller
-   - Reads/creates `assistant_quotas` row
-   - Computes month-to-date tokens from `ai_usage` filtered by `function_name='assistant-chat'` and `user_id`
-   - If over limit → returns `402` with friendly JSON
-   - Else streams `google/gemini-3-flash-preview` from Lovable AI (SSE, per the AI Gateway guide)
-   - On stream completion: inserts the assistant message + logs to `ai_usage` (extends your existing spend dashboard automatically)
+For each: capture `t0 = performance.now()` before the fetch, capture `latencyMs` after, best-effort decode `userId` from JWT, call `logUsage(...)` after a successful response.
 
-2. **`assistant-title`** (new, tiny, non-streaming)
-   - Called once after the first exchange to generate a 4-word title for the conversation list
-   - Also logs to `ai_usage`
+| Function | Model used | Tokens source | Notes |
+|---|---|---|---|
+| board-chat | gemini-3-flash-preview (chat) | response `usage` | per-user chat |
+| weekly-report | gemini-3-flash-preview (chat) | response `usage` | scheduled / on-demand |
+| embed-blog-post | gemini-embedding-001 | response `usage` (prompt only, completion=0) | server-to-server, may have no user JWT — log `user_id = null` |
+| semantic-search-blog | gemini-embedding-001 | response `usage` | per-search |
+| generate-blog-thumbnail | gemini-2.5-flash-image | n/a — pass `images: 1` | cost computed per-image |
 
-No changes to existing functions.
+No behavior change — only one extra non-blocking insert per call.
 
-## Frontend
+### 3. Dashboard tweaks (small)
 
-- `src/pages/AssistantPage.tsx` — chat shell + conversation rail
-- `src/components/assistant/MessageList.tsx` — markdown via `react-markdown` (already in stack)
-- `src/components/assistant/Composer.tsx` — textarea + send, Enter to send / Shift+Enter newline
-- `src/components/assistant/QuotaMeter.tsx` — progress bar + reset date
-- `src/hooks/useAssistantStream.ts` — SSE parser (line-by-line per the AI Gateway pattern)
-- `src/hooks/useAssistantQuota.ts` — React Query hook around the RPC
-- `src/components/AppSidebar.tsx` — add "Assistant" link with a sparkle icon
+`src/pages/AdminAiEval.tsx` already groups by `function_name + provider + model`. Two additions:
 
-## Quota & cost protection
+- **Provider rollup card** at the top: total cost grouped by `provider` (lovable today, but the column is there so future providers slot in).
+- **Per-function sparkline** of daily cost over the selected range (24h / 7d / 30d) using `recharts` (already in deps). Helps you eyeball trends.
 
-- **Hard cap**: server-side check before each request — can't be bypassed from the client
-- **Default tier**: Free = 50,000 tokens/month (~25 short conversations); cheap on Gemini Flash (~$0.01/user/month worst case)
-- **Bonus**: usage shows up in your existing `/admin/ai-eval` dashboard automatically, since we reuse the `ai_usage` table — you'll see per-function spend without extra work
-- **Upgrade path stub**: "Upgrade to Pro" link points to `/billing` (your existing page). Future you can flip a user's `assistant_quotas.tier` to `pro` with a higher limit when they pay.
+No schema change, no new edge function, no new secret.
 
-## Out of scope (call out for later)
+### 4. Verification
 
-- Actual paid upgrade flow (just a link for now)
-- File/image upload to the assistant
-- Tool-calling (e.g. "create a task for me") — clean follow-up once chat is stable
-- Cross-device realtime sync of in-flight streams
+After deploy:
+1. Hit each of the 5 functions once (board chat message, run a weekly report, save a blog post, run a blog search, generate one thumbnail).
+2. `SELECT function_name, provider, model, count(*), sum(total_tokens), sum(cost_micro_usd) FROM ai_usage WHERE created_at > now() - interval '15 min' GROUP BY 1,2,3;` — confirm 5 new rows.
+3. Open `/admin/ai-eval` → confirm all 9 functions now appear and provider rollup matches the sum.
 
-## Success criteria
+## Out of scope (flag if you want them next)
 
-- A new logged-in user lands on `/assistant`, sends a message, sees streaming response, sees their quota tick up
-- Refresh → conversation is still there in the rail
-- Open a 2nd tab → both tabs read the same conversation list
-- Admin pages unchanged and still admin-gated
-- `/admin/ai-eval` shows a new `assistant-chat` row in the spend table
-- Hitting the cap shows a friendly upgrade prompt, not a stack trace
+- Backfilling historical Claude-era spend (not in the table; would have to be estimated).
+- Per-user quota enforcement on functions other than `assistant-chat`.
+- Export to CSV / billing alerts when daily spend crosses a threshold.
+
+## Files touched
+
+- **new** `supabase/functions/_shared/aiUsage.ts`
+- **edit** `supabase/functions/board-chat/index.ts`
+- **edit** `supabase/functions/weekly-report/index.ts`
+- **edit** `supabase/functions/embed-blog-post/index.ts`
+- **edit** `supabase/functions/semantic-search-blog/index.ts`
+- **edit** `supabase/functions/generate-blog-thumbnail/index.ts`
+- **edit** `supabase/functions/parse-task/index.ts` (swap inline pricing for shared helper)
+- **edit** `supabase/functions/daily-briefing/index.ts` (same)
+- **edit** `supabase/functions/assistant-chat/index.ts` (same)
+- **edit** `supabase/functions/assistant-title/index.ts` (same)
+- **edit** `src/pages/AdminAiEval.tsx` (provider rollup + sparkline)
