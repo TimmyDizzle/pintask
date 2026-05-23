@@ -40,12 +40,29 @@ export function ImageAttachments({ taskId, projectId }: ImageAttachmentsProps) {
     },
   });
 
-  const getPublicUrl = (filePath: string) => {
-    const { data } = supabase.storage
-      .from("attachments")
-      .getPublicUrl(filePath);
-    return data.publicUrl;
-  };
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchUrls = async () => {
+      const paths = attachments.map((a: any) => a.file_path).filter(Boolean);
+      if (paths.length === 0) return;
+      const { data } = await supabase.storage
+        .from("attachments")
+        .createSignedUrls(paths, 3600);
+      if (cancelled || !data) return;
+      const map: Record<string, string> = {};
+      data.forEach((d: any) => {
+        if (d.path && d.signedUrl) map[d.path] = d.signedUrl;
+      });
+      setSignedUrls(map);
+    };
+    fetchUrls();
+    return () => { cancelled = true; };
+  }, [attachments]);
+
+  const getUrl = (filePath: string) => signedUrls[filePath] || "";
+
 
   const uploadImage = useMutation({
     mutationFn: async (file: File) => {
