@@ -1,12 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import AdminGuard from "@/components/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
+type UsageRow = {
+  function_name: string;
+  provider: string;
+  model: string;
+  calls: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  cost_micro_usd: number;
+  avg_latency_ms: number | null;
+};
+
+const RANGES = [
+  { label: "24h", hours: 24 },
+  { label: "7d", hours: 24 * 7 },
+  { label: "30d", hours: 24 * 30 },
+];
+
+function fmtUsd(microUsd: number) {
+  const usd = microUsd / 1_000_000;
+  if (usd < 0.01) return `$${usd.toFixed(6)}`;
+  return `$${usd.toFixed(4)}`;
+}
+
 
 type RunState = {
   loading: boolean;
