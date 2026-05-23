@@ -77,9 +77,12 @@ function AdminBlogListInner() {
           <h1 className="font-heading text-3xl font-bold">Blog admin</h1>
           <p className="text-muted-foreground mt-1">Create, edit, and schedule blog posts.</p>
         </div>
-        <Button asChild>
-          <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-1" /> New post</Link>
-        </Button>
+        <div className="flex gap-2">
+          <BackfillEmbeddingsButton />
+          <Button asChild>
+            <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-1" /> New post</Link>
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-lg border border-border bg-card">
