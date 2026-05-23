@@ -166,7 +166,7 @@ export default function PricingPage() {
         <div className="mx-auto max-w-6xl grid gap-8 md:grid-cols-3">
           {/* Free */}
           <RevealSection delay={100}>
-            <div className="flex flex-col rounded-xl border-2 border-border/50 bg-card p-8 shadow-sm h-full">
+            <div className="flex flex-col rounded-xl border-2 border-border/50 bg-card p-8 shadow-lg h-full">
               <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary self-start">Free For Now</div>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="font-heading text-4xl font-extrabold">$0</span>
@@ -190,7 +190,7 @@ export default function PricingPage() {
 
           {/* Co-Founder Lifetime — featured */}
           <RevealSection delay={220}>
-            <div id="founder" className="relative flex flex-col rounded-xl border-2 border-primary bg-primary text-primary-foreground p-8 shadow-lg shadow-primary/20 h-full scroll-mt-24">
+            <div id="founder" className="relative flex flex-col rounded-xl border-2 border-primary bg-primary text-primary-foreground p-8 shadow-xl shadow-primary/25 h-full scroll-mt-24">
               <div className="rounded-full bg-primary-foreground/20 px-3 py-1 text-xs font-semibold self-start">Limited — 500 spots</div>
               <h2 className="mt-4 font-heading text-lg font-semibold">Co-Founder Lifetime</h2>
               <div className="mt-2 flex items-baseline gap-2">
@@ -224,7 +224,7 @@ export default function PricingPage() {
 
           {/* Loyalty Club */}
           <RevealSection delay={340}>
-            <div className="flex flex-col rounded-xl border-2 border-accent/50 bg-card p-8 shadow-sm h-full">
+            <div className="flex flex-col rounded-xl border-2 border-accent/50 bg-card p-8 shadow-lg h-full">
               <div className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent self-start flex items-center gap-1">
                 <Infinity className="h-3 w-3" /> Grandfathered Forever
               </div>
