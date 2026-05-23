@@ -136,6 +136,8 @@ serve(async (req) => {
       });
     }
 
+    const model = "google/gemini-3-flash-preview";
+    const t0 = performance.now();
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -143,7 +145,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model,
         messages: [
           {
             role: "system",
@@ -154,6 +156,7 @@ serve(async (req) => {
         ],
       }),
     });
+    const latencyMs = Math.round(performance.now() - t0);
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) {
@@ -178,6 +181,33 @@ serve(async (req) => {
 
     const aiData = await aiResponse.json();
     const briefing = aiData.choices?.[0]?.message?.content || "Unable to generate briefing.";
+
+    // Log usage (best-effort, fire-and-forget)
+    try {
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (serviceKey) {
+        const PRICING: Record<string, { in: number; out: number }> = {
+          "google/gemini-3-flash-preview": { in: 0.075, out: 0.30 },
+        };
+        const p = PRICING[model] ?? { in: 0, out: 0 };
+        const pt = aiData.usage?.prompt_tokens ?? 0;
+        const ct = aiData.usage?.completion_tokens ?? 0;
+        const admin = createClient(supabaseUrl, serviceKey);
+        await admin.from("ai_usage").insert({
+          user_id: user.id,
+          function_name: "daily-briefing",
+          provider: "lovable",
+          model,
+          prompt_tokens: pt,
+          completion_tokens: ct,
+          total_tokens: aiData.usage?.total_tokens ?? pt + ct,
+          cost_micro_usd: Math.round(pt * p.in + ct * p.out),
+          latency_ms: latencyMs,
+        });
+      }
+    } catch (logErr) {
+      console.error("ai_usage log failed:", logErr);
+    }
 
     return new Response(JSON.stringify({ briefing }), {
       status: 200,

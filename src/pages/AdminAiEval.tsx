@@ -1,12 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import AdminGuard from "@/components/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
+type UsageRow = {
+  function_name: string;
+  provider: string;
+  model: string;
+  calls: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  cost_micro_usd: number;
+  avg_latency_ms: number | null;
+};
+
+const RANGES = [
+  { label: "24h", hours: 24 },
+  { label: "7d", hours: 24 * 7 },
+  { label: "30d", hours: 24 * 30 },
+];
+
+function fmtUsd(microUsd: number) {
+  const usd = microUsd / 1_000_000;
+  if (usd < 0.01) return `$${usd.toFixed(6)}`;
+  return `$${usd.toFixed(4)}`;
+}
+
 
 type RunState = {
   loading: boolean;
@@ -44,6 +69,58 @@ function AdminAiEvalInner() {
 
   const [briefA, setBriefA] = useState<RunState>(initial);
   const [briefB, setBriefB] = useState<RunState>(initial);
+
+  const [usage, setUsage] = useState<UsageRow[]>([]);
+  const [usageLoading, setUsageLoading] = useState(false);
+  const [rangeHours, setRangeHours] = useState(24);
+
+  const loadUsage = useCallback(async () => {
+    setUsageLoading(true);
+    try {
+      const since = new Date(Date.now() - rangeHours * 3600 * 1000).toISOString();
+      const { data, error } = await supabase
+        .from("ai_usage" as any)
+        .select("function_name, provider, model, prompt_tokens, completion_tokens, total_tokens, cost_micro_usd, latency_ms")
+        .gte("created_at", since)
+        .limit(1000);
+      if (error) throw error;
+      const groups = new Map<string, UsageRow>();
+      for (const r of (data ?? []) as any[]) {
+        const key = `${r.function_name}|${r.provider}|${r.model}`;
+        const g = groups.get(key) ?? {
+          function_name: r.function_name,
+          provider: r.provider,
+          model: r.model,
+          calls: 0,
+          prompt_tokens: 0,
+          completion_tokens: 0,
+          total_tokens: 0,
+          cost_micro_usd: 0,
+          avg_latency_ms: 0,
+        };
+        g.calls += 1;
+        g.prompt_tokens += r.prompt_tokens ?? 0;
+        g.completion_tokens += r.completion_tokens ?? 0;
+        g.total_tokens += r.total_tokens ?? 0;
+        g.cost_micro_usd += r.cost_micro_usd ?? 0;
+        g.avg_latency_ms = (g.avg_latency_ms ?? 0) + (r.latency_ms ?? 0);
+        groups.set(key, g);
+      }
+      const rows = Array.from(groups.values()).map((g) => ({
+        ...g,
+        avg_latency_ms: g.calls > 0 ? Math.round((g.avg_latency_ms ?? 0) / g.calls) : null,
+      }));
+      rows.sort((a, b) => b.cost_micro_usd - a.cost_micro_usd);
+      setUsage(rows);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUsageLoading(false);
+    }
+  }, [rangeHours]);
+
+  useEffect(() => { loadUsage(); }, [loadUsage]);
+
 
   const runParse = async () => {
     setParseA({ loading: true });
@@ -117,6 +194,80 @@ function AdminAiEvalInner() {
             Lovable AI–backed implementation; use this to spot variance, cold-starts, and regressions.
           </p>
         </header>
+
+        <section className="space-y-3">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <h2 className="text-xl font-semibold">Spend by function</h2>
+            <div className="flex items-center gap-1">
+              {RANGES.map((r) => (
+                <Button
+                  key={r.label}
+                  size="sm"
+                  variant={rangeHours === r.hours ? "default" : "outline"}
+                  onClick={() => setRangeHours(r.hours)}
+                >
+                  {r.label}
+                </Button>
+              ))}
+              <Button size="sm" variant="ghost" onClick={loadUsage} disabled={usageLoading}>
+                <RefreshCw className={`h-3.5 w-3.5 ${usageLoading ? "animate-spin" : ""}`} />
+              </Button>
+            </div>
+          </div>
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/40 text-xs uppercase text-muted-foreground">
+                    <tr>
+                      <th className="text-left px-3 py-2">Function</th>
+                      <th className="text-left px-3 py-2">Model</th>
+                      <th className="text-right px-3 py-2">Calls</th>
+                      <th className="text-right px-3 py-2">Prompt</th>
+                      <th className="text-right px-3 py-2">Completion</th>
+                      <th className="text-right px-3 py-2">Total tok</th>
+                      <th className="text-right px-3 py-2">Avg ms</th>
+                      <th className="text-right px-3 py-2">Est. cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {usage.length === 0 ? (
+                      <tr><td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">
+                        {usageLoading ? "Loading…" : "No usage recorded in this window yet."}
+                      </td></tr>
+                    ) : usage.map((r, i) => (
+                      <tr key={i} className="border-t border-border">
+                        <td className="px-3 py-2 font-medium">{r.function_name}</td>
+                        <td className="px-3 py-2 text-muted-foreground text-xs">{r.model}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.calls}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.prompt_tokens.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.completion_tokens.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.total_tokens.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{r.avg_latency_ms ?? "—"}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{fmtUsd(r.cost_micro_usd)}</td>
+                      </tr>
+                    ))}
+                    {usage.length > 0 && (
+                      <tr className="border-t border-border bg-muted/30 font-medium">
+                        <td className="px-3 py-2" colSpan={2}>Total</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.calls, 0)}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.prompt_tokens, 0).toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.completion_tokens, 0).toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{usage.reduce((s, r) => s + r.total_tokens, 0).toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right text-muted-foreground">—</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{fmtUsd(usage.reduce((s, r) => s + r.cost_micro_usd, 0))}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+          <p className="text-xs text-muted-foreground">
+            Costs are estimated from token counts × per-model pricing. Update pricing in each edge function's <code>PRICING</code> table.
+          </p>
+        </section>
+
 
         <section className="space-y-3">
           <div className="flex items-baseline justify-between">

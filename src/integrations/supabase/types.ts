@@ -80,6 +80,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_usage: {
+        Row: {
+          completion_tokens: number
+          cost_micro_usd: number
+          created_at: string
+          function_name: string
+          id: string
+          latency_ms: number | null
+          model: string
+          prompt_tokens: number
+          provider: string
+          total_tokens: number
+          user_id: string | null
+        }
+        Insert: {
+          completion_tokens?: number
+          cost_micro_usd?: number
+          created_at?: string
+          function_name: string
+          id?: string
+          latency_ms?: number | null
+          model: string
+          prompt_tokens?: number
+          provider: string
+          total_tokens?: number
+          user_id?: string | null
+        }
+        Update: {
+          completion_tokens?: number
+          cost_micro_usd?: number
+          created_at?: string
+          function_name?: string
+          id?: string
+          latency_ms?: number | null
+          model?: string
+          prompt_tokens?: number
+          provider?: string
+          total_tokens?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       attachments: {
         Row: {
           content_type: string | null
