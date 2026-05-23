@@ -280,38 +280,125 @@ export default function PricingPage() {
       </section>
 
       {/* Comparison */}
-      <section className="border-t border-border/40 px-6 py-20">
-        <div className="mx-auto max-w-4xl">
-          <RevealSection><h2 className="text-center font-heading text-2xl font-bold tracking-tight sm:text-3xl mb-10">Pintask vs. The Competition</h2></RevealSection>
+      <section className="relative border-t border-border/40 px-6 py-24">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+        <div className="mx-auto max-w-5xl">
+          <RevealSection className="mb-12 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium uppercase tracking-wider text-primary">
+              <Sparkles className="h-3 w-3" /> Side-by-side
+            </span>
+            <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+              Pintask vs. <span className="text-primary">The Competition</span>
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Six features that matter. Four tools. One free forever.
+            </p>
+          </RevealSection>
+
           <RevealSection delay={100}>
-            <div className="overflow-x-auto rounded-xl border border-border/50 bg-card">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border/50 bg-muted/50">
-                    <th className="px-4 py-3 text-left font-heading font-semibold"></th>
-                    <th className="px-4 py-3 text-center font-heading font-semibold text-primary">Pintask</th>
-                    <th className="px-4 py-3 text-center font-heading font-semibold text-muted-foreground">Trello</th>
-                    <th className="px-4 py-3 text-center font-heading font-semibold text-muted-foreground">ClickUp</th>
-                    <th className="px-4 py-3 text-center font-heading font-semibold text-muted-foreground">Asana</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisonData.map((row) => (
-                    <tr key={row.feature} className="border-b border-border/30 last:border-0">
-                      <td className="px-4 py-3 font-medium">{row.feature}</td>
-                      <td className="px-4 py-3 text-center text-primary font-medium">{row.pintask}</td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">{row.trello}</td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">{row.clickup}</td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">{row.asana}</td>
+            <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-[0_30px_80px_-40px_hsl(var(--primary)/0.35)]">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border/60 bg-gradient-to-b from-muted/60 to-muted/20">
+                      <th className="w-[34%] px-5 py-5 text-left font-heading text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Feature
+                      </th>
+                      {competitors.map((c) => {
+                        const isPintask = c === "Pintask";
+                        return (
+                          <th
+                            key={c}
+                            className={`px-3 py-5 text-center font-heading text-sm font-semibold ${
+                              isPintask
+                                ? "relative bg-primary/10 text-primary"
+                                : "text-muted-foreground"
+                            }`}
+                          >
+                            <span className="inline-flex items-center gap-1.5">
+                              {isPintask && <Trophy className="h-3.5 w-3.5" />}
+                              {c}
+                            </span>
+                            {isPintask && (
+                              <span className="absolute inset-x-0 top-0 h-0.5 bg-primary" />
+                            )}
+                          </th>
+                        );
+                      })}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {comparisonRows.map((row, idx) => (
+                      <tr
+                        key={row.feature}
+                        className={`group border-b border-border/40 last:border-0 transition-colors hover:bg-muted/30 ${
+                          idx % 2 === 1 ? "bg-muted/15" : ""
+                        }`}
+                      >
+                        <td className="px-5 py-4 font-medium text-foreground">
+                          <span className="flex items-center gap-2">
+                            {row.feature}
+                            {row.pintaskWins && (
+                              <span className="hidden rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary sm:inline">
+                                Win
+                              </span>
+                            )}
+                          </span>
+                        </td>
+                        {row.cells.map((cell, i) => {
+                          const isPintask = i === 0;
+                          return (
+                            <td
+                              key={i}
+                              className={`px-3 py-4 text-center align-middle ${
+                                isPintask ? "bg-primary/[0.06]" : ""
+                              }`}
+                            >
+                              <ComparisonCell cell={cell} isPintask={isPintask} />
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 bg-muted/20 px-5 py-3 text-xs text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
+                      <Check className="h-2.5 w-2.5" strokeWidth={3} />
+                    </span>
+                    Included
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+                      <Minus className="h-2.5 w-2.5" strokeWidth={3} />
+                    </span>
+                    Limited
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-muted text-muted-foreground/60">
+                      <X className="h-2.5 w-2.5" strokeWidth={3} />
+                    </span>
+                    Not available
+                  </span>
+                </div>
+                <span>* Loyalty Club rate, locked forever.</span>
+              </div>
             </div>
-            <p className="mt-3 text-center text-xs text-muted-foreground">* Loyalty Club rate. Free plan available for everyone.</p>
+
+            <div className="mt-6 flex justify-center">
+              <Button asChild size="lg" className="h-11 px-8">
+                <Link to="/auth">
+                  Start Free — Beat the Competition <ArrowRight className="ml-1.5 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </RevealSection>
         </div>
       </section>
+
 
       {/* Final CTA */}
       <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
