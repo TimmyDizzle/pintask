@@ -106,7 +106,7 @@ function AdminAiEvalInner() {
         .order("created_at", { ascending: true })
         .limit(5000);
       if (error) throw error;
-      const rows = (data ?? []) as RawRow[];
+      const rows = (data ?? []) as unknown as RawRow[];
       setRawRows(rows);
 
       const groups = new Map<string, UsageRow>();
