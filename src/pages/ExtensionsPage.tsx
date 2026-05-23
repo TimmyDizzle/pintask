@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
+import BlogSemanticSearch from "@/components/BlogSemanticSearch";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Store, Code, Users, Copy as CopyIcon, Clock, CheckSquare, Zap, ArrowDown } from "lucide-react";
 
@@ -167,6 +168,23 @@ export default function ExtensionsPage() {
                 </div>
               ))}
             </div>
+          </RevealSection>
+        </div>
+      </section>
+
+      {/* Semantic Blog Search — AI-powered */}
+      <section className="border-t border-border/40 px-6 py-16">
+        <div className="mx-auto max-w-3xl">
+          <RevealSection className="text-center">
+            <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
+              Find the right read, by meaning
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              Describe what you're trying to solve and our AI surfaces the most relevant Pintask articles — no exact keywords required.
+            </p>
+          </RevealSection>
+          <RevealSection delay={80} className="mt-8">
+            <BlogSemanticSearch />
           </RevealSection>
         </div>
       </section>

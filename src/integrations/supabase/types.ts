@@ -138,6 +138,7 @@ export type Database = {
           category: string
           content: string
           created_at: string
+          embedding: string | null
           excerpt: string
           featured: boolean
           id: string
@@ -157,6 +158,7 @@ export type Database = {
           category?: string
           content?: string
           created_at?: string
+          embedding?: string | null
           excerpt?: string
           featured?: boolean
           id?: string
@@ -176,6 +178,7 @@ export type Database = {
           category?: string
           content?: string
           created_at?: string
+          embedding?: string | null
           excerpt?: string
           featured?: boolean
           id?: string
@@ -699,6 +702,24 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      match_blog_posts: {
+        Args: {
+          match_count?: number
+          query_embedding: string
+          similarity_threshold?: number
+        }
+        Returns: {
+          category: string
+          excerpt: string
+          id: string
+          og_image: string
+          published_at: string
+          read_time: string
+          similarity: number
+          slug: string
+          title: string
+        }[]
       }
       publish_due_blog_posts: { Args: never; Returns: undefined }
     }

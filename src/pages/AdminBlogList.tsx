@@ -7,7 +7,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Sparkles, Loader2 } from "lucide-react";
 import { fetchAllPostsAdmin, formatPostDate, type BlogPost } from "@/lib/blog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -47,6 +47,42 @@ function ClaimAdminBanner() {
   );
 }
 
+function BackfillEmbeddingsButton() {
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const run = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("embed-blog-post", {
+        body: { all: true },
+      });
+      if (error) throw error;
+      toast({
+        title: "Search index updated",
+        description: `Embedded ${data?.embedded ?? 0} post(s).`,
+      });
+    } catch (e: any) {
+      toast({
+        title: "Backfill failed",
+        description: e?.message ?? "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <Button variant="outline" onClick={run} disabled={loading}>
+      {loading ? (
+        <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+      ) : (
+        <Sparkles className="h-4 w-4 mr-1" />
+      )}
+      Rebuild search index
+    </Button>
+  );
+}
+
 function AdminBlogListInner() {
   useDocumentTitle("Blog admin — Pintask");
   const qc = useQueryClient();
@@ -77,9 +113,12 @@ function AdminBlogListInner() {
           <h1 className="font-heading text-3xl font-bold">Blog admin</h1>
           <p className="text-muted-foreground mt-1">Create, edit, and schedule blog posts.</p>
         </div>
-        <Button asChild>
-          <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-1" /> New post</Link>
-        </Button>
+        <div className="flex gap-2">
+          <BackfillEmbeddingsButton />
+          <Button asChild>
+            <Link to="/admin/blog/new"><Plus className="h-4 w-4 mr-1" /> New post</Link>
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-lg border border-border bg-card">

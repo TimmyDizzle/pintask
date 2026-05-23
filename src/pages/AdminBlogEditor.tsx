@@ -156,6 +156,10 @@ function AdminBlogEditorInner() {
       qc.invalidateQueries({ queryKey: ["blog-posts-admin"] });
       qc.invalidateQueries({ queryKey: ["blog-posts-public"] });
       toast({ title: isNew ? "Post created" : "Post saved" });
+      // Fire-and-forget: keep the semantic search index up-to-date.
+      supabase.functions
+        .invoke("embed-blog-post", { body: { id: post.id } })
+        .catch((err) => console.warn("Embedding failed:", err));
       if (isNew) navigate(`/admin/blog/${post.id}`, { replace: true });
     },
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
