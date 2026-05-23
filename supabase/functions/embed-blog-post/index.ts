@@ -1,4 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logUsage } from "../_shared/aiUsage.ts";
+
+const EMBED_MODEL = "openai/text-embedding-3-small";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -95,6 +98,7 @@ Deno.serve(async (req) => {
       return text || (p.title ?? "Untitled");
     });
 
+    const t0 = performance.now();
     const embedRes = await fetch("https://ai.gateway.lovable.dev/v1/embeddings", {
       method: "POST",
       headers: {
@@ -102,11 +106,12 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "openai/text-embedding-3-small",
+        model: EMBED_MODEL,
         input: inputs,
         dimensions: 1536,
       }),
     });
+    const latencyMs = Math.round(performance.now() - t0);
 
     if (!embedRes.ok) {
       const status = embedRes.status;
@@ -131,6 +136,14 @@ Deno.serve(async (req) => {
     }
 
     const embedJson = await embedRes.json();
+    await logUsage({
+      userId: userData.user.id,
+      functionName: "embed-blog-post",
+      provider: "lovable",
+      model: EMBED_MODEL,
+      usage: embedJson.usage,
+      latencyMs,
+    });
     const vectors: number[][] = embedJson.data.map((d: any) => d.embedding);
 
     // Update each row with its embedding.

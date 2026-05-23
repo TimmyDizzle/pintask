@@ -1,5 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { logUsage } from "../_shared/aiUsage.ts";
+
+const MODEL = "google/gemini-3-flash-preview";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -144,6 +147,7 @@ serve(async (req) => {
       });
     }
 
+    const t0 = performance.now();
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -151,7 +155,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: MODEL,
         messages: [
           {
             role: "system",
@@ -165,6 +169,7 @@ serve(async (req) => {
         ],
       }),
     });
+    const latencyMs = Math.round(performance.now() - t0);
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) {
@@ -188,6 +193,14 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
+    await logUsage({
+      userId: user.id,
+      functionName: "weekly-report",
+      provider: "lovable",
+      model: MODEL,
+      usage: aiData.usage,
+      latencyMs,
+    });
     const report = aiData.choices?.[0]?.message?.content || "Unable to generate report.";
 
     return new Response(
