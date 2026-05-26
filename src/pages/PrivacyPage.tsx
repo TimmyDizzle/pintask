@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+// @ts-ignore
 import remarkGfm from "remark-gfm";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
