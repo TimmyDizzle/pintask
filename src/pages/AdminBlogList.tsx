@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
@@ -9,10 +9,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Pencil, Trash2, Sparkles, Loader2 } from "lucide-react";
 import { fetchAllPostsAdmin, formatPostDate, type BlogPost } from "@/lib/blog";
-import { useAuth } from "@/contexts/AuthContext";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import AdminGuard from "@/components/AdminGuard";
 
 function statusVariant(status: BlogPost["status"]) {
   if (status === "published") return "default" as const;
@@ -20,32 +19,6 @@ function statusVariant(status: BlogPost["status"]) {
   return "outline" as const;
 }
 
-function ClaimAdminBanner() {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [claimed, setClaimed] = useState(false);
-  const handleClaim = async () => {
-    const { data, error } = await supabase.rpc("claim_first_admin");
-    if (error) return toast({ title: "Error", description: error.message, variant: "destructive" });
-    if (data) {
-      toast({ title: "You're admin!", description: "Reloading…" });
-      setClaimed(true);
-      setTimeout(() => window.location.reload(), 800);
-    } else {
-      toast({ title: "Already claimed", description: "An admin already exists.", variant: "destructive" });
-    }
-  };
-  if (!user || claimed) return null;
-  return (
-    <div className="mb-6 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-center justify-between">
-      <div>
-        <p className="font-semibold">First-time setup</p>
-        <p className="text-sm text-muted-foreground">Click to claim admin for this account (only works once).</p>
-      </div>
-      <Button onClick={handleClaim}>Claim admin</Button>
-    </div>
-  );
-}
 
 function BackfillEmbeddingsButton() {
   const { toast } = useToast();
@@ -173,26 +146,9 @@ function AdminBlogListInner() {
 }
 
 export default function AdminBlogList() {
-  const { user, loading } = useAuth();
-  const { isAdmin, isLoading } = useIsAdmin();
-
-  if (loading || (user && isLoading)) {
-    return <div className="p-8 text-muted-foreground">Loading…</div>;
-  }
-  if (!user) return <Navigate to="/auth" replace />;
-
-  if (!isAdmin) {
-    return (
-      <div className="container max-w-6xl py-10">
-        <h1 className="font-heading text-3xl font-bold mb-2">Blog admin</h1>
-        <p className="text-muted-foreground mb-6">
-          Your account doesn't have admin access yet. If no admin has been set up,
-          you can claim it below (one-time only).
-        </p>
-        <ClaimAdminBanner />
-      </div>
-    );
-  }
-
-  return <AdminBlogListInner />;
+  return (
+    <AdminGuard>
+      <AdminBlogListInner />
+    </AdminGuard>
+  );
 }

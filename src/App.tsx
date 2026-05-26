@@ -28,6 +28,7 @@ import AdminBlogList from "./pages/AdminBlogList";
 import AdminBlogEditor from "./pages/AdminBlogEditor";
 import AdminAiEval from "./pages/AdminAiEval";
 import AssistantPage from "./pages/AssistantPage";
+import AdminGuard from "./components/AdminGuard";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 
 const queryClient = new QueryClient();
@@ -60,7 +61,7 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/billing" element={<BillingPage />} />
-            <Route path="/ad-analytics" element={<AdAnalyticsPage />} />
+            <Route path="/ad-analytics" element={<AdminGuard><AdAnalyticsPage /></AdminGuard>} />
             <Route path="/assistant" element={<AssistantPage />} />
             <Route path="/admin/blog" element={<AdminBlogList />} />
             <Route path="/admin/blog/:id" element={<AdminBlogEditor />} />
