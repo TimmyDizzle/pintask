@@ -186,14 +186,16 @@ export function AppSidebar() {
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/ad-analytics" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
-                    <BarChart3 className="h-4 w-4 mr-2 shrink-0" />
-                    {!collapsed && <span>Ad analytics</span>}
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink to="/ad-analytics" activeClassName="bg-sidebar-accent text-sidebar-accent-foreground">
+                      <BarChart3 className="h-4 w-4 mr-2 shrink-0" />
+                      {!collapsed && <span>Ad analytics</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               {isAdmin && (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
