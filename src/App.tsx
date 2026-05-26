@@ -28,6 +28,7 @@ import AdminBlogList from "./pages/AdminBlogList";
 import AdminBlogEditor from "./pages/AdminBlogEditor";
 import AdminAiEval from "./pages/AdminAiEval";
 import AssistantPage from "./pages/AssistantPage";
+import UnsubscribePage from "./pages/UnsubscribePage";
 import AdminGuard from "./components/AdminGuard";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 
