@@ -173,26 +173,9 @@ function AdminBlogListInner() {
 }
 
 export default function AdminBlogList() {
-  const { user, loading } = useAuth();
-  const { isAdmin, isLoading } = useIsAdmin();
-
-  if (loading || (user && isLoading)) {
-    return <div className="p-8 text-muted-foreground">Loading…</div>;
-  }
-  if (!user) return <Navigate to="/auth" replace />;
-
-  if (!isAdmin) {
-    return (
-      <div className="container max-w-6xl py-10">
-        <h1 className="font-heading text-3xl font-bold mb-2">Blog admin</h1>
-        <p className="text-muted-foreground mb-6">
-          Your account doesn't have admin access yet. If no admin has been set up,
-          you can claim it below (one-time only).
-        </p>
-        <ClaimAdminBanner />
-      </div>
-    );
-  }
-
-  return <AdminBlogListInner />;
+  return (
+    <AdminGuard>
+      <AdminBlogListInner />
+    </AdminGuard>
+  );
 }
