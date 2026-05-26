@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+// @ts-expect-error - remark-gfm ships types but no exports map for them
 import remarkGfm from "remark-gfm";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
