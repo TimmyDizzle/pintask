@@ -121,7 +121,7 @@ export default function LandingPage() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  const heroReveal = useScrollReveal({ threshold: 0.1 });
+  const heroReveal = useScrollReveal({ threshold: 0.1, initialVisible: true });
   const shotReveal = useScrollReveal({ threshold: 0.1 });
   const featuresReveal = useScrollReveal({ threshold: 0.1 });
   const pricingReveal = useScrollReveal({ threshold: 0.1 });
