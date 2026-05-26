@@ -1,7 +1,7 @@
 # Privacy Policy - Pintask
 
-**Effective Date:** [DATE]
-**Last Updated:** [DATE]
+**Effective Date:** May 26, 2026
+**Last Updated:** May 26, 2026
 
 > **Legal Notice:** This Privacy Policy is written in plain English to be as clear as possible. For specific legal advice regarding data privacy obligations in your jurisdiction, please consult a qualified attorney.
 
@@ -11,7 +11,7 @@
 
 Pintask ("Pintask," "we," "us," or "our") operates the task management platform at pintask.online. This Privacy Policy explains what personal data we collect, how we use it, and what rights you have over it.
 
-If you have questions, contact us at: **[SUPPORT EMAIL]**
+If you have questions, contact us at: **hello@pintask.online**
 
 ---
 
@@ -128,7 +128,7 @@ We take reasonable technical and organizational measures to protect your data, i
 - Access to production systems is limited to authorized personnel
 - Regular security reviews and updates
 
-That said, no system is 100% secure. If you suspect your account has been compromised, contact us immediately at **[SUPPORT EMAIL]**.
+That said, no system is 100% secure. If you suspect your account has been compromised, contact us immediately at **hello@pintask.online**.
 
 ---
 
@@ -146,7 +146,7 @@ We'll update this policy if our AI data practices change materially.
 
 ## 10. Children's Privacy
 
-Pintask is not intended for children under 13. We do not knowingly collect personal data from children under 13. If you believe we have, contact us at **[SUPPORT EMAIL]** and we'll delete it promptly.
+Pintask is not intended for children under 13. We do not knowingly collect personal data from children under 13. If you believe we have, contact us at **hello@pintask.online** and we'll delete it promptly.
 
 If you're between 13 and 18, you need parental consent to use Pintask.
 
@@ -184,7 +184,7 @@ By using Pintask, you acknowledge that your data will be transferred internation
 - Right to opt out of the "sale" of personal information (we don't sell your data)
 - Right to non-discrimination for exercising your privacy rights
 
-To exercise any of these rights, contact us at **[SUPPORT EMAIL]**. We'll respond within 30 days (or within legally required timeframes).
+To exercise any of these rights, contact us at **hello@pintask.online**. We'll respond within 30 days (or within legally required timeframes).
 
 ---
 
@@ -211,11 +211,11 @@ Continued use of Pintask after changes means you accept the updated policy.
 Pintask
 [COMPANY LEGAL NAME]
 [MAILING ADDRESS]
-Email: [SUPPORT EMAIL]
+Email: hello@pintask.online
 Website: https://pintask.online
 
 **For GDPR inquiries (EEA/UK users):**
-[DPO NAME or "our data team"] - [SUPPORT EMAIL]
+[DPO NAME or "our data team"] - hello@pintask.online
 
 ---
 

@@ -1,7 +1,7 @@
 # Terms of Service, Pintask
 
-**Effective Date:** [DATE]
-**Last Updated:** [DATE]
+**Effective Date:** May 26, 2026
+**Last Updated:** May 26, 2026
 
 > **Legal Notice:** These Terms of Service constitute a binding legal agreement. While written in plain English for clarity, we recommend consulting a qualified attorney before finalizing any legal document.
 
@@ -23,7 +23,7 @@ By creating an account or using Pintask in any way, you ("you" or "User") agree 
 
 **Who can use Pintask:** You must be at least 13 years old to use Pintask. If you're under 18, you need your parent or legal guardian's permission.
 
-**Your account:** You're responsible for keeping your login credentials secure. If someone else accesses your account because you shared your password or didn't secure it, that's on you. Notify us immediately at [SUPPORT EMAIL] if you suspect unauthorized access.
+**Your account:** You're responsible for keeping your login credentials secure. If someone else accesses your account because you shared your password or didn't secure it, that's on you. Notify us immediately at hello@pintask.online if you suspect unauthorized access.
 
 **One account per person:** You may not create multiple accounts to circumvent plan limits or abuse free tier availability.
 
@@ -156,7 +156,7 @@ Your content remains yours. Our platform remains ours.
 - **Co-Founder Lifetime:** Eligible for a full refund within [X] days of purchase if you're not satisfied. After that window, all sales are final.
 - **Exceptions:** If required by applicable consumer protection law in your jurisdiction, you may have additional refund rights.
 
-To request a refund, contact us at [SUPPORT EMAIL].
+To request a refund, contact us at hello@pintask.online.
 
 ---
 
@@ -210,7 +210,7 @@ Continued use of Pintask after changes take effect means you accept the new Term
 
 These Terms are governed by the laws of the State of [YOUR STATE], United States, without regard to conflict of law principles.
 
-**Informal resolution first:** Before filing any legal claim, you agree to contact us at [SUPPORT EMAIL] and give us 30 days to resolve the issue informally.
+**Informal resolution first:** Before filing any legal claim, you agree to contact us at hello@pintask.online and give us 30 days to resolve the issue informally.
 
 **Arbitration:** If we can't resolve a dispute informally, both parties agree to binding individual arbitration under [ARBITRATION BODY, e.g., AAA] rules, rather than a court trial or class action. You waive any right to a jury trial or to participate in a class action lawsuit.
 
@@ -234,7 +234,7 @@ Questions about these Terms? Reach out:
 **Pintask**
 [COMPANY LEGAL NAME]
 [MAILING ADDRESS]
-Email: [SUPPORT EMAIL]
+Email: hello@pintask.online
 Website: https://pintask.online
 
 ---
