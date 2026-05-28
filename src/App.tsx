@@ -31,6 +31,7 @@ import AssistantPage from "./pages/AssistantPage";
 import UnsubscribePage from "./pages/UnsubscribePage";
 import AdminGuard from "./components/AdminGuard";
 import CookieConsentBanner from "./components/CookieConsentBanner";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +42,9 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <CookieConsentBanner />
+
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Index />} />
