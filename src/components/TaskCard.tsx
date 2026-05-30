@@ -1,5 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Link as LinkIcon, Clock } from "lucide-react";
@@ -17,64 +15,28 @@ interface TaskCardProps {
   task: Tables<"tasks">;
   isDragging: boolean;
   onClick: () => void;
+  hasActiveTimer?: boolean;
+  linkCount?: number;
+  labels?: Array<{ id: string; name: string; color: string }>;
 }
 
-export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
-  const { data: linkCount = 0 } = useQuery({
-    queryKey: ["task-link-count", task.id],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("task_links")
-        .select("*", { count: "exact", head: true })
-        .eq("task_id", task.id);
-      if (error) throw error;
-      return count || 0;
-    },
-  });
-
-  const { data: activeTimer } = useQuery({
-    queryKey: ["active-timer", task.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("time_entries")
-        .select("*")
-        .eq("task_id", task.id)
-        .is("ended_at", null)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Labels for this task
-  const { data: taskLabels = [] } = useQuery({
-    queryKey: ["task-labels-full", task.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("task_labels" as any)
-        .select("label_id")
-        .eq("task_id", task.id);
-      if (error) throw error;
-      const labelIds = (data as any[]).map((tl) => tl.label_id);
-      if (labelIds.length === 0) return [];
-      const { data: labels, error: lErr } = await supabase
-        .from("labels" as any)
-        .select("id, name, color")
-        .in("id", labelIds);
-      if (lErr) throw lErr;
-      return labels as any[];
-    },
-  });
-
+export function TaskCard({
+  task,
+  isDragging,
+  onClick,
+  hasActiveTimer = false,
+  linkCount = 0,
+  labels = [],
+}: TaskCardProps) {
   const isUrgent = task.priority === "urgent";
-  const hasMetadata = !!task.due_date || taskLabels.length > 0;
+  const hasMetadata = !!task.due_date || labels.length > 0;
 
   return (
     <Card
       onClick={onClick}
       className={`p-3 cursor-pointer hover:shadow-md transition-all border-border/50 ${
         isDragging ? "shadow-lg rotate-2 scale-105" : ""
-      } ${activeTimer ? "ring-2 ring-accent/50" : ""} ${
+      } ${hasActiveTimer ? "ring-2 ring-accent/50" : ""} ${
         isUrgent ? "border-l-[3px] border-l-red-500" : ""
       } ${!hasMetadata ? "opacity-[0.88]" : ""}`}
     >
@@ -84,9 +46,9 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
           style={{ backgroundColor: task.color_label }}
         />
       )}
-      {taskLabels.length > 0 && (
+      {labels.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-1.5">
-          {taskLabels.map((label: any) => (
+          {labels.map((label) => (
             <Badge
               key={label.id}
               className="text-[9px] text-white border-0 px-1.5 py-0 h-4 font-medium"
@@ -131,7 +93,7 @@ export function TaskCard({ task, isDragging, onClick }: TaskCardProps) {
             {linkCount}
           </span>
         )}
-        {activeTimer && (
+        {hasActiveTimer && (
           <span className="flex items-center gap-1 text-[10px] text-accent font-medium">
             <Clock className="h-3 w-3 animate-pulse" />
             Tracking
