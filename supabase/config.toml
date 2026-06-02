@@ -9,6 +9,10 @@ project_id = "zieqfktltyolazltppjo"
     verify_jwt = false
   [functions.send-transactional-email]
     verify_jwt = true
+  [functions.send-due-date-reminders]
+    verify_jwt = true
+  [functions.semantic-search-blog]
+    verify_jwt = true
   [functions.preview-transactional-email]
     verify_jwt = false
   [functions.handle-email-unsubscribe]
