@@ -82,7 +82,7 @@ function CtaBlock() {
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
       </a>
-      <div className="flex items-center justify-center gap-2 mt-4 text-white/40 text-xs">
+      <div className="flex items-center justify-center gap-2 mt-4 text-white/70 text-xs">
         <Shield className="w-3 h-3" />
         14-Day Money-Back Guarantee
       </div>
@@ -197,7 +197,7 @@ export default function JVSalesPage() {
                 <s.icon className="w-5 h-5 text-purple-400" />
               </div>
               <p className="text-sm font-semibold text-white/90">{s.label}</p>
-              <p className="text-xs text-white/40">{s.sub}</p>
+              <p className="text-xs text-white/70">{s.sub}</p>
             </div>
           ))}
         </div>
@@ -326,7 +326,7 @@ export default function JVSalesPage() {
           Users Are Already Crushing It.{" "}
           <span className="text-white/50">And They Can't Stop Talking About It. 🔥</span>
         </h2>
-        <p className="text-white/40 text-center mb-12">No hype. No filters. Just real results.</p>
+        <p className="text-white/70 text-center mb-12">No hype. No filters. Just real results.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {[
@@ -342,7 +342,7 @@ export default function JVSalesPage() {
               <p className="text-white/70 text-sm mb-4 italic">"{t.quote}"</p>
               <div>
                 <p className="text-white/90 text-sm font-semibold">{t.name}</p>
-                <p className="text-white/40 text-xs">{t.role}</p>
+                <p className="text-white/70 text-xs">{t.role}</p>
               </div>
             </div>
           ))}
@@ -409,10 +409,10 @@ export default function JVSalesPage() {
           </div>
 
           <div className="border-t border-white/10 pt-8 text-center">
-            <p className="text-white/40 text-sm mb-1">💎 Total Value: <span className="line-through">$497</span></p>
+            <p className="text-white/70 text-sm mb-1">💎 Total Value: <span className="line-through">$497</span></p>
             <p className="text-white text-sm mb-1">🚀 Today Only:</p>
             <p className="text-5xl font-bold text-green-400 mb-1">$17</p>
-            <p className="text-white/40 text-xs mb-6">One-time payment. No monthly fees. No hidden costs.</p>
+            <p className="text-white/70 text-xs mb-6">One-time payment. No monthly fees. No hidden costs.</p>
             
             <a href="https://www.jvzoo.com" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="w-full text-lg py-7 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/25 border-0 rounded-xl">
@@ -420,7 +420,7 @@ export default function JVSalesPage() {
               </Button>
             </a>
 
-            <div className="flex items-center justify-center gap-4 mt-4 text-white/30 text-xs">
+            <div className="flex items-center justify-center gap-4 mt-4 text-white/70 text-xs">
               <span>🔒 256-bit secure checkout</span>
               <span>⚡ Instant delivery</span>
               <span>💳 One-time payment</span>
@@ -474,7 +474,7 @@ export default function JVSalesPage() {
       <footer className="border-t border-white/5 bg-[#060612]">
         <div className="max-w-4xl mx-auto px-4 py-10">
           <div className="text-[11px] text-white/25 leading-relaxed space-y-4">
-            <p className="font-semibold text-white/40 text-xs">Disclaimer</p>
+            <p className="font-semibold text-white/70 text-xs">Disclaimer</p>
             <p>
               Please note that this product does not provide any guarantee of income or success. The results achieved by the product owner or any other individuals mentioned are not indicative of future success or earnings. This website is not affiliated with FaceBook or any of its associated entities. Once you navigate away from FaceBook, the responsibility for the content and its usage lies solely with the user. All content on this website, including but not limited to text, images, and multimedia, is protected by copyright law and the Digital Millennium Copyright Act. Unauthorized copying, duplication, modification, or theft, whether intentional or unintentional, is strictly prohibited. Violators will be prosecuted to the fullest extent of the law.
             </p>
@@ -483,7 +483,7 @@ export default function JVSalesPage() {
             </p>
           </div>
           <div className="mt-8 pt-6 border-t border-white/5 text-center">
-            <p className="text-xs text-white/20">© {new Date().getFullYear()} Pintask. All rights reserved.</p>
+            <p className="text-xs text-white/60">© {new Date().getFullYear()} Pintask. All rights reserved.</p>
           </div>
         </div>
       </footer>
