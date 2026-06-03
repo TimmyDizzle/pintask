@@ -200,10 +200,7 @@ export default function LandingPage() {
           >
             🔁 Pintask is back — and it brought AI with it
           </div>
-          <h1
-            className={`mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08] ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
-            style={{ transitionDelay: "200ms" }}
-          >
+          <h1 className="mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08]">
             The Kanban Board That
             <br />
             <span className="text-primary">Actually Bends</span> to How You Work.
