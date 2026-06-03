@@ -39,6 +39,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <div className="border-t border-border/40 bg-background px-6 py-4 md:hidden">
             <div className="flex flex-col gap-2">
               <Button variant="ghost" className="w-full justify-start" asChild><Link to="/features" onClick={() => setMobileMenuOpen(false)}>Features</Link></Button>
+              <Button variant="ghost" className="w-full justify-start" asChild><Link to="/blog" onClick={() => setMobileMenuOpen(false)}>Blog</Link></Button>
               <Button variant="ghost" className="w-full justify-start" asChild><Link to="/pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</Link></Button>
               <Button variant="ghost" className="w-full justify-start" asChild><Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link></Button>
               <Button className="w-full" asChild><Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Get Started Free</Link></Button>
