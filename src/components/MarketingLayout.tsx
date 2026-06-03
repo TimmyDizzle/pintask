@@ -24,6 +24,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           </Link>
           <div className="hidden items-center gap-3 md:flex">
             <Button variant="ghost" asChild><Link to="/features">Features</Link></Button>
+            <Button variant="ghost" asChild><Link to="/blog">Blog</Link></Button>
             <Button variant="ghost" asChild><Link to="/pricing">Pricing</Link></Button>
             <Button variant="ghost" asChild><Link to="/auth">Sign In</Link></Button>
             <Button asChild>
