@@ -11,6 +11,7 @@ import AdminGuard from "@/components/AdminGuard";
 
 const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const ProjectPage = lazy(() => import("./pages/ProjectPage"));
 const ReportsPage = lazy(() => import("./pages/ReportsPage"));
 const JVPage = lazy(() => import("./pages/JVPage"));
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/project/:projectId" element={<ProjectPage />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/jv" element={<JVPage />} />

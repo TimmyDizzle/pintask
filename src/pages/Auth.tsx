@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { CheckSquare, Sparkles, Infinity as InfinityIcon } from "lucide-react";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 type PlanKey = "founder" | "loyalty";
+type Mode = "login" | "signup" | "forgot";
 
 const PLAN_META: Record<PlanKey, { label: string; price: string; blurb: string; icon: typeof Sparkles }> = {
   founder: {
@@ -29,11 +31,21 @@ const PLAN_META: Record<PlanKey, { label: string; price: string; blurb: string; 
 export default function Auth() {
   const [searchParams] = useSearchParams();
   const planParam = searchParams.get("plan");
+  const modeParam = searchParams.get("mode");
   const selectedPlan: PlanKey | null =
     planParam === "founder" || planParam === "loyalty" ? planParam : null;
 
-  const [isLogin, setIsLogin] = useState(!selectedPlan);
-  useDocumentTitle(isLogin ? "Log In" : "Sign Up");
+  const initialMode: Mode =
+    modeParam === "forgot" ? "forgot" : selectedPlan ? "signup" : "login";
+  const [mode, setMode] = useState<Mode>(initialMode);
+
+  const titleMap: Record<Mode, string> = {
+    login: "Log In",
+    signup: "Sign Up",
+    forgot: "Reset Password",
+  };
+  useDocumentTitle(titleMap[mode]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -42,7 +54,6 @@ export default function Auth() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Persist the selected plan so it survives auth redirects / email verification
   useEffect(() => {
     if (selectedPlan) {
       localStorage.setItem("pintask_pending_plan", selectedPlan);
@@ -53,7 +64,7 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
     try {
-      if (isLogin) {
+      if (mode === "login") {
         await signIn(email, password);
         if (selectedPlan) {
           toast({
@@ -62,7 +73,7 @@ export default function Auth() {
           });
         }
         navigate("/");
-      } else {
+      } else if (mode === "signup") {
         await signUp(email, password, displayName);
         toast({
           title: "Account created!",
@@ -71,6 +82,16 @@ export default function Auth() {
             : "Check your email to verify your account, or start using the app right away.",
         });
         navigate("/");
+      } else {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast({
+          title: "Check your email",
+          description: "If an account exists for that address, a password reset link is on its way.",
+        });
+        setMode("login");
       }
     } catch (error: any) {
       toast({
@@ -86,6 +107,24 @@ export default function Auth() {
   const planInfo = selectedPlan ? PLAN_META[selectedPlan] : null;
   const PlanIcon = planInfo?.icon;
 
+  const cardTitle =
+    mode === "login"
+      ? "Welcome back"
+      : mode === "forgot"
+      ? "Reset your password"
+      : planInfo
+      ? `Claim your ${planInfo.label}`
+      : "Create account";
+
+  const cardDescription =
+    mode === "login"
+      ? "Sign in to your account"
+      : mode === "forgot"
+      ? "Enter your email and we'll send you a reset link."
+      : planInfo
+      ? "Create an account to lock in your plan"
+      : "Get started with Pintask";
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
@@ -99,7 +138,7 @@ export default function Auth() {
           </p>
         </div>
 
-        {planInfo && PlanIcon && (
+        {planInfo && PlanIcon && mode !== "forgot" && (
           <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
             <div className="flex items-start gap-3">
               <div className="rounded-md bg-primary/10 p-2 text-primary">
@@ -118,20 +157,12 @@ export default function Auth() {
 
         <Card className="shadow-lg border-border/50">
           <CardHeader className="pb-4">
-            <CardTitle className="text-xl">
-              {isLogin ? "Welcome back" : planInfo ? `Claim your ${planInfo.label}` : "Create account"}
-            </CardTitle>
-            <CardDescription>
-              {isLogin
-                ? "Sign in to your account"
-                : planInfo
-                ? "Create an account to lock in your plan"
-                : "Get started with Pintask"}
-            </CardDescription>
+            <CardTitle className="text-xl">{cardTitle}</CardTitle>
+            <CardDescription>{cardDescription}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
+              {mode === "signup" && (
                 <div className="space-y-2">
                   <Label htmlFor="displayName">Display Name</Label>
                   <Input
@@ -139,7 +170,7 @@ export default function Auth() {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Your name"
-                    required={!isLogin}
+                    required
                   />
                 </div>
               )}
@@ -154,36 +185,64 @@ export default function Auth() {
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  minLength={6}
-                />
-              </div>
+              {mode !== "forgot" && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    {mode === "login" && (
+                      <button
+                        type="button"
+                        onClick={() => setMode("forgot")}
+                        className="text-xs text-primary hover:underline font-medium"
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    minLength={6}
+                  />
+                </div>
+              )}
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading
                   ? "Loading..."
-                  : isLogin
+                  : mode === "login"
                   ? "Sign In"
+                  : mode === "forgot"
+                  ? "Send reset link"
                   : planInfo
                   ? `Create Account & Claim ${planInfo.label}`
                   : "Create Account"}
               </Button>
             </form>
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-              <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-primary hover:underline font-medium"
-              >
-                {isLogin ? "Sign up" : "Sign in"}
-              </button>
+            <div className="mt-4 text-center text-sm text-muted-foreground space-y-1">
+              {mode === "forgot" ? (
+                <button
+                  onClick={() => setMode("login")}
+                  className="text-primary hover:underline font-medium"
+                >
+                  Back to sign in
+                </button>
+              ) : (
+                <>
+                  <div>
+                    {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
+                    <button
+                      onClick={() => setMode(mode === "login" ? "signup" : "login")}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      {mode === "login" ? "Sign up" : "Sign in"}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
