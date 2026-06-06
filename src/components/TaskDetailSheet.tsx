@@ -28,10 +28,13 @@ import {
   Trash2,
   ExternalLink,
   Clock,
+  Split,
+  LifeBuoy,
 } from "lucide-react";
 import { TaskComments } from "@/components/TaskComments";
 import { TaskLabels } from "@/components/TaskLabels";
 import { ImageAttachments } from "@/components/ImageAttachments";
+import { BreakItDownDialog } from "@/components/BreakItDownDialog";
 import { useToast } from "@/hooks/use-toast";
 import { format, formatDistanceToNow } from "date-fns";
 import type { Tables } from "@/integrations/supabase/types";
@@ -54,6 +57,8 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
   const [newLinkTitle, setNewLinkTitle] = useState("");
   const [newLinkUrl, setNewLinkUrl] = useState("");
   const [addingLink, setAddingLink] = useState(false);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
+  const [stuckOpen, setStuckOpen] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -306,6 +311,18 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
           {/* Labels */}
           <TaskLabels taskId={task.id} boardId={boardId} />
 
+          {/* AI assists */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setBreakdownOpen(true)}>
+              <Split className="h-3.5 w-3.5" /> Break It Down
+            </Button>
+            <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setStuckOpen(true)}>
+              <LifeBuoy className="h-3.5 w-3.5" /> I'm Stuck
+            </Button>
+          </div>
+
+
+
           {/* Time Tracking */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -455,6 +472,18 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
           </div>
         </div>
       </SheetContent>
+      <BreakItDownDialog
+        open={breakdownOpen}
+        onOpenChange={setBreakdownOpen}
+        task={{ id: task.id, title: task.title, description: task.description, column_id: task.column_id }}
+        mode="breakdown"
+      />
+      <BreakItDownDialog
+        open={stuckOpen}
+        onOpenChange={setStuckOpen}
+        task={{ id: task.id, title: task.title, description: task.description, column_id: task.column_id }}
+        mode="stuck"
+      />
     </Sheet>
   );
 }

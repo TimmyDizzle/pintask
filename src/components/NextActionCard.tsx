@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Play, Sparkles, Loader2, RefreshCw, Clock } from "lucide-react";
+import { Target, Play, Sparkles, Loader2, RefreshCw, Clock, Split } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -15,6 +15,7 @@ import {
   isDoneColumnName,
   type ScoredTask,
 } from "@/lib/nextAction";
+import { BreakItDownDialog } from "@/components/BreakItDownDialog";
 
 export function NextActionCard() {
   const { user } = useAuth();
@@ -23,6 +24,7 @@ export function NextActionCard() {
   const [cycleIdx, setCycleIdx] = useState(0);
   const [explanation, setExplanation] = useState<string | null>(null);
   const [loadingExplain, setLoadingExplain] = useState(false);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
 
   // Load preferences, columns + tasks, and yesterday's completion count.
   const { data, isLoading, refetch } = useQuery({
@@ -209,6 +211,9 @@ export function NextActionCard() {
             {loadingExplain ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
             Why this one?
           </Button>
+          <Button onClick={() => setBreakdownOpen(true)} variant="outline" size="sm" className="gap-1.5">
+            <Split className="h-3.5 w-3.5" /> Break It Down
+          </Button>
           {ranked.length > 1 && (
             <Button onClick={handleCycle} variant="ghost" size="sm">
               Show me another
@@ -216,6 +221,12 @@ export function NextActionCard() {
           )}
         </div>
       </CardContent>
+      <BreakItDownDialog
+        open={breakdownOpen}
+        onOpenChange={setBreakdownOpen}
+        task={{ id: top.id, title: top.title, description: top.description, column_id: top.column_id }}
+        mode="breakdown"
+      />
     </Card>
   );
 }
