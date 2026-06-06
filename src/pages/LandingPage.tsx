@@ -147,6 +147,9 @@ export default function LandingPage() {
               <a href="#pricing">Pricing</a>
             </Button>
             <Button variant="ghost" asChild>
+              <Link to="/blog">Blog</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link to="/auth">Sign In</Link>
             </Button>
             <Button asChild>
@@ -173,6 +176,9 @@ export default function LandingPage() {
               </Button>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/blog" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
               </Button>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
