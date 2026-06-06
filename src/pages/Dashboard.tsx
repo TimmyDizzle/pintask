@@ -8,6 +8,7 @@ import { FolderKanban, Clock, CheckCircle2, Timer, Sparkles, Loader2 } from "luc
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { NextActionCard } from "@/components/NextActionCard";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -99,6 +100,8 @@ export default function Dashboard() {
           Overview of your projects and tasks
         </p>
       </div>
+
+      <NextActionCard />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
