@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -18,28 +18,47 @@ export default function ResetPassword() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const checkedRef = useRef(false);
 
   useEffect(() => {
-    // Supabase parses the recovery token from the URL hash via detectSessionInUrl.
-    // Wait briefly for the recovery session to be established.
+    if (checkedRef.current) return;
+    checkedRef.current = true;
+
+    let settled = false;
+    const markReady = () => {
+      if (settled) return;
+      settled = true;
+      setReady(true);
+      setError(null);
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || session) {
-        setReady(true);
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN" || session) {
+        markReady();
       }
     });
+
+    // Immediate check
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true);
-      else {
-        // Give the SDK a moment to process the URL
-        setTimeout(() => {
-          supabase.auth.getSession().then(({ data: { session: s } }) => {
-            if (s) setReady(true);
-            else setError("This password reset link is invalid or has expired. Please request a new one.");
-          });
-        }, 800);
-      }
+      if (session) markReady();
     });
-    return () => subscription.unsubscribe();
+
+    // Grace window for detectSessionInUrl (PKCE code exchange) to complete
+    const timer = setTimeout(async () => {
+      if (settled) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        markReady();
+      } else {
+        settled = true;
+        setError("This password reset link is invalid or has already been used. Please request a new one.");
+      }
+    }, 3000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,7 +78,16 @@ export default function ResetPassword() {
       toast({ title: "Password updated", description: "You're now signed in." });
       navigate("/");
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      const msg = String(err?.message ?? "");
+      let friendly = msg;
+      if (/same.*password/i.test(msg)) {
+        friendly = "New password must be different from your old password.";
+      } else if (/session|expired|jwt/i.test(msg)) {
+        friendly = "Your reset session expired. Please request a new reset link.";
+      } else if (/weak|short|characters/i.test(msg)) {
+        friendly = "Please choose a stronger password (at least 6 characters).";
+      }
+      toast({ title: "Couldn't update password", description: friendly, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -116,6 +144,11 @@ export default function ResetPassword() {
                 <Button type="submit" className="w-full" disabled={loading || !ready}>
                   {loading ? "Updating..." : ready ? "Update password" : "Verifying link..."}
                 </Button>
+                {!ready && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Verifying your reset link… this takes a couple of seconds.
+                  </p>
+                )}
               </form>
             )}
           </CardContent>
