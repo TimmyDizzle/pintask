@@ -147,6 +147,9 @@ export default function LandingPage() {
               <a href="#pricing">Pricing</a>
             </Button>
             <Button variant="ghost" asChild>
+              <Link to="/blog">Blog</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link to="/auth">Sign In</Link>
             </Button>
             <Button asChild>
