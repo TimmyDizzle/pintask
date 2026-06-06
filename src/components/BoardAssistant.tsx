@@ -124,7 +124,7 @@ export function BoardAssistant({ boardId }: Props) {
       <SheetTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-lg shadow-primary/30"
+          className="fixed bottom-24 right-6 z-50 h-14 w-14 rounded-full shadow-lg shadow-primary/30 md:bottom-6"
           aria-label="Open board assistant"
         >
           <Sparkles className="h-5 w-5" />
