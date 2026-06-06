@@ -28,10 +28,13 @@ import {
   Trash2,
   ExternalLink,
   Clock,
+  Split,
+  LifeBuoy,
 } from "lucide-react";
 import { TaskComments } from "@/components/TaskComments";
 import { TaskLabels } from "@/components/TaskLabels";
 import { ImageAttachments } from "@/components/ImageAttachments";
+import { BreakItDownDialog } from "@/components/BreakItDownDialog";
 import { useToast } from "@/hooks/use-toast";
 import { format, formatDistanceToNow } from "date-fns";
 import type { Tables } from "@/integrations/supabase/types";
