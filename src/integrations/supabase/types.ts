@@ -879,6 +879,36 @@ export type Database = {
           },
         ]
       }
+      user_preferences: {
+        Row: {
+          adhd_mode: boolean
+          created_at: string
+          last_completed_at: string | null
+          momentum_score: number
+          streak_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          adhd_mode?: boolean
+          created_at?: string
+          last_completed_at?: string | null
+          momentum_score?: number
+          streak_days?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          adhd_mode?: boolean
+          created_at?: string
+          last_completed_at?: string | null
+          momentum_score?: number
+          streak_days?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
