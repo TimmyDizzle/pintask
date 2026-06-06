@@ -472,6 +472,18 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
           </div>
         </div>
       </SheetContent>
+      <BreakItDownDialog
+        open={breakdownOpen}
+        onOpenChange={setBreakdownOpen}
+        task={{ id: task.id, title: task.title, description: task.description, column_id: task.column_id }}
+        mode="breakdown"
+      />
+      <BreakItDownDialog
+        open={stuckOpen}
+        onOpenChange={setStuckOpen}
+        task={{ id: task.id, title: task.title, description: task.description, column_id: task.column_id }}
+        mode="stuck"
+      />
     </Sheet>
   );
 }
