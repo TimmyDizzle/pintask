@@ -57,6 +57,8 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
   const [newLinkTitle, setNewLinkTitle] = useState("");
   const [newLinkUrl, setNewLinkUrl] = useState("");
   const [addingLink, setAddingLink] = useState(false);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
+  const [stuckOpen, setStuckOpen] = useState(false);
 
   useEffect(() => {
     if (task) {
