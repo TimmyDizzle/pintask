@@ -211,6 +211,9 @@ export function NextActionCard() {
             {loadingExplain ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
             Why this one?
           </Button>
+          <Button onClick={() => setBreakdownOpen(true)} variant="outline" size="sm" className="gap-1.5">
+            <Split className="h-3.5 w-3.5" /> Break It Down
+          </Button>
           {ranked.length > 1 && (
             <Button onClick={handleCycle} variant="ghost" size="sm">
               Show me another
@@ -218,6 +221,12 @@ export function NextActionCard() {
           )}
         </div>
       </CardContent>
+      <BreakItDownDialog
+        open={breakdownOpen}
+        onOpenChange={setBreakdownOpen}
+        task={{ id: top.id, title: top.title, description: top.description, column_id: top.column_id }}
+        mode="breakdown"
+      />
     </Card>
   );
 }
