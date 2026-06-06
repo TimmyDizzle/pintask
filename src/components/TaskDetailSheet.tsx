@@ -311,6 +311,18 @@ export function TaskDetailSheet({ task, onClose, boardId }: TaskDetailSheetProps
           {/* Labels */}
           <TaskLabels taskId={task.id} boardId={boardId} />
 
+          {/* AI assists */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setBreakdownOpen(true)}>
+              <Split className="h-3.5 w-3.5" /> Break It Down
+            </Button>
+            <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setStuckOpen(true)}>
+              <LifeBuoy className="h-3.5 w-3.5" /> I'm Stuck
+            </Button>
+          </div>
+
+
+
           {/* Time Tracking */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
