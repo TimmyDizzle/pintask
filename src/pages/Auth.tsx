@@ -250,13 +250,19 @@ export default function Auth() {
                   />
                 </div>
               )}
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading || (mode === "forgot" && cooldown > 0)}
+              >
                 {loading
                   ? "Loading..."
                   : mode === "login"
                   ? "Sign In"
                   : mode === "forgot"
-                  ? "Send reset link"
+                  ? cooldown > 0
+                    ? `Wait ${cooldown}s…`
+                    : "Send reset link"
                   : planInfo
                   ? `Create Account & Claim ${planInfo.label}`
                   : "Create Account"}
