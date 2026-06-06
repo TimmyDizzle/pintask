@@ -61,6 +61,47 @@ export default function Auth() {
     }
   }, [selectedPlan]);
 
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const friendlyAuthError = (err: any): { title: string; description?: string } => {
+    const msg = String(err?.message ?? "");
+    const status = err?.status;
+    const code = err?.code;
+    if (status === 429 || code === "over_email_send_rate_limit" || /rate limit|after \d+ second/i.test(msg)) {
+      const match = msg.match(/after (\d+) seconds?/i);
+      const secs = match ? Number(match[1]) : 30;
+      setCooldown(secs);
+      return {
+        title: "Please wait a moment",
+        description: `Too many requests. Try again in about ${secs} second${secs === 1 ? "" : "s"}.`,
+      };
+    }
+    if (/email not confirmed/i.test(msg)) {
+      return {
+        title: "Confirm your email first",
+        description: "We sent a confirmation link when you signed up. Check your inbox (and spam folder) to verify your account before signing in.",
+      };
+    }
+    if (/invalid login credentials|invalid_credentials/i.test(msg)) {
+      return {
+        title: "Email or password is incorrect",
+        description: "Double-check your details, or use “Forgot password?” to reset it.",
+      };
+    }
+    if (/user already registered|already registered/i.test(msg)) {
+      return {
+        title: "Account already exists",
+        description: "Try signing in instead, or reset your password if you've forgotten it.",
+      };
+    }
+    return { title: "Something went wrong", description: msg || "Please try again." };
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
