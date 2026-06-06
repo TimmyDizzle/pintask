@@ -129,18 +129,16 @@ export default function Auth() {
           redirectTo: `${window.location.origin}/reset-password`,
         });
         if (error) throw error;
+        setCooldown(30);
         toast({
           title: "Check your email",
-          description: "If an account exists for that address, a password reset link is on its way.",
+          description: "If an account exists for that address, a password reset link is on its way. It can take a minute to arrive.",
         });
         setMode("login");
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      const { title, description } = friendlyAuthError(error);
+      toast({ title, description, variant: "destructive" });
     } finally {
       setLoading(false);
     }
