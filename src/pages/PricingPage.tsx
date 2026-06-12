@@ -59,9 +59,9 @@ const comparisonRows: { feature: string; pintaskWins?: boolean; cells: [Cell, Ce
     pintaskWins: true,
   },
   {
-    feature: "API Access",
+    feature: "Open Data Export",
     cells: [
-      { kind: "yes", note: "Full JS" },
+      { kind: "yes", note: "Anytime" },
       { kind: "partial", note: "Limited" },
       { kind: "partial", note: "Limited" },
       { kind: "partial", note: "Limited" },
