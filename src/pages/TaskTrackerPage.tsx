@@ -8,26 +8,26 @@ import AdSlot from "@/components/AdSlot";
 import { AD_SLOTS } from "@/config/adsense";
 
 const specs = [
-  { icon: Code, title: "JavaScript + Meteor API", desc: "Write extensions using the Meteor framework. Full access to board, list, card, and user data." },
-  { icon: Database, title: "MongoDB Browser Access", desc: "Direct MongoDB access from the browser. Query your task data the way a developer expects." },
-  { icon: Store, title: "Extensions Store", desc: "Install or publish extensions. Extensions are per-user — like an App Store for your workflow." },
+  { icon: Code, title: "AI Next Action", desc: "An ADHD-friendly assistant that surfaces the single most important task right now — so you stop staring at the board." },
+  { icon: Database, title: "Open Data Export", desc: "Your boards live in an open Postgres schema. Export everything, anytime. No vendor lock-in." },
+  { icon: Store, title: "Power-Ups Built In", desc: "Brain Dump, Voice Capture, Momentum Meter, and the AI Assistant — included, not bolted on." },
   { icon: Users, title: "Spire Club", desc: "Propose features, co-fund builds, get lifelong access when they ship." },
 ];
 
 const buildExamples = [
-  { icon: GitBranch, desc: "A GitHub integration that auto-creates cards from issues and updates status when PRs merge." },
-  { icon: BarChart3, desc: "A billing dashboard pulling time tracking data from all client boards into one exportable report." },
-  { icon: Bot, desc: "An automated standup bot that emails each team member their cards due today at 9am." },
-  { icon: Eye, desc: "A board mirroring system that gives clients a read-only project view without exposing team notes." },
+  { icon: GitBranch, desc: "Wire GitHub up via webhooks — auto-create cards from issues and update status when PRs merge." },
+  { icon: BarChart3, desc: "Export your boards to a billing dashboard pulling time tracking data into one report." },
+  { icon: Bot, desc: "Schedule a daily standup email with each team member's cards due today via Edge Functions." },
+  { icon: Eye, desc: "Build a read-only client view on top of your open Postgres schema — without exposing team notes." },
 ];
 
 const comparisonData = [
-  { feature: "Full JavaScript API", pintask: "✅", trello: "❌", clickup: "Limited", asana: "Limited" },
-  { feature: "MongoDB Browser Access", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌" },
-  { feature: "Build & Publish Extensions", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌" },
+  { feature: "AI Next Action", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌" },
+  { feature: "Brain Dump Capture", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌" },
+  { feature: "Open Data Export", pintask: "✅", trello: "Limited", clickup: "Limited", asana: "Limited" },
   { feature: "Free Kanban Board", pintask: "✅ Unlimited", trello: "✅ Limited", clickup: "✅ Limited", asana: "✅ Limited" },
-  { feature: "Nested Cards/Lists", pintask: "✅", trello: "❌", clickup: "✅", asana: "Limited" },
-  { feature: "Card Mirroring", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌" },
+  { feature: "Nested Subtasks", pintask: "✅", trello: "❌", clickup: "✅", asana: "Limited" },
+  { feature: "Webhook Integrations", pintask: "✅", trello: "Limited", clickup: "Limited", asana: "Limited" },
   { feature: "Starting Price", pintask: "Free", trello: "Free", clickup: "Free", asana: "Free" },
 ];
 
