@@ -215,7 +215,7 @@ export default function LandingPage() {
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "350ms" }}
           >
-            Nested cards, custom extensions, full API access, AI assistant.
+            Nested subtasks, AI-powered Next Action, Brain Dump capture, and momentum tracking.
             <span className="font-semibold text-foreground"> Free forever</span> — no per-seat trap.
           </p>
           <div
