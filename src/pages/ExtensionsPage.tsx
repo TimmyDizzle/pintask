@@ -8,7 +8,7 @@ import { ArrowRight, Store, Code, Users, Copy as CopyIcon, Clock, CheckSquare, Z
 
 const steps = [
   { icon: Store, title: "Install from Store", desc: "Browse pre-built extensions and install in one click" },
-  { icon: Code, title: "Build Your Own", desc: "Write extensions in JavaScript using the Meteor API + MongoDB" },
+  { icon: Code, title: "Wire Up Your Stack", desc: "Hook into your Pintask data via webhooks and Edge Functions — no plugin runtime required" },
   { icon: Users, title: "Co-Fund via Spire Club", desc: "Propose or back a feature, share build cost, get lifelong access" },
 ];
 
