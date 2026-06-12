@@ -40,10 +40,10 @@ const integrations = [
 ];
 
 const devFeatures = [
-  { icon: Code, title: "JavaScript + Meteor API", desc: "The only task tracker with a public JS + Meteor API. Write extensions that modify any function or add entirely new ones." },
-  { icon: Database, title: "MongoDB Browser Access", desc: "Direct MongoDB access from the browser." },
-  { icon: Store, title: "Extensions Store", desc: "Browse and install pre-built extensions. Free trial on all paid extensions." },
-  { icon: Rocket, title: "Build & Publish Extensions", desc: "Built something useful? Publish it to the store." },
+  { icon: Code, title: "AI Next Action", desc: "An ADHD-friendly assistant that surfaces the single most important task right now — and helps you break it down." },
+  { icon: Database, title: "Open Data, Open Export", desc: "Your boards live in an open Postgres schema. Export everything, anytime — your data is yours." },
+  { icon: Store, title: "Power-Ups Built In", desc: "Brain Dump, Voice Capture, Momentum Meter, and the AI Assistant — included, not bolted on." },
+  { icon: Rocket, title: "Webhook-Friendly", desc: "Edge Functions let you wire Pintask into the rest of your stack without a brittle plugin system." },
 ];
 
 const comparisonData = [
@@ -52,12 +52,12 @@ const comparisonData = [
   { feature: "Nested Lists in Cards", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
   { feature: "Card & List Mirroring", pf: "❌", pp: "✅", tf: "❌", tp: "❌" },
   { feature: "Hands-Free Time Tracking", pf: "❌", pp: "✅", tf: "❌", tp: "❌" },
-  { feature: "JavaScript API", pf: "✅ Full", pp: "✅ Full", tf: "❌", tp: "❌" },
-  { feature: "Extensions Store", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
+  { feature: "AI Next Action", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
+  { feature: "Brain Dump Capture", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
   { feature: "Trello Import", pf: "✅ 2 clicks", pp: "✅", tf: "N/A", tp: "N/A" },
   { feature: "Google Calendar Sync", pf: "✅", pp: "✅", tf: "❌", tp: "✅" },
   { feature: "Slack Integration", pf: "✅", pp: "✅", tf: "❌", tp: "✅" },
-  { feature: "Build Custom Extensions", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
+  { feature: "Open Data Export", pf: "✅", pp: "✅", tf: "Limited", tp: "Limited" },
 ];
 
 function CellIcon({ val }: { val: string }) {

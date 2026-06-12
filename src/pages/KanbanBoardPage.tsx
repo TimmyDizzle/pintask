@@ -91,12 +91,12 @@ export default function KanbanBoardPage() {
       <section className="border-t border-border/40 bg-muted/30 px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <RevealSection>
-            <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">Extend Your Kanban Board Like a Developer</h2>
-            <p className="mt-4 text-muted-foreground">Pintask is the only Kanban board with a public JavaScript + Meteor API and MongoDB browser access.</p>
+            <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">A Kanban Board That Helps You Actually Start</h2>
+            <p className="mt-4 text-muted-foreground">Pintask is the only Kanban with built-in ADHD-friendly tools: AI Next Action, Break It Down, and Brain Dump capture.</p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">Card & List Mirroring (Paid)</span>
-              <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">Hands-Free Time Tracking (Paid)</span>
-              <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">Custom Extensions (Free)</span>
+              <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">AI Next Action (Free)</span>
+              <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">Brain Dump (Free)</span>
+              <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary">Momentum Meter (Paid)</span>
             </div>
             <div className="mt-6">
               <Button variant="outline" asChild><Link to="/extensions">Explore the Extensions Store <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>

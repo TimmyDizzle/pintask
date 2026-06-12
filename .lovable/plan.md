@@ -1,131 +1,83 @@
-# Plan: AI Next Action Engine + ADHD-first productivity suite
+## Goal
 
-Built in 5 phases following your priority order. Each phase is independently shippable so you can ship + test phase 1 before committing to the rest.
+Replace every inaccurate technical claim (Meteor API, MongoDB browser access, custom extensions, "full API access") with honest, on-brand copy that highlights Pintask's real differentiator: an **ADHD-friendly Kanban** with Next Action, Break It Down, Brain Dump, and Momentum tools — backed by Supabase, with a free forever core plan.
 
-## Guiding product principles (apply to every phase)
-
-- **Tone**: supportive coach, never guilt or shame. All AI copy starts from "here's the smallest next move," never "you should have already…".
-- **Cognitive load**: one recommendation at a time. Never show 5 options when 1 will do.
-- **Visual rhythm**: each new surface uses the existing Space Grotesk / Inter stack and Kanban color tokens. No new design language.
-- **AI**: all calls go through Lovable AI Gateway via a new edge function, default `google/gemini-3-flash-preview`, logged to `ai_usage` via `_shared/aiUsage.ts` (per existing project memory).
-- **Mobile**: every new entry point also lives on the existing mobile FAB area.
+No backend, schema, or feature code changes. Copy-only edits across 7 marketing pages.
 
 ---
 
-## Phase 1 — AI Next Action Engine
+## New positioning lines (the replacements)
 
-The core feature. Answers "what do I do next?" in one tap.
+**Hero tagline (LandingPage.tsx line 218-219)** — replaces "Nested cards, custom extensions, full API access, AI assistant. Free forever — no per-seat trap."
 
-### Data
-- **DB migration**: add a `user_preferences` table (per-user singleton) with at minimum:
-  - `adhd_mode` boolean (default false)
-  - `momentum_score` int (default 0, range 0–100) — used in Phase 4 too
-  - `last_completed_at` timestamptz
-  - `streak_days` int
-  - RLS: user can only read/write own row; auto-create row on first read via upsert helper.
+> "Nested subtasks, AI-powered Next Action, Brain Dump capture, and momentum tracking. **Free forever** — no per-seat trap."
 
-### Scoring engine (deterministic, runs client-side first, AI second)
-A pure TypeScript module `src/lib/nextAction.ts`:
-- Loads the user's open tasks (cap at most-recent ~200 to stay snappy).
-- Computes a score per task per the PDF formula:
-  - Due date: overdue +40, today +30, tomorrow +20.
-  - Priority: high +30, medium +15, low +5 (urgent → +40, since the project already has an `urgent` priority).
-  - Size proxy: derived from description length + presence of subtasks/links (small +20, medium +10, large 0). No new size column required for v1.
-  - Momentum: if `momentum_score >= 60` → +10; if user has 0 completions in last 24h → bias toward "easy win" (any task < 15 min estimate gets +20).
-  - Anxiety reduction: tasks that unblock others (referenced by another task's description or a link) → +20; tasks tagged "quick" or with `[15m]`/`(5 min)` in title → +20.
-- Returns top 1 candidate + the next 2 as fallbacks.
+**Developer/API positioning** — replaces all "JavaScript + Meteor API" and "MongoDB browser access" claims with:
 
-### AI explanation layer
-- New edge function `next-action-explain`:
-  - Input: chosen task summary + score breakdown + recent completions.
-  - Output: 1–2 sentence "why" + an estimated time in minutes + an impact label (`low|medium|high`).
-  - Strict supportive tone in the system prompt, with hard "never guilt, never shame" rule.
-  - Logs to `ai_usage`.
-- Client caches the explanation for 10 min per task id.
+> "Built on Supabase. Your data is yours — open schema, exportable any time, webhook-ready via Edge Functions."
 
-### UI
-- **`NextActionCard` component** on the dashboard (top of `Index.tsx` / `Dashboard.tsx`), above the existing widgets:
-  - Recommended task title, est. time, impact pill, "Why this one" reason.
-  - Buttons: **Start Task** (opens the task detail sheet + starts time entry) and **Break It Down** (Phase 2).
-  - "Show me another" link cycles to the next fallback candidate.
-- **"Tell Me What To Do Next" button**:
-  - Dashboard hero, top of task list view, and the existing mobile FAB gets a second action.
-  - On click: scrolls to / mounts the `NextActionCard` with a fresh recommendation.
-- **Empty state**: encouraging "you're all caught up — pick something tiny to plant for tomorrow."
+**Extensibility positioning** — replaces "custom extensions" / "Extensions Store":
 
-### Settings
-- New "ADHD Productivity Mode" toggle in profile/settings. When on:
-  - Scoring weights shift: quick wins +30 instead of +20; large tasks penalized −10.
-  - UI hides task counts > 5 ("12 tasks" → "a few more"), collapses long lists by default.
+> "Power-ups that matter: Voice Capture, Momentum Meter, and the AI Assistant — built into the app, not bolted on."
 
 ---
 
-## Phase 2 — Break It Down
+## Files & specific edits
 
-Turn an intimidating task into 3–7 tiny steps.
+### 1. `src/pages/LandingPage.tsx`
+- **Line 218-219**: swap hero subline to new ADHD-forward tagline above.
+- **Line 418-421** (feature checklist): replace `"Full API access"` → `"AI Next Action assistant"`; replace any `"custom extensions"` → `"Voice & Brain Dump capture"`.
+- Keep "Free forever" and "No per-seat pricing" — both are accurate.
 
-- **Edge function `break-it-down`**: takes a task (title + description), returns an array of ≤7 micro-steps using AI SDK `generateText` with `Output.object` for a typed array. Logged to `ai_usage`.
-- **UI**: "Break It Down" button on `TaskCard`, `TaskDetailSheet`, and the Next Action card.
-  - Modal shows the proposed steps with checkboxes pre-checked.
-  - **Convert to subtasks**: writes each step as a new task in the same column right after the parent (we'll use a `parent_task_id` column — small migration adding nullable self-ref + index).
-  - "Replace original" vs "Add as subtasks" options.
-- **Anxiety Rescue ("I'm Stuck")**: same modal, different entry — asks "what's blocking you?" first, then runs `break-it-down` with that context. Two buttons: "Just the first step" (returns 1 micro-step) and "Show me all".
+### 2. `src/pages/PricingPage.tsx`
+- **Line 19-20**: remove `"Full JavaScript + Meteor API access"` and `"MongoDB browser access"` from the free plan feature list. Replace with `"Open data — export anytime"` and `"Webhook-friendly Edge Functions"`.
+- **Line 25 FAQ**: rewrite to: *"Yes. The core Kanban — unlimited boards, nested subtasks, AI Next Action, and Brain Dump — is free with no time limit."*
+- **Line 29 FAQ**: change question to *"Can I export my data or build integrations?"* — answer: *"Yes. Your data lives in an open Supabase Postgres schema, exportable any time. Edge Functions support webhooks for custom integrations."*
+- **Line 62** comparison row: rename `"API Access"` → `"Open Data Export"`.
 
----
+### 3. `src/pages/FeaturesPage.tsx`
+- **Line 43-44**: replace the two feature cards:
+  - `"JavaScript + Meteor API"` → **"AI Next Action"** — *"An ADHD-friendly assistant that surfaces the single most important task right now."*
+  - `"MongoDB Browser Access"` → **"Open Data, Open Export"** — *"Your boards live in Supabase Postgres. Export everything, anytime."*
 
-## Phase 3 — Brain Dump → Tasks
+### 4. `src/pages/ExtensionsPage.tsx`
+- **Line 11** card: `"Build Your Own"` desc → *"Hook into your Pintask data via Supabase Edge Functions and webhooks."*
+- **Line 154-155**: rewrite section to *"For Developers: Open Data, Your Way"* and *"Pintask runs on Supabase. Your data is yours — open Postgres schema, REST access via your account, and Edge Functions for custom workflows."*
+- Consider whether the Extensions Store framing should soften to "Power-ups" — flag in implementation, default to renaming.
 
-A free-text dumping ground that AI parses into structured tasks.
+### 5. `src/pages/KanbanBoardPage.tsx`
+- **Line 95**: replace with *"Pintask is the only Kanban board with built-in ADHD-friendly tools: Next Action, Break It Down, and Brain Dump capture."*
 
-- New route `/brain-dump` (and a "Brain Dump" entry in the app sidebar + a big button on the dashboard).
-- One large textarea, "Process my dump" button.
-- **Edge function `parse-brain-dump`**: reuses the same Gemini model, returns an array of `{ title, due_date?, priority?, suggested_column, estimated_minutes? }` using `Output.array`.
-- Review screen: each parsed task shown as an editable chip with column dropdown + checkbox to include. "Create N tasks" button writes them all in one batched insert.
-- The existing `parse-task` edge function handles one-line quick-add; this is the multi-task sibling and can share the same prompt scaffolding.
+### 6. `src/pages/TrelloAlternativePage.tsx`
+- **Line 27**: rename card to **"Pintask Helps You Start"** — *"Trello shows you tasks. Pintask tells you which one to do next, then helps you break it down."*
+- **Lines 41, 53**: rewrite tagline to *"Everything Trello does — plus AI Next Action, Brain Dump capture, nested subtasks, and momentum tracking. Free forever. Import your Trello boards in 2 clicks."*
+- **Line 60**: keep ✓ chips, drop any "API" reference.
 
----
-
-## Phase 4 — Momentum Meter
-
-Visual progress bar that rewards consistency.
-
-- Reuses the `momentum_score` column from Phase 1.
-- **Recompute logic** (server-side, idempotent):
-  - Database trigger on `tasks` UPDATE → when a task moves into the "Done" column, +5 momentum (cap 100).
-  - Daily cron edge function (already have `send-due-date-reminders` cron infra) decays score by −3 per day with no completions; never drops below 0.
-  - 24h streak bonus: +10 if user completes ≥3 tasks in a calendar day.
-- **UI**: thin gradient bar at top of the dashboard with emoji + label:
-  - 0–25% 🌱 Starting · 26–50% ⚡ Building Momentum · 51–75% 🔥 In Flow · 76–100% 🚀 Unstoppable
-  - Tooltip explains how it moves; hover/tap reveals last 7 days as sparkline.
-- Feeds back into the scoring engine (Phase 1) — high momentum unlocks bigger task suggestions; low momentum biases toward quick wins.
-
----
-
-## Phase 5 — Voice Capture
-
-Mic button → multi-task creation.
-
-- Mobile + desktop floating mic button.
-- Uses browser `MediaRecorder` → uploads webm/opus to a new edge function `transcribe-voice` which forwards to Lovable AI Gateway (`google/gemini-3-flash-preview` accepts audio input) and pipes the transcript directly into the Phase 3 `parse-brain-dump` function.
-- Returns the same review screen as Brain Dump so the user can confirm/edit before saving.
-- Permission UX: explain mic use up front, gracefully fall back to Brain Dump textarea on denial.
+### 7. `src/pages/TaskTrackerPage.tsx`
+- **Lines 11-12**: replace both feature cards:
+  - `"JavaScript + Meteor API"` → **"AI Next Action"** with ADHD-focused desc.
+  - `"MongoDB Browser Access"` → **"Open Data Export"** with Supabase Postgres desc.
+- **Lines 25-26** comparison rows: replace with:
+  - `feature: "AI Next Action", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌"`
+  - `feature: "Open Data Export", pintask: "✅", trello: "Limited", clickup: "Limited", asana: "Limited"`
+- **Lines 37, 49, 59, 74**: rewrite all hero/body paragraphs to drop Meteor/MongoDB and lead with ADHD workflow.
+- **Lines 56, 163**: rename `"Read the API Docs"` / `"View API Documentation"` buttons → `"See All Features"` linking to `/features` (no docs page exists yet).
 
 ---
 
-## Cross-phase technical notes
+## Out of scope (not changed this round)
 
-- **Edge functions added**: `next-action-explain`, `break-it-down`, `parse-brain-dump`, `transcribe-voice`. All log to `ai_usage`.
-- **DB migrations**: `user_preferences` table (Phase 1), `parent_task_id` column on `tasks` + index (Phase 2), `momentum_events` table (Phase 4, optional — can derive from `tasks.updated_at` instead to start). Each migration ships with its own GRANTs and RLS policies.
-- **No new third-party dependencies** beyond what's already in package.json. Voice uses the native `MediaRecorder` API.
-- **Cost ceiling**: cache Next Action explanations, debounce Break It Down so users can't spam, and tie all features into the existing `assistant_quotas` table so heavy users don't blow through credits.
+- `src/data/blogPosts.ts` and `src/pages/BlogPostPage.tsx` — blog post bodies. If any post repeats the Meteor/MongoDB claim I'll flag during implementation but will not silently rewrite published posts; you'll decide whether to retract or amend.
+- Terms of Service — the "free tier may change" clause stays; that's standard and accurate.
+- Sitemaps, schema markup, meta titles — will be checked and updated only if they repeat the inaccurate claims.
 
-## What I'd recommend shipping first
+---
 
-Phase 1 alone delivers most of the promise of the PDF and is the single most distinctive feature. I'd ship it, get feedback for a few days, then layer Phase 2 (Break It Down) on top — that one-two punch is the real category-shifter you described.
+## What this gives you
 
-## Out of scope for this plan
+- **Zero false claims** — no Meteor, no MongoDB, no fictional extensions store, no API docs that don't exist.
+- **Sharper positioning** — every page now leads with the ADHD workflow stack, your actual category-of-one differentiator.
+- **Ad-safe copy** — nothing in the rewritten lines would fail a paid-ad review or invite a Wekan trademark issue.
+- **Preserved trust signals** — "Free forever," "No per-seat," lifetime/$8/mo pricing all stay because they're true.
 
-- Replacing the Kanban board metaphor
-- Mobile app shell (PWA install prompts, native wrappers)
-- Cross-device sync of momentum (it's already user-scoped via Supabase)
-- Team/collaborative momentum (single-user only for v1)
+Ready to switch to build mode and apply these edits.

@@ -9,6 +9,8 @@ import { ArrowRight, Check, Infinity, Crown, X, Minus, Sparkles, Trophy } from "
 const freePlan = [
   "Unlimited boards, lists & cards",
   "Nested lists inside cards",
+  "AI Next Action assistant",
+  "Brain Dump quick capture",
   "File attachments on cards",
   "Member assignment & due dates",
   "Color labels & card voting",
@@ -16,17 +18,15 @@ const freePlan = [
   "Google Calendar, Outlook & iCal sync",
   "Slack integration",
   "Trello import in 2 clicks",
-  "Full JavaScript + Meteor API access",
-  "MongoDB browser access",
-  "Build your own extensions",
+  "Open data — export anytime",
 ];
 
 const faqItems = [
-  { q: "Is the free plan really free forever?", a: "Yes. The core Kanban board — including unlimited boards, nested cards, API access, and integrations — is free with no time limit and no catch." },
+  { q: "Is the free plan really free forever?", a: "Yes. The core Kanban — unlimited boards, nested subtasks, AI Next Action, and Brain Dump — is free with no time limit and no catch." },
   { q: "What's the Loyalty Club?", a: "Loyalty Club is a $8/month subscription that locks in your rate forever. Even when we raise prices later, you keep paying $8. It's our way of saying thank you to early supporters." },
-  { q: "Co-Founder Lifetime vs. Loyalty Club — which should I pick?", a: "Co-Founder Lifetime ($39 once) is the best value if you can afford the upfront payment. Loyalty Club ($8/mo) is for people who want to support us but prefer a smaller monthly commitment. Both get all extensions forever." },
+  { q: "Co-Founder Lifetime vs. Loyalty Club — which should I pick?", a: "Co-Founder Lifetime ($39 once) is the best value if you can afford the upfront payment. Loyalty Club ($8/mo) is for people who want to support us but prefer a smaller monthly commitment. Both unlock all premium power-ups forever." },
   { q: "Will my Loyalty Club price ever go up?", a: "Never. Your $8/month rate is grandfathered for life. Even if we raise prices to $15 or $20 for new members down the road, you stay at $8." },
-  { q: "Can I build my own extensions for free?", a: "Yes. The full JavaScript + Meteor API and MongoDB browser access are included on the free plan." },
+  { q: "Can I export my data or build integrations?", a: "Yes. Your data lives in an open Postgres schema and can be exported any time. Webhook-friendly Edge Functions let you wire Pintask into the rest of your stack." },
 ];
 
 type Cell =
@@ -59,9 +59,9 @@ const comparisonRows: { feature: string; pintaskWins?: boolean; cells: [Cell, Ce
     pintaskWins: true,
   },
   {
-    feature: "API Access",
+    feature: "Open Data Export",
     cells: [
-      { kind: "yes", note: "Full JS" },
+      { kind: "yes", note: "Anytime" },
       { kind: "partial", note: "Limited" },
       { kind: "partial", note: "Limited" },
       { kind: "partial", note: "Limited" },
@@ -69,7 +69,7 @@ const comparisonRows: { feature: string; pintaskWins?: boolean; cells: [Cell, Ce
     pintaskWins: true,
   },
   {
-    feature: "Build Custom Features",
+    feature: "AI Next Action",
     cells: [{ kind: "yes" }, { kind: "no" }, { kind: "no" }, { kind: "no" }],
     pintaskWins: true,
   },

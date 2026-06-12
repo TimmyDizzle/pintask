@@ -215,7 +215,7 @@ export default function LandingPage() {
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "350ms" }}
           >
-            Nested cards, custom extensions, full API access, AI assistant.
+            Nested subtasks, AI-powered Next Action, Brain Dump capture, and momentum tracking.
             <span className="font-semibold text-foreground"> Free forever</span> — no per-seat trap.
           </p>
           <div
@@ -415,10 +415,10 @@ export default function LandingPage() {
               <ul className="mt-6 flex-1 space-y-3 text-sm">
                 {[
                   "Unlimited boards & cards",
-                  "Nested cards & subtasks",
-                  "Labels, comments, attachments",
+                  "Nested subtasks",
+                  "AI Next Action assistant",
+                  "Brain Dump quick capture",
                   "Keyboard shortcuts",
-                  "Full API access",
                   "Import from Trello",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">

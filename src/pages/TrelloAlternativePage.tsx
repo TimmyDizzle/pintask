@@ -17,14 +17,14 @@ const comparisonData = [
   { feature: "Trello Import", pintask: "✅ 2 clicks", trelloFree: "N/A", trelloPaid: "N/A" },
   { feature: "Google Calendar Sync", pintask: "✅ Free", trelloFree: "❌", trelloPaid: "✅" },
   { feature: "Slack Integration", pintask: "✅ Free", trelloFree: "❌", trelloPaid: "✅" },
-  { feature: "Build Your Own Features", pintask: "✅ Full JS API", trelloFree: "❌", trelloPaid: "❌" },
+  { feature: "AI Next Action", pintask: "✅ Built-in", trelloFree: "❌", trelloPaid: "❌" },
   { feature: "Starting Price", pintask: "Free", trelloFree: "Free", trelloPaid: "$5/user/mo" },
 ];
 
 const switchReasons = [
   { icon: Shield, title: "Trello Hit a Wall", desc: "The moment your project gets complex, Trello runs out of road. Pintask starts where Trello stops." },
   { icon: Zap, title: "You're Paying for Things That Should Be Free", desc: "Trello's Power-Ups are features gated behind a paywall. Pintask's core is free. Extensions are optional." },
-  { icon: Code, title: "Pintask Gives You API Access", desc: "Trello gives you a limited API. Pintask gives you full JavaScript + Meteor API with MongoDB browser access." },
+  { icon: Code, title: "Pintask Helps You Start", desc: "Trello shows you tasks. Pintask tells you which one to do next, then helps you break it down." },
   { icon: Clock, title: "The Switch Takes 2 Minutes", desc: "Import your entire Trello workspace — all boards, all lists, all cards — in exactly 2 clicks." },
 ];
 
@@ -38,7 +38,7 @@ const switchSteps = [
 export default function TrelloAlternativePage() {
   useDocumentTitle(
     "Best Trello Alternative 2026 — Pintask",
-    "Everything Trello does — plus nested cards, board mirroring, custom extensions, and time tracking. Free forever. Import your Trello boards in 2 clicks."
+    "Everything Trello does — plus AI Next Action, Brain Dump capture, nested subtasks, and momentum tracking. Free forever. Import your Trello boards in 2 clicks."
   );
 
   return (
@@ -50,7 +50,7 @@ export default function TrelloAlternativePage() {
             The Best Trello Alternative in 2026
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            Everything Trello does — plus nested cards, board mirroring, custom extensions, and time tracking. Free forever. Import your Trello boards in 2 clicks.
+            Everything Trello does — plus AI Next Action, Brain Dump capture, nested subtasks, and momentum tracking. Free forever. Import your Trello boards in 2 clicks.
           </p>
           <div className="mt-8">
             <Button size="lg" className="h-12 px-10 text-base" asChild>

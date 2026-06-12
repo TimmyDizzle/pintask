@@ -8,7 +8,7 @@ import { ArrowRight, Store, Code, Users, Copy as CopyIcon, Clock, CheckSquare, Z
 
 const steps = [
   { icon: Store, title: "Install from Store", desc: "Browse pre-built extensions and install in one click" },
-  { icon: Code, title: "Build Your Own", desc: "Write extensions in JavaScript using the Meteor API + MongoDB" },
+  { icon: Code, title: "Wire Up Your Stack", desc: "Hook into your Pintask data via webhooks and Edge Functions — no plugin runtime required" },
   { icon: Users, title: "Co-Fund via Spire Club", desc: "Propose or back a feature, share build cost, get lifelong access" },
 ];
 
@@ -151,8 +151,8 @@ export default function ExtensionsPage() {
       <section className="border-t border-border/40 bg-muted/30 px-6 py-20">
         <div className="mx-auto max-w-4xl">
           <RevealSection>
-            <h2 className="text-center font-heading text-2xl font-bold tracking-tight sm:text-3xl">For Developers: Full API Access Included</h2>
-            <p className="mt-4 text-center text-muted-foreground">Pintask is the only task tracker that gives you a public JavaScript + Meteor API with MongoDB browser access to build whatever your team needs.</p>
+            <h2 className="text-center font-heading text-2xl font-bold tracking-tight sm:text-3xl">For Developers: Open Data, Your Way</h2>
+            <p className="mt-4 text-center text-muted-foreground">Pintask runs on an open Postgres schema. Your data is yours — export anytime, and use webhook-friendly Edge Functions to wire Pintask into the rest of your stack.</p>
           </RevealSection>
           <RevealSection delay={100}>
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
