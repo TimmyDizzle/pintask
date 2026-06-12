@@ -24,7 +24,7 @@ const comparisonData = [
 const switchReasons = [
   { icon: Shield, title: "Trello Hit a Wall", desc: "The moment your project gets complex, Trello runs out of road. Pintask starts where Trello stops." },
   { icon: Zap, title: "You're Paying for Things That Should Be Free", desc: "Trello's Power-Ups are features gated behind a paywall. Pintask's core is free. Extensions are optional." },
-  { icon: Code, title: "Pintask Gives You API Access", desc: "Trello gives you a limited API. Pintask gives you full JavaScript + Meteor API with MongoDB browser access." },
+  { icon: Code, title: "Pintask Helps You Start", desc: "Trello shows you tasks. Pintask tells you which one to do next, then helps you break it down." },
   { icon: Clock, title: "The Switch Takes 2 Minutes", desc: "Import your entire Trello workspace — all boards, all lists, all cards — in exactly 2 clicks." },
 ];
 
