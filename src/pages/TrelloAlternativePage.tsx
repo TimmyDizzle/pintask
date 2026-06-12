@@ -17,7 +17,7 @@ const comparisonData = [
   { feature: "Trello Import", pintask: "✅ 2 clicks", trelloFree: "N/A", trelloPaid: "N/A" },
   { feature: "Google Calendar Sync", pintask: "✅ Free", trelloFree: "❌", trelloPaid: "✅" },
   { feature: "Slack Integration", pintask: "✅ Free", trelloFree: "❌", trelloPaid: "✅" },
-  { feature: "Build Your Own Features", pintask: "✅ Full JS API", trelloFree: "❌", trelloPaid: "❌" },
+  { feature: "AI Next Action", pintask: "✅ Built-in", trelloFree: "❌", trelloPaid: "❌" },
   { feature: "Starting Price", pintask: "Free", trelloFree: "Free", trelloPaid: "$5/user/mo" },
 ];
 
