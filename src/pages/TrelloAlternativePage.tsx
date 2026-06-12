@@ -38,7 +38,7 @@ const switchSteps = [
 export default function TrelloAlternativePage() {
   useDocumentTitle(
     "Best Trello Alternative 2026 — Pintask",
-    "Everything Trello does — plus nested cards, board mirroring, custom extensions, and time tracking. Free forever. Import your Trello boards in 2 clicks."
+    "Everything Trello does — plus AI Next Action, Brain Dump capture, nested subtasks, and momentum tracking. Free forever. Import your Trello boards in 2 clicks."
   );
 
   return (
