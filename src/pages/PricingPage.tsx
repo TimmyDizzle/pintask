@@ -69,7 +69,7 @@ const comparisonRows: { feature: string; pintaskWins?: boolean; cells: [Cell, Ce
     pintaskWins: true,
   },
   {
-    feature: "Build Custom Features",
+    feature: "AI Next Action",
     cells: [{ kind: "yes" }, { kind: "no" }, { kind: "no" }, { kind: "no" }],
     pintaskWins: true,
   },
