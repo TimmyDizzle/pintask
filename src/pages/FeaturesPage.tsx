@@ -52,12 +52,12 @@ const comparisonData = [
   { feature: "Nested Lists in Cards", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
   { feature: "Card & List Mirroring", pf: "❌", pp: "✅", tf: "❌", tp: "❌" },
   { feature: "Hands-Free Time Tracking", pf: "❌", pp: "✅", tf: "❌", tp: "❌" },
-  { feature: "JavaScript API", pf: "✅ Full", pp: "✅ Full", tf: "❌", tp: "❌" },
-  { feature: "Extensions Store", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
+  { feature: "AI Next Action", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
+  { feature: "Brain Dump Capture", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
   { feature: "Trello Import", pf: "✅ 2 clicks", pp: "✅", tf: "N/A", tp: "N/A" },
   { feature: "Google Calendar Sync", pf: "✅", pp: "✅", tf: "❌", tp: "✅" },
   { feature: "Slack Integration", pf: "✅", pp: "✅", tf: "❌", tp: "✅" },
-  { feature: "Build Custom Extensions", pf: "✅", pp: "✅", tf: "❌", tp: "❌" },
+  { feature: "Open Data Export", pf: "✅", pp: "✅", tf: "Limited", tp: "Limited" },
 ];
 
 function CellIcon({ val }: { val: string }) {
