@@ -33,8 +33,8 @@ const comparisonData = [
 
 export default function TaskTrackerPage() {
   useDocumentTitle(
-    "Task Tracker for Developers — Pintask",
-    "A free task tracker with a full JavaScript + Meteor API and MongoDB browser access. Build exactly the workflow your team needs — no workarounds."
+    "ADHD-Friendly Task Tracker — Pintask",
+    "A free task tracker built for brains that get stuck. AI Next Action, Brain Dump, and nested subtasks help you actually start work — no per-seat trap."
   );
 
   return (
@@ -43,20 +43,20 @@ export default function TaskTrackerPage() {
       <section className="px-6 py-20 md:py-28">
         <RevealSection className="mx-auto max-w-3xl text-center">
           <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            The Task Tracker for Developers Who Are Done Compromising
+            The Task Tracker for Brains That Get Stuck
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            A free task tracker with a full JavaScript + Meteor API and MongoDB browser access. Build exactly the workflow your team needs — no workarounds.
+            A free task tracker with AI Next Action, Brain Dump capture, and nested subtasks. Built for ADHD brains — works for everyone.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button size="lg" className="h-12 px-10 text-base" asChild>
-              <Link to="/auth">Start Building Free <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+              <Link to="/auth">Start Free <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
-              <Link to="/features">Read the API Docs</Link>
+              <Link to="/features">See All Features</Link>
             </Button>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">✓ Full JS API  ✓ Free Kanban board  ✓ MongoDB browser access</p>
+          <p className="mt-3 text-sm text-muted-foreground">✓ AI Next Action  ✓ Free Kanban board  ✓ Open data export</p>
         </RevealSection>
       </section>
 
@@ -65,13 +65,13 @@ export default function TaskTrackerPage() {
         <div className="mx-auto max-w-3xl">
           <RevealSection>
             <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl text-center">
-              Every other task tool says "submit a feature request." We say "build it yourself."
+              Every other task tool shows you a wall of tasks. We tell you which one to do next.
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              You adopt a task tool. It almost works. There's one workflow it doesn't support. You submit a feature request. It sits there for 3 years. You build a workaround. The workaround breaks. You try a new tool. Repeat.
+              You open your board. Twenty cards stare back. You scroll, refresh, reorganize — and somehow it's 4pm and nothing shipped. Most task tools assume you already know what to do. ADHD brains don't always.
             </p>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              Pintask breaks the cycle. With a full JavaScript + Meteor API, MongoDB browser access, and an Extensions Store where you can publish your own extensions.
+              Pintask breaks the cycle. AI Next Action surfaces the single most important task right now. Break It Down splits it into doable steps. Brain Dump catches the rest before it floats away.
             </p>
           </RevealSection>
         </div>
