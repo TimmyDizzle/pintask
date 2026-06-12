@@ -154,13 +154,13 @@ export default function TaskTrackerPage() {
       {/* Final CTA */}
       <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
         <RevealSection className="mx-auto max-w-2xl text-center">
-          <h2 className="font-heading text-3xl font-bold tracking-tight">Stop waiting for a feature request that will never ship.</h2>
+          <h2 className="font-heading text-3xl font-bold tracking-tight">Stop staring at the board. Start shipping.</h2>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button size="lg" className="h-12 px-10 text-base" asChild>
-              <Link to="/auth">Start Building Free <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
+              <Link to="/auth">Start Free <ArrowRight className="ml-1.5 h-4 w-4" /></Link>
             </Button>
             <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
-              <Link to="/features">View API Documentation</Link>
+              <Link to="/features">See All Features</Link>
             </Button>
           </div>
         </RevealSection>
