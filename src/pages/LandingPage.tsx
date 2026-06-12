@@ -415,10 +415,10 @@ export default function LandingPage() {
               <ul className="mt-6 flex-1 space-y-3 text-sm">
                 {[
                   "Unlimited boards & cards",
-                  "Nested cards & subtasks",
-                  "Labels, comments, attachments",
+                  "Nested subtasks",
+                  "AI Next Action assistant",
+                  "Brain Dump quick capture",
                   "Keyboard shortcuts",
-                  "Full API access",
                   "Import from Trello",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
