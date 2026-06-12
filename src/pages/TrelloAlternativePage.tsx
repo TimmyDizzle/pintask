@@ -50,7 +50,7 @@ export default function TrelloAlternativePage() {
             The Best Trello Alternative in 2026
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-            Everything Trello does — plus nested cards, board mirroring, custom extensions, and time tracking. Free forever. Import your Trello boards in 2 clicks.
+            Everything Trello does — plus AI Next Action, Brain Dump capture, nested subtasks, and momentum tracking. Free forever. Import your Trello boards in 2 clicks.
           </p>
           <div className="mt-8">
             <Button size="lg" className="h-12 px-10 text-base" asChild>
