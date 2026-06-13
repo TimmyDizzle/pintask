@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { NextActionCard } from "@/components/NextActionCard";
+import { MomentumMeter } from "@/components/MomentumMeter";
+import { VoiceCapture } from "@/components/VoiceCapture";
+import { NextActionFab } from "@/components/NextActionFab";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -92,16 +95,31 @@ export default function Dashboard() {
     }
   };
 
+  const scrollToNextAction = () => {
+    document.getElementById("next-action")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Overview of your projects and tasks
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Overview of your projects and tasks
+          </p>
+        </div>
+        <VoiceCapture />
       </div>
 
-      <NextActionCard />
+      <MomentumMeter />
+
+      <div id="next-action">
+        <NextActionCard />
+      </div>
+
+      <NextActionFab onClick={scrollToNextAction} />
+
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>

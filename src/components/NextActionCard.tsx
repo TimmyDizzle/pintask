@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Play, Sparkles, Loader2, RefreshCw, Clock, Split } from "lucide-react";
+import { Target, Play, Sparkles, Loader2, RefreshCw, Clock, Split, LifeBuoy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -25,6 +25,7 @@ export function NextActionCard() {
   const [explanation, setExplanation] = useState<string | null>(null);
   const [loadingExplain, setLoadingExplain] = useState(false);
   const [breakdownOpen, setBreakdownOpen] = useState(false);
+  const [stuckOpen, setStuckOpen] = useState(false);
 
   // Load preferences, columns + tasks, and yesterday's completion count.
   const { data, isLoading, refetch } = useQuery({
@@ -214,6 +215,9 @@ export function NextActionCard() {
           <Button onClick={() => setBreakdownOpen(true)} variant="outline" size="sm" className="gap-1.5">
             <Split className="h-3.5 w-3.5" /> Break It Down
           </Button>
+          <Button onClick={() => setStuckOpen(true)} variant="outline" size="sm" className="gap-1.5">
+            <LifeBuoy className="h-3.5 w-3.5" /> I'm Stuck
+          </Button>
           {ranked.length > 1 && (
             <Button onClick={handleCycle} variant="ghost" size="sm">
               Show me another
@@ -226,6 +230,12 @@ export function NextActionCard() {
         onOpenChange={setBreakdownOpen}
         task={{ id: top.id, title: top.title, description: top.description, column_id: top.column_id }}
         mode="breakdown"
+      />
+      <BreakItDownDialog
+        open={stuckOpen}
+        onOpenChange={setStuckOpen}
+        task={{ id: top.id, title: top.title, description: top.description, column_id: top.column_id }}
+        mode="stuck"
       />
     </Card>
   );

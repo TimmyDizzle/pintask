@@ -1,83 +1,95 @@
-## Goal
 
-Replace every inaccurate technical claim (Meteor API, MongoDB browser access, custom extensions, "full API access") with honest, on-brand copy that highlights Pintask's real differentiator: an **ADHD-friendly Kanban** with Next Action, Break It Down, Brain Dump, and Momentum tools — backed by Supabase, with a free forever core plan.
+# Plan: Surface ADHD Features + Add Voice Capture
 
-No backend, schema, or feature code changes. Copy-only edits across 7 marketing pages.
+## Context
+Audit of the codebase confirms **4 of the 5 prioritized features already exist** in working form:
 
----
+| Feature | State | File |
+|---|---|---|
+| AI Next Action Engine | Built + on Dashboard | `NextActionCard`, `lib/nextAction.ts`, `next-action-explain` edge fn |
+| Break It Down | Built (incl. "I'm Stuck" blocker mode in backend) | `BreakItDownDialog`, `break-it-down` edge fn |
+| Brain Dump → Tasks | Built | `parse-task` edge fn + quick-add |
+| Momentum Meter | **Backend only** — `momentum_score` stored & used in scoring, no visible widget | `user_preferences.momentum_score` |
+| Voice Capture | **Not built** | — |
 
-## New positioning lines (the replacements)
-
-**Hero tagline (LandingPage.tsx line 218-219)** — replaces "Nested cards, custom extensions, full API access, AI assistant. Free forever — no per-seat trap."
-
-> "Nested subtasks, AI-powered Next Action, Brain Dump capture, and momentum tracking. **Free forever** — no per-seat trap."
-
-**Developer/API positioning** — replaces all "JavaScript + Meteor API" and "MongoDB browser access" claims with:
-
-> "Built on Supabase. Your data is yours — open schema, exportable any time, webhook-ready via Edge Functions."
-
-**Extensibility positioning** — replaces "custom extensions" / "Extensions Store":
-
-> "Power-ups that matter: Voice Capture, Momentum Meter, and the AI Assistant — built into the app, not bolted on."
+The plan focuses on what's actually missing: **visibility for what we built** and **one genuinely new feature**.
 
 ---
 
-## Files & specific edits
+## Phase 1 — Visibility Audit & Polish (≈ 2 hrs)
 
-### 1. `src/pages/LandingPage.tsx`
-- **Line 218-219**: swap hero subline to new ADHD-forward tagline above.
-- **Line 418-421** (feature checklist): replace `"Full API access"` → `"AI Next Action assistant"`; replace any `"custom extensions"` → `"Voice & Brain Dump capture"`.
-- Keep "Free forever" and "No per-seat pricing" — both are accurate.
+### 1.1 Build the Momentum Meter widget
+Create `src/components/MomentumMeter.tsx` — a visible component on the Dashboard showing the four levels:
 
-### 2. `src/pages/PricingPage.tsx`
-- **Line 19-20**: remove `"Full JavaScript + Meteor API access"` and `"MongoDB browser access"` from the free plan feature list. Replace with `"Open data — export anytime"` and `"Webhook-friendly Edge Functions"`.
-- **Line 25 FAQ**: rewrite to: *"Yes. The core Kanban — unlimited boards, nested subtasks, AI Next Action, and Brain Dump — is free with no time limit."*
-- **Line 29 FAQ**: change question to *"Can I export my data or build integrations?"* — answer: *"Yes. Your data lives in an open Supabase Postgres schema, exportable any time. Edge Functions support webhooks for custom integrations."*
-- **Line 62** comparison row: rename `"API Access"` → `"Open Data Export"`.
+- 0–25% 🌱 Starting
+- 26–50% ⚡ Building Momentum
+- 51–75% 🔥 In The Zone
+- 76–100% 🚀 Unstoppable
 
-### 3. `src/pages/FeaturesPage.tsx`
-- **Line 43-44**: replace the two feature cards:
-  - `"JavaScript + Meteor API"` → **"AI Next Action"** — *"An ADHD-friendly assistant that surfaces the single most important task right now."*
-  - `"MongoDB Browser Access"` → **"Open Data, Open Export"** — *"Your boards live in Supabase Postgres. Export everything, anytime."*
+Reads `momentum_score` from `user_preferences`. Uses the existing `Progress` UI component with a gradient fill that shifts color by tier. Placed above or beside the AI Daily Briefing card.
 
-### 4. `src/pages/ExtensionsPage.tsx`
-- **Line 11** card: `"Build Your Own"` desc → *"Hook into your Pintask data via Supabase Edge Functions and webhooks."*
-- **Line 154-155**: rewrite section to *"For Developers: Open Data, Your Way"* and *"Pintask runs on Supabase. Your data is yours — open Postgres schema, REST access via your account, and Edge Functions for custom workflows."*
-- Consider whether the Extensions Store framing should soften to "Power-ups" — flag in implementation, default to renaming.
+### 1.2 Surface "I'm Stuck" / Anxiety Rescue
+The `break-it-down` edge function already supports a `blocker` parameter for the "I'm Stuck" flow, but there is no dedicated UI entry point. Add:
 
-### 5. `src/pages/KanbanBoardPage.tsx`
-- **Line 95**: replace with *"Pintask is the only Kanban board with built-in ADHD-friendly tools: Next Action, Break It Down, and Brain Dump capture."*
+- A subtle **"I'm Stuck"** button on the `NextActionCard` (next to "Start" and "Break It Down").
+- Opens a small dialog with: *"What's blocking you right now?"* free-text input → calls `break-it-down` with `blocker` + `firstStepOnly: true` → returns ONE absurdly small first step.
 
-### 6. `src/pages/TrelloAlternativePage.tsx`
-- **Line 27**: rename card to **"Pintask Helps You Start"** — *"Trello shows you tasks. Pintask tells you which one to do next, then helps you break it down."*
-- **Lines 41, 53**: rewrite tagline to *"Everything Trello does — plus AI Next Action, Brain Dump capture, nested subtasks, and momentum tracking. Free forever. Import your Trello boards in 2 clicks."*
-- **Line 60**: keep ✓ chips, drop any "API" reference.
+### 1.3 Mobile Floating Action Button — "What's Next?"
+Add a fixed-position FAB (mobile only, hidden ≥md) that triggers the Next Action recalc and scrolls/opens the recommendation. Hooks into existing `NextActionCard` data flow.
 
-### 7. `src/pages/TaskTrackerPage.tsx`
-- **Lines 11-12**: replace both feature cards:
-  - `"JavaScript + Meteor API"` → **"AI Next Action"** with ADHD-focused desc.
-  - `"MongoDB Browser Access"` → **"Open Data Export"** with Supabase Postgres desc.
-- **Lines 25-26** comparison rows: replace with:
-  - `feature: "AI Next Action", pintask: "✅", trello: "❌", clickup: "❌", asana: "❌"`
-  - `feature: "Open Data Export", pintask: "✅", trello: "Limited", clickup: "Limited", asana: "Limited"`
-- **Lines 37, 49, 59, 74**: rewrite all hero/body paragraphs to drop Meteor/MongoDB and lead with ADHD workflow.
-- **Lines 56, 163**: rename `"Read the API Docs"` / `"View API Documentation"` buttons → `"See All Features"` linking to `/features` (no docs page exists yet).
+### 1.4 ADHD Mode toggle in Settings
+Verify `adhd_mode` preference has a visible toggle in user settings/preferences UI. If not, add a single switch with one-line copy: *"Prioritize quick wins and easy starts."*
 
 ---
 
-## Out of scope (not changed this round)
+## Phase 2 — Voice Capture (≈ 3 hrs)
 
-- `src/data/blogPosts.ts` and `src/pages/BlogPostPage.tsx` — blog post bodies. If any post repeats the Meteor/MongoDB claim I'll flag during implementation but will not silently rewrite published posts; you'll decide whether to retract or amend.
-- Terms of Service — the "free tier may change" clause stays; that's standard and accurate.
-- Sitemaps, schema markup, meta titles — will be checked and updated only if they repeat the inaccurate claims.
+Browser-native via Web Speech API (free, no transcription cost — only the existing `parse-task` AI cost applies).
+
+### 2.1 Component
+`src/components/VoiceCapture.tsx` — microphone button that:
+- Uses `window.SpeechRecognition || window.webkitSpeechRecognition`.
+- Shows live transcript while recording (visual waveform optional).
+- On stop: splits transcript into task fragments (sentence/comma-separated), sends each to existing `parse-task` edge function.
+- Inserts parsed tasks into a chosen project/column.
+
+### 2.2 Entry points
+- Mic icon in the global quick-add bar.
+- Optional FAB on mobile dashboard (paired with the "What's Next?" FAB).
+
+### 2.3 Graceful degradation
+- Detect API support; on unsupported browsers (Firefox desktop, some mobile) hide the button and show a tooltip: *"Voice capture works in Chrome, Edge, and Safari."*
+- Handle `not-allowed`, `no-speech`, `network` errors with friendly toasts.
 
 ---
 
-## What this gives you
+## What I'm Explicitly NOT Doing
+- Not rebuilding `NextActionCard`, `BreakItDownDialog`, or the scoring engine — they exist and work.
+- Not adding server-side Whisper transcription (per your choice).
+- Not touching marketing copy in this pass.
 
-- **Zero false claims** — no Meteor, no MongoDB, no fictional extensions store, no API docs that don't exist.
-- **Sharper positioning** — every page now leads with the ADHD workflow stack, your actual category-of-one differentiator.
-- **Ad-safe copy** — nothing in the rewritten lines would fail a paid-ad review or invite a Wekan trademark issue.
-- **Preserved trust signals** — "Free forever," "No per-seat," lifetime/$8/mo pricing all stay because they're true.
+---
 
-Ready to switch to build mode and apply these edits.
+## Technical Details (for reference)
+
+- **Momentum widget** reads from `user_preferences` via React Query, falls back to 0.
+- **Voice Capture** uses Web Speech API directly in the browser; no edge function changes. Re-uses `parse-task` for each detected task fragment.
+- **"I'm Stuck"** dialog re-uses existing `break-it-down` edge function with `{ blocker, firstStepOnly: true }` — no new edge function.
+- **FAB** uses Tailwind `fixed bottom-4 right-4 md:hidden`.
+
+---
+
+## Files to Create
+- `src/components/MomentumMeter.tsx`
+- `src/components/StuckDialog.tsx`
+- `src/components/VoiceCapture.tsx`
+- `src/components/NextActionFab.tsx`
+
+## Files to Edit
+- `src/pages/Dashboard.tsx` — mount `MomentumMeter`, `NextActionFab`.
+- `src/components/NextActionCard.tsx` — add "I'm Stuck" button → opens `StuckDialog`.
+- Wherever the global quick-add bar lives — mount `VoiceCapture` mic.
+- Settings/preferences page — confirm/add ADHD Mode toggle.
+
+## Estimated Total
+~5 hours of focused work for both phases. Phase 1 alone (2 hrs) delivers ~70% of the perceived value because it makes invisible features visible.
