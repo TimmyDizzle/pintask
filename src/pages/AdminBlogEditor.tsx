@@ -195,14 +195,22 @@ function AdminBlogEditorInner() {
             <Textarea id="excerpt" value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={3} />
           </div>
           <div>
-            <Label htmlFor="content">Content (markdown-lite: ## H2, ### H3, - bullets, **bold**, `code`)</Label>
+            <Label htmlFor="content">Content</Label>
             <Textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={24}
               className="font-mono text-sm"
+              placeholder={"## Heading\n\nParagraph with **bold** and `code`.\n\n- bullet one\n- bullet two"}
             />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Markdown-lite only — no HTML. Use <code className="font-mono">## H2</code>,{" "}
+              <code className="font-mono">### H3</code>, blank lines between paragraphs,{" "}
+              <code className="font-mono">- bullets</code>, <code className="font-mono">**bold**</code>,{" "}
+              <code className="font-mono">`code`</code>. HTML tags like{" "}
+              <code className="font-mono">&lt;p&gt;</code> or <code className="font-mono">&lt;h2&gt;</code> will render as plain text.
+            </p>
           </div>
           <div>
             <Label>Preview</Label>
