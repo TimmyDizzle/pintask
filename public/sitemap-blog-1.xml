@@ -56,8 +56,12 @@
   </url>
   <url>
     <loc>https://pintask.online/blog/pintask-is-back</loc>
-    <lastmod>2026-05-21</lastmod>
+    <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://zieqfktltyolazltppjo.supabase.co/storage/v1/object/public/blog-images/pintask-is-back/1781362149169.png</image:loc>
+      <image:title>pintask.me Is Back — And It&apos;s Better Than You Remember</image:title>
+    </image:image>
   </url>
 </urlset>
