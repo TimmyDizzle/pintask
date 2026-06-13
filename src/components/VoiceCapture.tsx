@@ -63,9 +63,32 @@ export function VoiceCapture() {
     if (!columnId && columns.length > 0) setColumnId(columns[0].id);
   }, [columns, columnId]);
 
-  const start = () => {
+  const start = async () => {
     const s = getSpeechRecognition();
-    if (!s) return;
+    if (!s) {
+      toast({ title: "Not supported", description: "Use Chrome, Edge, or Safari.", variant: "destructive" });
+      return;
+    }
+
+    // 1) Explicitly request mic permission first — Safari + some Chromium
+    //    builds silently no-op on SpeechRecognition.start() without this.
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // We don't need the stream itself — SpeechRecognition opens its own.
+      stream.getTracks().forEach((t) => t.stop());
+    } catch (err: any) {
+      const msg =
+        err?.name === "NotAllowedError"
+          ? "Microphone blocked. Click the 🔒 in your address bar and allow mic access."
+          : err?.name === "NotFoundError"
+          ? "No microphone detected on this device."
+          : err?.name === "NotReadableError"
+          ? "Mic is in use by another app. Close it and retry."
+          : "Couldn't access the microphone.";
+      toast({ title: "Voice capture", description: msg, variant: "destructive" });
+      return;
+    }
+
     const r = new s.Ctor();
     r.continuous = true;
     r.interimResults = true;
@@ -82,19 +105,34 @@ export function VoiceCapture() {
     };
     r.onerror = (e: any) => {
       setListening(false);
-      const msg = e?.error === "not-allowed"
-        ? "Microphone blocked. Enable mic access in your browser."
-        : e?.error === "no-speech"
-        ? "No speech detected — try again."
-        : "Voice capture error.";
+      const msg =
+        e?.error === "not-allowed"
+          ? "Microphone blocked. Enable mic access in your browser."
+          : e?.error === "no-speech"
+          ? "No speech detected — try again."
+          : e?.error === "audio-capture"
+          ? "No microphone available."
+          : e?.error === "network"
+          ? "Network error — speech recognition needs internet."
+          : `Voice capture error (${e?.error || "unknown"}).`;
       toast({ title: "Voice capture", description: msg, variant: "destructive" });
     };
     r.onend = () => setListening(false);
     recogRef.current = r;
     setTranscript("");
     setListening(true);
-    try { r.start(); } catch { /* already started */ }
+    try {
+      r.start();
+    } catch (err: any) {
+      setListening(false);
+      toast({
+        title: "Couldn't start",
+        description: err?.message || "Try clicking Start again.",
+        variant: "destructive",
+      });
+    }
   };
+
 
   const stop = () => {
     try { recogRef.current?.stop(); } catch { /* noop */ }
