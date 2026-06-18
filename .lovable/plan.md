@@ -1,19 +1,20 @@
-## About Page Content Swap
+## Fix missing excerpt on "ADHD Productivity Tech Stack" blog card
 
-Replace the entire body content of `src/pages/AboutPage.tsx` with the new long-form copy provided by the user.
+### Problem
+The blog index card for "The ADHD Productivity Tech Stack: 8 Tools to Tame Your Brain" is missing the gray body description that every other card shows. Cause: the `excerpt` column for that row in `blog_posts` is an empty string (confirmed via DB query). The card template renders `{post.excerpt}` directly, so an empty value leaves a blank gap.
 
-### What will change
-- **Hero section**: New H1 "We Built the Task Tracker We Couldn't Find Anywhere Else" with expanded intro paragraph about frustration, rigid systems, and building PinTask as an extensible platform.
-- **Section 2 — "Stop Losing Your Focus. Start Pinning Your Priorities."**: Intro + 4 bullet points (📌 See it, pin it, do it; 🧠 Distraction-proof; ⚡ Instant capture; 🔄 Works the way your brain works).
-- **Section 3 — "The AI Productivity System Built for Professionals with ADHD"**: Intro + 5 checklist bullets (Focus, Prioritization, Daily execution, Overwhelm reduction, Accountability) + closing CTA.
-- **CTA footer**: Retain a "Start Free" button.
-- **useDocumentTitle**: Update to match the new page title.
+### Fix
+Run a one-line SQL `UPDATE` to set a proper excerpt on that row only. No code or component changes — every other post already has an excerpt and renders fine.
 
-### What stays the same
-- `MarketingLayout` wrapper, `RevealSection` animations, and `Button` CTA pattern.
-- Lucide icon imports removed (no icons used in new copy).
-- `beliefs` and `timeline` arrays removed (not in new copy).
+Proposed excerpt (matches the tone/length of neighboring cards, ~25 words):
 
-### Technical details
-- Single file edit: `src/pages/AboutPage.tsx`
-- No backend, routing, or dependency changes.
+> "The 8 tools ADHD brains actually stick with — for capture, focus, task management, and follow-through. A no-fluff stack built around how your brain really works."
+
+### Technical detail
+- Single migration / update against `public.blog_posts` where `slug = 'the-adhd-productivity-tech-stack-8-tools-to-tame-your-brain'`.
+- No schema, RLS, or frontend changes.
+- Card will repopulate immediately on next blog index load (React Query refetch).
+
+### Out of scope
+- No changes to the post body, title, category, read time, or publish date.
+- No changes to other posts.
