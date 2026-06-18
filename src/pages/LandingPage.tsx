@@ -23,6 +23,11 @@ import {
   User,
   Users,
   Menu,
+  Target,
+  Split,
+  Lightbulb,
+  TrendingUp,
+  Mic,
 } from "lucide-react";
 import kanbanDragGif from "@/assets/kanban-drag.gif";
 import tourScreensGif from "@/assets/tour-screens.gif";
@@ -61,6 +66,31 @@ const features = [
     icon: BarChart3,
     title: "Reports & Insights",
     desc: "Visualize productivity with time and task completion reports.",
+  },
+  {
+    icon: Target,
+    title: "AI Next Action Engine",
+    desc: "One click tells you the single best task to work on right now — scored by urgency, impact, and your energy.",
+  },
+  {
+    icon: Split,
+    title: "Break It Down",
+    desc: "Staring at a big task? AI splits it into tiny, actionable steps you can actually start.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Brain Dump → Tasks",
+    desc: "Drop a wall of text, a note, or a voice ramble and convert it into clean, structured tasks instantly.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Momentum Meter",
+    desc: "Track your daily productivity streak and see when you're building flow — or when to take a break.",
+  },
+  {
+    icon: Mic,
+    title: "Voice Capture",
+    desc: "Speak naturally. Say tasks out loud and watch them appear on your board, parsed and prioritized.",
   },
 ];
 
