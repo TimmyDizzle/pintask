@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
+    <loc>https://pintask.online/blog/replace-broken-productivity-system</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://pintask.online/blog/the-adhd-productivity-tech-stack-8-tools-to-tame-your-brain</loc>
     <lastmod>2026-06-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -67,7 +73,7 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://zieqfktltyolazltppjo.supabase.co/storage/v1/object/public/blog-images/pintask-is-back/1781362149169.png</image:loc>
-      <image:title>pintask.me Is Back — And It&apos;s Better Than You Remember</image:title>
+      <image:title>Pintask Is Back — And It&apos;s Better Than You Remember</image:title>
     </image:image>
   </url>
 </urlset>
