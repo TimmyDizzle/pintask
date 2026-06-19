@@ -33,7 +33,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-3xl">
           <RevealSection className="text-center">
             <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-              We Built the Task Tracker We Couldn't Find Anywhere Else
+              We Got Tired of Asking. So We Built It Ourselves: The Story behind Pintask
             </h1>
           </RevealSection>
           <RevealSection delay={100}>
