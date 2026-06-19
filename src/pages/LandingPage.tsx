@@ -122,7 +122,7 @@ function RevealSection({
 const testimonials = [
   {
     quote:
-      "I used the original Pintask.me for years. When it went away I tried everything — Trello, ClickUp, Notion. Nothing felt this clean again until now. This is exactly what I needed.",
+      "I used the original Pintask for years. When it went away I tried everything — Trello, ClickUp, Notion. Nothing felt this clean again until now. This is exactly what I needed.",
     name: "James R.",
     role: "Freelance Developer",
   },
@@ -644,8 +644,8 @@ export default function LandingPage() {
                   a: "Trello is great but has no built-in time tracker, limited keyboard shortcuts, and gets complicated fast. Pintask is built for speed — you can manage your entire day without touching your mouse. It also has AI features Trello doesn't offer.",
                 },
                 {
-                  q: "I used the original Pintask.me — is this the same thing?",
-                  a: "We're big fans of the original Pintask.me and built this with that same simplicity-first philosophy in mind. Same clean kanban spirit, rebuilt from the ground up with modern tools and AI capabilities the original never had.",
+                  q: "I used the original Pintask — is this the same thing?",
+                  a: "We're big fans of the original Pintask and built this with that same simplicity-first philosophy in mind. Same clean kanban spirit, rebuilt from the ground up with modern tools and AI capabilities the original never had.",
                 },
                 {
                   q: "Is my data safe?",
