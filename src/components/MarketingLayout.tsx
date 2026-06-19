@@ -26,6 +26,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <Button variant="ghost" asChild><Link to="/features">Features</Link></Button>
             <Button variant="ghost" asChild><Link to="/blog">Blog</Link></Button>
             <Button variant="ghost" asChild><Link to="/pricing">Pricing</Link></Button>
+            <Button variant="ghost" asChild><Link to="/about">About</Link></Button>
             <Button variant="ghost" asChild><Link to="/auth">Sign In</Link></Button>
             <Button asChild>
               <Link to="/auth">Start Free <ArrowRight className="ml-1 h-4 w-4" /></Link>
