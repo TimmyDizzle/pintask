@@ -26,6 +26,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <Button variant="ghost" asChild><Link to="/features">Features</Link></Button>
             <Button variant="ghost" asChild><Link to="/blog">Blog</Link></Button>
             <Button variant="ghost" asChild><Link to="/pricing">Pricing</Link></Button>
+            <Button variant="ghost" asChild><Link to="/about">About</Link></Button>
             <Button variant="ghost" asChild><Link to="/auth">Sign In</Link></Button>
             <Button asChild>
               <Link to="/auth">Start Free <ArrowRight className="ml-1 h-4 w-4" /></Link>
@@ -41,6 +42,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
               <Button variant="ghost" className="w-full justify-start" asChild><Link to="/features" onClick={() => setMobileMenuOpen(false)}>Features</Link></Button>
               <Button variant="ghost" className="w-full justify-start" asChild><Link to="/blog" onClick={() => setMobileMenuOpen(false)}>Blog</Link></Button>
               <Button variant="ghost" className="w-full justify-start" asChild><Link to="/pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</Link></Button>
+              <Button variant="ghost" className="w-full justify-start" asChild><Link to="/about" onClick={() => setMobileMenuOpen(false)}>About</Link></Button>
               <Button variant="ghost" className="w-full justify-start" asChild><Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Sign In</Link></Button>
               <Button className="w-full" asChild><Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Get Started Free</Link></Button>
             </div>
