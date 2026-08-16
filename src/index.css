@@ -163,4 +163,13 @@
     animation-iteration-count: infinite;
     will-change: transform;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-hero-card {
+      animation: none !important;
+      transform: none !important;
+      will-change: auto;
+      opacity: 0.5;
+    }
+  }
 }
