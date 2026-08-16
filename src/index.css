@@ -149,3 +149,18 @@
     50% { transform: translate(2%, -3%); }
   }
 }
+
+@layer utilities {
+  @keyframes blogHeroDrift {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    25% { transform: translate3d(10px, -14px, 0); }
+    50% { transform: translate3d(-8px, 10px, 0); }
+    75% { transform: translate3d(-14px, -6px, 0); }
+  }
+  .blog-hero-card {
+    animation-name: blogHeroDrift;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    will-change: transform;
+  }
+}
