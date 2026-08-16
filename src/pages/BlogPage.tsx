@@ -41,7 +41,13 @@ export default function BlogPage() {
       <section className="relative isolate overflow-hidden px-6 py-24 md:py-32">
         <BlogHeroBackdrop />
         <RevealSection className="relative mx-auto max-w-3xl text-center">
-          <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          <div className="flex justify-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              Productivity & Kanban
+            </span>
+          </div>
+          <h1 className="mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
             The{" "}
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Pintask
@@ -51,6 +57,13 @@ export default function BlogPage() {
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
             Practical guides on Kanban, workflow design, and team productivity.
           </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+            <span className="font-medium text-foreground/80">The Pintask Team</span>
+            <span aria-hidden>·</span>
+            <time dateTime="2026-01-01">Updated weekly</time>
+            <span aria-hidden>·</span>
+            <span>20+ articles</span>
+          </div>
         </RevealSection>
       </section>
 
