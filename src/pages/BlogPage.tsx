@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
+import BlogHeroBackdrop from "@/components/BlogHeroBackdrop";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Search } from "lucide-react";
