@@ -37,9 +37,16 @@ export default function BlogPage() {
 
   return (
     <MarketingLayout>
-      <section className="px-6 py-20 md:py-28">
-        <RevealSection className="mx-auto max-w-3xl text-center">
-          <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">The Pintask Blog</h1>
+      <section className="relative isolate overflow-hidden px-6 py-24 md:py-32">
+        <BlogHeroBackdrop />
+        <RevealSection className="relative mx-auto max-w-3xl text-center">
+          <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+            The{" "}
+            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Pintask
+            </span>{" "}
+            Blog
+          </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
             Practical guides on Kanban, workflow design, and team productivity.
           </p>
