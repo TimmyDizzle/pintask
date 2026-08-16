@@ -16,21 +16,25 @@ export default function BlogHeroBackdrop() {
       {cards.map((c, i) => (
         <div
           key={i}
-          className="blog-hero-card absolute rounded-xl border border-primary/20 bg-primary/10 backdrop-blur-sm"
+          className="blog-hero-card absolute"
           style={{
             top: c.top,
             left: c.left,
             width: c.w,
             height: c.h,
-            transform: `rotate(${c.rotate})`,
             animationDelay: c.delay,
             animationDuration: c.duration,
           }}
         >
-          <Pin className="absolute -top-2 -right-2 h-4 w-4 text-primary/40" />
-          <div className="space-y-2 p-3">
-            <div className="h-2 w-3/4 rounded-full bg-primary/20" />
-            <div className="h-2 w-1/2 rounded-full bg-primary/15" />
+          <div
+            className="relative h-full w-full rounded-xl border border-primary/20 bg-primary/10 backdrop-blur-sm"
+            style={{ transform: `rotate(${c.rotate})` }}
+          >
+            <Pin className="absolute -right-2 -top-2 h-4 w-4 text-primary/40" />
+            <div className="space-y-2 p-3">
+              <div className="h-2 w-3/4 rounded-full bg-primary/20" />
+              <div className="h-2 w-1/2 rounded-full bg-primary/15" />
+            </div>
           </div>
         </div>
       ))}
