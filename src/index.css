@@ -171,5 +171,16 @@
       will-change: auto;
       opacity: 0.5;
     }
+    .scroll-indicator {
+      animation: none !important;
+    }
+  }
+
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(6px); opacity: 1; }
+  }
+  .scroll-indicator {
+    animation: scrollBounce 1.8s ease-in-out infinite;
   }
 }

@@ -7,7 +7,7 @@ import RevealSection from "@/components/RevealSection";
 import BlogHeroBackdrop from "@/components/BlogHeroBackdrop";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, Search, ChevronDown } from "lucide-react";
 import AdSlot from "@/components/AdSlot";
 import { AD_SLOTS } from "@/config/adsense";
 import { fetchLivePosts, formatPostDate } from "@/lib/blog";
@@ -67,7 +67,17 @@ export default function BlogPage() {
         </RevealSection>
       </section>
 
-      <section className="border-t border-border/40 bg-muted/30 px-6 py-10">
+      <div className="flex justify-center -mt-10 pb-2">
+        <a
+          href="#blog-content"
+          aria-label="Skip to blog posts"
+          className="scroll-indicator inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/80 text-muted-foreground shadow-sm backdrop-blur transition-colors hover:text-primary hover:border-primary/40"
+        >
+          <ChevronDown className="h-4 w-4" />
+        </a>
+      </div>
+
+      <section id="blog-content" className="border-t border-border/40 bg-muted/30 px-6 py-10">
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap gap-2">
