@@ -131,6 +131,7 @@ export default function FeaturesPage() {
   );
 
   const [variant, setVariant] = useState<(typeof headlineVariants)[number]["id"]>("A");
+  const firstToggleRef = useRef<HTMLButtonElement>(null);
   const active = headlineVariants.find((v) => v.id === variant) ?? headlineVariants[0];
 
   return (
