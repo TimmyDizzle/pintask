@@ -32,8 +32,9 @@ export default function AboutPage() {
       <section className="px-6 py-20 md:py-28">
         <div className="mx-auto max-w-3xl">
           <RevealSection className="text-center">
-            <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-              We Got Tired of Asking. So We Built It Ourselves: The Story behind Pintask
+            <h1 className="font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08]">
+              We Got Tired of Asking. So We Built It Ourselves:{" "}
+              <span className="text-primary">The Story behind Pintask</span>
             </h1>
           </RevealSection>
           <RevealSection delay={100}>

@@ -101,8 +101,9 @@ export default function FeaturesPage() {
       {/* Hero */}
       <section className="px-6 py-20 md:py-28">
         <RevealSection className="mx-auto max-w-3xl text-center">
-          <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Everything You Need to Manage Work — Plus Everything You Want to Build
+          <h1 className="font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08]">
+            Everything You Need to Manage Work —{" "}
+            <span className="text-primary">Plus Everything You Want</span> to Build
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
             Pintask ships with a powerful free Kanban board out of the box. Then it hands you the keys to extend, customize, and automate anything you need.
