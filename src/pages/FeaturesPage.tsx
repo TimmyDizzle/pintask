@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
@@ -131,6 +131,7 @@ export default function FeaturesPage() {
   );
 
   const [variant, setVariant] = useState<(typeof headlineVariants)[number]["id"]>("A");
+  const firstToggleRef = useRef<HTMLButtonElement>(null);
   const active = headlineVariants.find((v) => v.id === variant) ?? headlineVariants[0];
 
   return (
@@ -139,24 +140,47 @@ export default function FeaturesPage() {
       <section className="px-6 py-20 md:py-28">
         <RevealSection className="mx-auto max-w-3xl text-center">
           {/* Headline variant toggle */}
-          <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <div
+            role="radiogroup"
+            aria-label="Headline preview"
+            className="mb-8 flex flex-wrap items-center justify-center gap-2"
+            onKeyDown={(e) => {
+              const idx = headlineVariants.findIndex((v) => v.id === variant);
+              if (e.key === "ArrowRight") {
+                e.preventDefault();
+                setVariant(headlineVariants[(idx + 1) % headlineVariants.length].id);
+              } else if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                setVariant(headlineVariants[(idx - 1 + headlineVariants.length) % headlineVariants.length].id);
+              }
+            }}
+          >
+            <span className="sr-only">Headline preview</span>
+            <span aria-hidden="true" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Headline preview
             </span>
-            {headlineVariants.map((v) => (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => setVariant(v.id)}
-                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-                  variant === v.id
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                }`}
-              >
-                {v.label}
-              </button>
-            ))}
+            {headlineVariants.map((v, i) => {
+              const selected = variant === v.id;
+              return (
+                <button
+                  key={v.id}
+                  ref={i === 0 ? firstToggleRef : undefined}
+                  role="radio"
+                  aria-checked={selected}
+                  tabIndex={selected ? 0 : -1}
+                  type="button"
+                  onClick={() => setVariant(v.id)}
+                  onFocus={() => setVariant(v.id)}
+                  className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                    selected
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  {v.label}
+                </button>
+              );
+            })}
           </div>
           <h1 className="font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08]">
             {active.render()}
