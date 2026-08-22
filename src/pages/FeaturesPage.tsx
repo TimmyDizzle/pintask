@@ -167,8 +167,10 @@ export default function FeaturesPage() {
                   ref={i === 0 ? firstToggleRef : undefined}
                   role="radio"
                   aria-checked={selected}
+                  tabIndex={selected ? 0 : -1}
                   type="button"
                   onClick={() => setVariant(v.id)}
+                  onFocus={() => setVariant(v.id)}
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                     selected
                       ? "border-primary bg-primary text-primary-foreground"
