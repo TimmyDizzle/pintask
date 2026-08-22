@@ -5,7 +5,7 @@ const cards = [
   { top: "58%", left: "14%", w: "130px", h: "80px", rotate: "5deg", delay: "-8s", duration: "64s" },
   { top: "20%", left: "72%", w: "190px", h: "110px", rotate: "7deg", delay: "-16s", duration: "58s" },
   { top: "64%", left: "80%", w: "140px", h: "86px", rotate: "-4deg", delay: "-24s", duration: "70s" },
-  { top: "40%", left: "45%", w: "160px", h: "92px", rotate: "3deg", delay: "-12s", duration: "60s" },
+  { top: "-4%", left: "45%", w: "160px", h: "92px", rotate: "3deg", delay: "-12s", duration: "60s" },
 ];
 
 export default function BlogHeroBackdrop() {
