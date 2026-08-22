@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
@@ -9,6 +10,39 @@ import {
   Copy as CopyIcon, CalendarClock, FileSpreadsheet, Download,
   Import, Calendar, Mail, MessageCircle, Code, Database, Store, Rocket, Check, X,
 } from "lucide-react";
+
+const headlineVariants = [
+  {
+    id: "A",
+    label: "A · Manage & Build",
+    render: () => (
+      <>
+        Everything You Need to Manage Work —{" "}
+        <span className="text-primary">Plus Everything You Want</span> to Build
+      </>
+    ),
+  },
+  {
+    id: "B",
+    label: "B · Works & Bends",
+    render: () => (
+      <>
+        A Kanban Board That Works —{" "}
+        <span className="text-primary">And Bends to Fit You</span>
+      </>
+    ),
+  },
+  {
+    id: "C",
+    label: "C · Today & Tomorrow",
+    render: () => (
+      <>
+        Manage Today's Work.{" "}
+        <span className="text-primary">Build Tomorrow's Workflow.</span>
+      </>
+    ),
+  },
+] as const;
 
 const coreFeatures = [
   { icon: CheckSquare, title: "Kanban Boards, Lists & Cards", desc: "Drag-and-drop boards with unlimited lists and cards. Assign members, set due dates, attach files, add color labels, and leave comments — all on the free plan." },
