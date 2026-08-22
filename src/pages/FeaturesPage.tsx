@@ -130,14 +130,36 @@ export default function FeaturesPage() {
     "Explore every Pintask feature: nested cards, board mirroring, hands-free time tracking, JavaScript extensions, Trello import, calendar sync, and more. Free to start."
   );
 
+  const [variant, setVariant] = useState<(typeof headlineVariants)[number]["id"]>("A");
+  const active = headlineVariants.find((v) => v.id === variant) ?? headlineVariants[0];
+
   return (
     <MarketingLayout>
       {/* Hero */}
       <section className="px-6 py-20 md:py-28">
         <RevealSection className="mx-auto max-w-3xl text-center">
+          {/* Headline variant toggle */}
+          <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Headline preview
+            </span>
+            {headlineVariants.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => setVariant(v.id)}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  variant === v.id
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
           <h1 className="font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08]">
-            Everything You Need to Manage Work —{" "}
-            <span className="text-primary">Plus Everything You Want</span> to Build
+            {active.render()}
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
             Pintask ships with a powerful free Kanban board out of the box. Then it hands you the keys to extend, customize, and automate anything you need.
