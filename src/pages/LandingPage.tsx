@@ -233,10 +233,6 @@ export default function LandingPage() {
           size={520}
           className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-40 md:opacity-50"
         />
-        <PurpleLightningOrb
-          size={260}
-          className="right-[6%] top-[45%] -z-10 hidden opacity-30 lg:block"
-        />
         <div
           ref={heroReveal.ref}
           className={`mx-auto max-w-3xl text-center ${revealBase} duration-1000 ${heroReveal.isVisible ? revealVisible : revealHidden}`}

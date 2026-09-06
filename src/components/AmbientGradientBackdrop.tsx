@@ -27,7 +27,7 @@ export default function AmbientGradientBackdrop() {
         className="absolute right-[-20%] top-[25%] h-[80vh] w-[75vw] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, hsl(255 70% 55% / 0.08), transparent 70%)",
+            "radial-gradient(circle at 50% 50%, hsl(255 70% 55% / 0.04), transparent 70%)",
           filter: "blur(70px)",
           animation: "ambient-drift-b 44s ease-in-out infinite",
         }}
