@@ -188,7 +188,7 @@
 /* ---- Hero accent glow + high-contrast reading mode ---- */
 @layer utilities {
   .hero-accent-glow {
-    color: hsl(var(--primary));
+    color: color-mix(in srgb, hsl(var(--primary)), black 14%);
     text-shadow:
       0 0 18px hsl(var(--primary) / 0.45),
       0 0 38px hsl(var(--primary) / 0.22),
