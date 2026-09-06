@@ -184,3 +184,43 @@
     animation: scrollBounce 1.8s ease-in-out infinite;
   }
 }
+
+/* ---- Hero accent glow + high-contrast reading mode ---- */
+@layer utilities {
+  .hero-accent-glow {
+    color: hsl(var(--primary));
+    text-shadow:
+      0 0 18px hsl(var(--primary) / 0.45),
+      0 0 38px hsl(var(--primary) / 0.22),
+      0 1px 2px hsl(var(--background) / 0.9);
+  }
+}
+
+.high-contrast {
+  --foreground: 0 0% 0%;
+  --muted-foreground: 220 12% 28%;
+  --primary: 255 80% 38%;
+  --border: 220 15% 70%;
+}
+.high-contrast.dark {
+  --foreground: 0 0% 100%;
+  --muted-foreground: 220 15% 88%;
+  --primary: 255 90% 80%;
+  --border: 220 15% 45%;
+}
+.high-contrast [data-decorative="true"] {
+  display: none !important;
+}
+.high-contrast .hero-accent-glow {
+  text-shadow: none;
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4 {
+  text-shadow: none !important;
+}
