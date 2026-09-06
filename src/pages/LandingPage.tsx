@@ -36,6 +36,7 @@ import WaitlistForm from "@/components/WaitlistForm";
 import FounderLTDBanner from "@/components/FounderLTDBanner";
 import AnimatedHeroBackground from "@/components/AnimatedHeroBackground";
 import PurpleLightningOrb from "@/components/PurpleLightningOrb";
+import AmbientGradientBackdrop from "@/components/AmbientGradientBackdrop";
 
 const features = [
   {
