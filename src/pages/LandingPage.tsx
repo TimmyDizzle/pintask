@@ -35,6 +35,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import WaitlistForm from "@/components/WaitlistForm";
 import FounderLTDBanner from "@/components/FounderLTDBanner";
 import AnimatedHeroBackground from "@/components/AnimatedHeroBackground";
+import PurpleLightningOrb from "@/components/PurpleLightningOrb";
 
 const features = [
   {
@@ -226,6 +227,14 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-16 pt-20 md:pt-28">
         <AnimatedHeroBackground />
+        <PurpleLightningOrb
+          size={520}
+          className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-70 md:opacity-80"
+        />
+        <PurpleLightningOrb
+          size={260}
+          className="right-[6%] top-[45%] -z-10 hidden opacity-50 lg:block"
+        />
         <div
           ref={heroReveal.ref}
           className={`mx-auto max-w-3xl text-center ${revealBase} duration-1000 ${heroReveal.isVisible ? revealVisible : revealHidden}`}
