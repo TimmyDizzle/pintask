@@ -245,7 +245,7 @@ export default function LandingPage() {
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "350ms" }}
           >
-            Turn ADHD overwhelm into clear next steps, overwhelming projects into manageable tasks, and let AI guide your next move.
+            Turn ADHD overwhelm into clear next steps, big projects into manageable tasks, and let AI guide your next move.
           </p>
           <div
             className={`mx-auto mt-8 max-w-md ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
