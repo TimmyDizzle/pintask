@@ -92,7 +92,7 @@ export default function AnimatedHeroBackground() {
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden opacity-70"
       aria-hidden="true"
     >
       {/* Deep night gradient base */}
