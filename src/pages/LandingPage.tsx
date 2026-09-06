@@ -231,11 +231,11 @@ export default function LandingPage() {
         <AnimatedHeroBackground />
         <PurpleLightningOrb
           size={520}
-          className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-70 md:opacity-80"
+          className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-40 md:opacity-50"
         />
         <PurpleLightningOrb
           size={260}
-          className="right-[6%] top-[45%] -z-10 hidden opacity-50 lg:block"
+          className="right-[6%] top-[45%] -z-10 hidden opacity-30 lg:block"
         />
         <div
           ref={heroReveal.ref}

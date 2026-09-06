@@ -18,7 +18,7 @@ export default function AmbientGradientBackdrop() {
         className="absolute -left-[15%] top-[-10%] h-[70vh] w-[70vw] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.14), transparent 70%)",
+            "radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.09), transparent 70%)",
           filter: "blur(60px)",
           animation: "ambient-drift-a 34s ease-in-out infinite",
         }}
@@ -27,7 +27,7 @@ export default function AmbientGradientBackdrop() {
         className="absolute right-[-20%] top-[25%] h-[80vh] w-[75vw] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, hsl(255 70% 55% / 0.12), transparent 70%)",
+            "radial-gradient(circle at 50% 50%, hsl(255 70% 55% / 0.08), transparent 70%)",
           filter: "blur(70px)",
           animation: "ambient-drift-b 44s ease-in-out infinite",
         }}
@@ -36,7 +36,7 @@ export default function AmbientGradientBackdrop() {
         className="absolute bottom-[-25%] left-[20%] h-[60vh] w-[60vw] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, hsl(265 75% 60% / 0.10), transparent 70%)",
+            "radial-gradient(circle at 50% 50%, hsl(265 75% 60% / 0.07), transparent 70%)",
           filter: "blur(60px)",
           animation: "ambient-drift-c 38s ease-in-out infinite",
         }}
