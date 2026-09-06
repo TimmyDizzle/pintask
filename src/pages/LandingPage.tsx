@@ -36,6 +36,7 @@ import WaitlistForm from "@/components/WaitlistForm";
 import FounderLTDBanner from "@/components/FounderLTDBanner";
 import AnimatedHeroBackground from "@/components/AnimatedHeroBackground";
 import PurpleLightningOrb from "@/components/PurpleLightningOrb";
+import AmbientGradientBackdrop from "@/components/AmbientGradientBackdrop";
 
 const features = [
   {
@@ -161,7 +162,8 @@ export default function LandingPage() {
   const ctaReveal = useScrollReveal({ threshold: 0.2 });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen text-foreground">
+      <AmbientGradientBackdrop />
       {/* Nav */}
       <nav className={`sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "shadow-sm" : ""}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -229,11 +231,11 @@ export default function LandingPage() {
         <AnimatedHeroBackground />
         <PurpleLightningOrb
           size={520}
-          className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-70 md:opacity-80"
+          className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-40 md:opacity-50"
         />
         <PurpleLightningOrb
           size={260}
-          className="right-[6%] top-[45%] -z-10 hidden opacity-50 lg:block"
+          className="right-[6%] top-[45%] -z-10 hidden opacity-30 lg:block"
         />
         <div
           ref={heroReveal.ref}
