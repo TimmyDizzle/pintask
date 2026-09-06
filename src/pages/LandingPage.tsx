@@ -35,6 +35,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import WaitlistForm from "@/components/WaitlistForm";
 import FounderLTDBanner from "@/components/FounderLTDBanner";
 import AnimatedHeroBackground from "@/components/AnimatedHeroBackground";
+import HighContrastToggle from "@/components/HighContrastToggle";
 import PurpleLightningOrb from "@/components/PurpleLightningOrb";
 import AmbientGradientBackdrop from "@/components/AmbientGradientBackdrop";
 
@@ -231,7 +232,8 @@ export default function LandingPage() {
         <AnimatedHeroBackground />
         <PurpleLightningOrb
           size={520}
-          className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-40 md:opacity-50"
+          mobileSize={260}
+          className="left-1/2 top-[-14%] -z-10 -translate-x-1/2 opacity-25 md:top-[-8%] md:opacity-50"
         />
         {/* Readability scrim: keeps the headline crisp over the glow */}
         <div
@@ -239,7 +241,7 @@ export default function LandingPage() {
           aria-hidden="true"
           style={{
             background:
-              "radial-gradient(ellipse 46% 50% at 50% 38%, hsl(var(--background) / 0.9), hsl(var(--background) / 0.5) 62%, transparent 88%)",
+              "radial-gradient(ellipse 42% 46% at 50% 36%, hsl(var(--background) / 0.94), hsl(var(--background) / 0.55) 60%, transparent 84%)",
           }}
         />
         <div
@@ -255,7 +257,7 @@ export default function LandingPage() {
           <h1 className="mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08] [text-shadow:0_1px_2px_hsl(var(--background)/0.9)]">
             The Kanban Productivity App
             <br />
-            Built for <span className="text-primary">ADHD Brains</span>.
+            Built for <span className="hero-accent-glow">ADHD Brains</span>.
           </h1>
           <p
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
@@ -749,6 +751,7 @@ export default function LandingPage() {
 
         <div className="mx-auto mt-10 max-w-6xl border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
           © {new Date().getFullYear()} Pintask. All rights reserved.
+          <HighContrastToggle className="mt-4" />
         </div>
       </footer>
     </div>

@@ -4,13 +4,17 @@
  */
 export default function AmbientGradientBackdrop() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden opacity-60 md:opacity-100"
+      aria-hidden="true"
+      data-decorative="true"
+    >
       {/* Base wash */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(160deg, hsl(var(--primary) / 0.07), transparent 45%, hsl(250 65% 45% / 0.06) 75%, hsl(var(--accent) / 0.05))",
+            "linear-gradient(160deg, hsl(var(--primary) / 0.07), transparent 42%, hsl(250 65% 45% / 0.025) 78%, hsl(var(--accent) / 0.02))",
         }}
       />
       {/* Drifting blobs */}
@@ -24,10 +28,10 @@ export default function AmbientGradientBackdrop() {
         }}
       />
       <div
-        className="absolute right-[-20%] top-[25%] h-[80vh] w-[75vw] rounded-full"
+        className="absolute right-[-38%] top-[30%] h-[70vh] w-[65vw] rounded-full"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, hsl(255 70% 55% / 0.04), transparent 70%)",
+            "radial-gradient(circle at 50% 50%, hsl(255 70% 55% / 0.02), transparent 68%)",
           filter: "blur(70px)",
           animation: "ambient-drift-b 44s ease-in-out infinite",
         }}
