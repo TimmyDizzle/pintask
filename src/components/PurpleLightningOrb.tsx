@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type React from "react";
 
 /**
  * A glowing purple "lightning ball" that pulses, breathes and fires
@@ -8,16 +9,20 @@ import { useEffect, useRef, useState } from "react";
 export default function PurpleLightningOrb({
   className = "",
   size = 420,
+  mobileSize,
   parallax = 1,
 }: {
   className?: string;
   size?: number;
+  /** Size used below the md breakpoint. Defaults to 60% of `size`. */
+  mobileSize?: number;
   /** Multiplier for how far the orb drifts with the cursor. */
   parallax?: number;
 }) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [strike, setStrike] = useState(0);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
+  const [finePointer, setFinePointer] = useState(false);
   const frame = useRef<number | null>(null);
 
   useEffect(() => {
@@ -28,9 +33,18 @@ export default function PurpleLightningOrb({
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  // Only devices with a real cursor get parallax (no touch screens).
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: fine)");
+    const update = () => setFinePointer(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   // Cursor parallax (normalised -1..1 from viewport centre)
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !finePointer) return;
     const onMove = (e: MouseEvent) => {
       if (frame.current !== null) return;
       frame.current = window.requestAnimationFrame(() => {
@@ -46,7 +60,7 @@ export default function PurpleLightningOrb({
       window.removeEventListener("mousemove", onMove);
       if (frame.current !== null) window.cancelAnimationFrame(frame.current);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, finePointer]);
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -82,12 +96,18 @@ export default function PurpleLightningOrb({
 
   return (
     <div
-      className={`pointer-events-none absolute ${className}`}
-      style={{ width: size, height: size }}
+      className={`pointer-events-none absolute h-[var(--orb-sm)] w-[var(--orb-sm)] md:h-[var(--orb)] md:w-[var(--orb)] ${className}`}
+      style={
+        {
+          "--orb": `${size}px`,
+          "--orb-sm": `${mobileSize ?? Math.round(size * 0.6)}px`,
+        } as React.CSSProperties
+      }
       aria-hidden="true"
+      data-decorative="true"
     >
       {/* Outer halo */}
-      <div className="absolute inset-0" style={shift(8)}>
+      <div className="absolute inset-0" style={shift(4)}>
         <div
           className="absolute inset-0 rounded-full"
           style={{
@@ -100,7 +120,7 @@ export default function PurpleLightningOrb({
       </div>
 
       {/* Rotating energy ring */}
-      <div className="absolute inset-0" style={shift(16)}>
+      <div className="absolute inset-0" style={shift(9)}>
         <div
           className="absolute rounded-full"
           style={{
@@ -114,7 +134,7 @@ export default function PurpleLightningOrb({
       </div>
 
       {/* Core */}
-      <div className="absolute inset-0" style={shift(24)}>
+      <div className="absolute inset-0" style={shift(14)}>
         <div
           className="absolute rounded-full"
           style={{
@@ -128,7 +148,7 @@ export default function PurpleLightningOrb({
       </div>
 
       {/* Lightning arcs */}
-      <div className="absolute inset-0" style={shift(32)}>
+      <div className="absolute inset-0" style={shift(19)}>
         <svg
           viewBox="0 0 100 100"
           className="absolute inset-0 h-full w-full"
