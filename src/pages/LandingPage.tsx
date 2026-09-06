@@ -162,7 +162,7 @@ export default function LandingPage() {
   const ctaReveal = useScrollReveal({ threshold: 0.2 });
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen text-foreground">
       <AmbientGradientBackdrop />
       {/* Nav */}
       <nav className={`sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "shadow-sm" : ""}`}>

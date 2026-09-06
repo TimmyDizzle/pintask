@@ -4,7 +4,7 @@
  */
 export default function AmbientGradientBackdrop() {
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
       {/* Base wash */}
       <div
         className="absolute inset-0"
