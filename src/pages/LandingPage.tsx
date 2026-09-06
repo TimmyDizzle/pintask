@@ -239,7 +239,7 @@ export default function LandingPage() {
           aria-hidden="true"
           style={{
             background:
-              "radial-gradient(ellipse 55% 60% at 50% 42%, hsl(var(--background) / 0.72), hsl(var(--background) / 0.35) 60%, transparent 85%)",
+              "radial-gradient(ellipse 46% 50% at 50% 38%, hsl(var(--background) / 0.9), hsl(var(--background) / 0.5) 62%, transparent 88%)",
           }}
         />
         <div
