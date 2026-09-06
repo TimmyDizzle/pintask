@@ -252,7 +252,7 @@ export default function LandingPage() {
           >
             🔁 Pintask is back — and it brought AI with it
           </div>
-          <h1 className="mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08]">
+          <h1 className="mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08] [text-shadow:0_1px_2px_hsl(var(--background)/0.9)]">
             The Kanban Productivity App
             <br />
             Built for <span className="text-primary">ADHD Brains</span>.
