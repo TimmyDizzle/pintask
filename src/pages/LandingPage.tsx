@@ -35,6 +35,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import WaitlistForm from "@/components/WaitlistForm";
 import FounderLTDBanner from "@/components/FounderLTDBanner";
 import AnimatedHeroBackground from "@/components/AnimatedHeroBackground";
+import PurpleLightningOrb from "@/components/PurpleLightningOrb";
 
 const features = [
   {
