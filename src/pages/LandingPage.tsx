@@ -377,6 +377,12 @@ export default function LandingPage() {
           >
             No bloat. Just the tools that matter.
           </p>
+          <p
+            className={`mx-auto mt-3 max-w-xl text-center text-muted-foreground ${revealBase} ${featuresReveal.isVisible ? revealVisible : revealHidden}`}
+            style={{ transitionDelay: "120ms" }}
+          >
+            Pintask combines visual Kanban task management with ADHD-friendly tools that help you organize the chaos, decide what to do next, and keep moving forward.
+          </p>
           <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
               <div
