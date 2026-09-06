@@ -233,6 +233,15 @@ export default function LandingPage() {
           size={520}
           className="left-1/2 top-[-8%] -z-10 -translate-x-1/2 opacity-40 md:opacity-50"
         />
+        {/* Readability scrim: keeps the headline crisp over the glow */}
+        <div
+          className="pointer-events-none absolute inset-0 -z-10"
+          aria-hidden="true"
+          style={{
+            background:
+              "radial-gradient(ellipse 55% 60% at 50% 42%, hsl(var(--background) / 0.72), hsl(var(--background) / 0.35) 60%, transparent 85%)",
+          }}
+        />
         <div
           ref={heroReveal.ref}
           className={`mx-auto max-w-3xl text-center ${revealBase} duration-1000 ${heroReveal.isVisible ? revealVisible : revealHidden}`}
