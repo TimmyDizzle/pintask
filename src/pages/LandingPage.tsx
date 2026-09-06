@@ -245,7 +245,7 @@ export default function LandingPage() {
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "350ms" }}
           >
-            Turn scattered thoughts into clear next steps, break overwhelming projects into manageable tasks, and let your personal AI assistant guide your next move. Build momentum one win at a time.
+            Turn ADHD overwhelm into clear next steps, overwhelming projects into manageable tasks, and let AI guide your next move.
           </p>
           <div
             className={`mx-auto mt-8 max-w-md ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
