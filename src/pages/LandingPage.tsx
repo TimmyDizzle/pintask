@@ -237,9 +237,9 @@ export default function LandingPage() {
             🔁 Pintask is back — and it brought AI with it
           </div>
           <h1 className="mt-6 font-heading text-[2.25rem] font-extrabold tracking-tight sm:text-5xl md:text-6xl leading-[1.08]">
-            The Kanban Board That
+            The Kanban Productivity App
             <br />
-            <span className="text-primary">Actually Bends</span> to How You Work.
+            Built for <span className="text-primary">ADHD Brains</span>.
           </h1>
           <p
             className={`mx-auto mt-6 max-w-xl text-lg text-muted-foreground ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
