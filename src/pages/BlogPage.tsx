@@ -37,11 +37,11 @@ export default function BlogPage() {
 
   return (
     <MarketingLayout>
-      <section className="px-6 pb-10 pt-12 md:pt-16">
-        <RevealSection className="mx-auto max-w-5xl">
-          <BookOpen className="h-9 w-9 text-primary" strokeWidth={1.5} aria-hidden="true" />
-          <h1 className="mt-5 font-heading text-4xl font-bold sm:text-5xl">Pintask Blog</h1>
-          <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+      <section className="px-6 pb-8 pt-12 md:pt-20">
+        <RevealSection className="mx-auto max-w-4xl">
+          <BookOpen className="h-12 w-12 text-primary" strokeWidth={1.25} aria-hidden="true" />
+          <h1 className="mt-6 font-heading text-4xl font-bold">Pintask Blog</h1>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground">
             Practical guides on Kanban, workflow design, and team productivity.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
@@ -55,7 +55,7 @@ export default function BlogPage() {
       </section>
 
       <section id="blog-content" className="px-6">
-        <div className="mx-auto max-w-5xl border-y border-border py-4">
+        <div className="mx-auto max-w-4xl border-b border-border py-3">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
@@ -67,7 +67,7 @@ export default function BlogPage() {
                   onClick={() => setActiveCategory(cat)}
                   className={`rounded-sm px-2 text-sm font-medium ${
                     activeCategory === cat
-                      ? "bg-muted text-primary"
+                      ? "bg-transparent text-primary underline underline-offset-8"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -82,20 +82,20 @@ export default function BlogPage() {
                 aria-label="Search posts"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
+                className="border-transparent bg-transparent pl-9 shadow-none focus-visible:border-input"
               />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="px-6 py-8">
-        <div className="mx-auto max-w-5xl">
+      <section className="px-6 pb-12 pt-6">
+        <div className="mx-auto max-w-4xl">
           {featured && (
             <RevealSection>
               <Link
                 to={`/blog/${featured.slug}`}
-                className="group mb-6 block border-b border-border pb-8 pt-2"
+                className="group mb-3 block border-b border-border py-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-xs font-semibold text-primary">
@@ -104,7 +104,7 @@ export default function BlogPage() {
                   <span className="text-xs text-muted-foreground">{formatPostDate(featured.published_at)}</span>
                   <span className="text-xs text-muted-foreground">· {featured.read_time}</span>
                 </div>
-                <h2 className="mt-3 max-w-3xl font-heading text-2xl font-bold group-hover:text-primary transition-colors sm:text-3xl">
+                <h2 className="mt-3 max-w-3xl font-heading text-2xl font-semibold group-hover:text-primary transition-colors">
                   {featured.title}
                 </h2>
                 <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">{featured.excerpt}</p>
@@ -117,25 +117,26 @@ export default function BlogPage() {
 
           <AdSlot slot={AD_SLOTS.blogIndexTop} className="mb-8" />
 
-          <div className="grid gap-x-10 md:grid-cols-2">
+          <div className="divide-y divide-border">
             {rest.map((post, i) => (
               <RevealSection key={post.id} delay={Math.min(i * 30, 150)}>
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="group flex h-full flex-col border-b border-border py-6"
+                  className="group flex items-start gap-4 px-2 py-5 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:gap-5"
                 >
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {post.category}
-                    </span>
-                    <span className="text-xs text-muted-foreground">{post.read_time}</span>
+                  <FileText className="mt-1 h-5 w-5 shrink-0 text-muted-foreground" strokeWidth={1.5} aria-hidden="true" />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-heading text-base font-semibold leading-snug group-hover:text-primary transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">{post.excerpt}</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                      <span>{post.category}</span>
+                      <span>{post.read_time}</span>
+                      <span>{formatPostDate(post.published_at)}</span>
+                    </div>
                   </div>
-                  <h3 className="mt-3 font-heading text-base font-semibold flex-1 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{post.excerpt}</p>
-                  <p className="mt-3 text-xs font-medium text-primary">{formatPostDate(post.published_at)}</p>
+                  <ArrowRight className="mt-1 hidden h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary sm:block" aria-hidden="true" />
                 </Link>
               </RevealSection>
             ))}
@@ -153,7 +154,7 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
+      <section className="border-t border-border px-6 py-12">
         <RevealSection className="mx-auto max-w-md text-center">
           <h2 className="font-heading text-2xl font-bold tracking-tight">Get new posts in your inbox</h2>
           <div className="mt-6 flex gap-2">

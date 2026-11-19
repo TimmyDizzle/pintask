@@ -7,7 +7,7 @@ import BlogContent from "@/components/BlogContent";
 import AdSlot from "@/components/AdSlot";
 import { AD_SLOTS } from "@/config/adsense";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileText, Tag, CalendarDays, Clock } from "lucide-react";
 import { fetchLivePosts, fetchPostBySlug, formatPostDate } from "@/lib/blog";
 import { blogSeo, canonicalUrl } from "@/lib/seo";
 
@@ -100,7 +100,7 @@ export default function BlogPostPage() {
 
   return (
     <MarketingLayout>
-      <article className="px-6 pt-10 pb-12 md:pt-14">
+      <article className="px-6 pt-10 pb-12 md:pt-16">
         <RevealSection className="mx-auto max-w-3xl">
           <Link
             to="/blog"
@@ -109,21 +109,19 @@ export default function BlogPostPage() {
             <ArrowLeft className="h-4 w-4" /> Back to blog
           </Link>
 
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-primary">
-              {post.category}
-            </span>
-            <span className="text-xs text-muted-foreground">{displayDate}</span>
-            <span className="text-xs text-muted-foreground">· {post.read_time}</span>
-          </div>
-
-          <h1 className="mt-4 font-heading text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+          <FileText className="mt-8 h-11 w-11 text-primary" strokeWidth={1.25} aria-hidden="true" />
+          <h1 className="mt-5 font-heading text-3xl font-bold leading-tight sm:text-4xl">
             {post.title}
           </h1>
-          <p className="mt-5 text-lg text-muted-foreground">{post.excerpt}</p>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">{post.excerpt}</p>
+          <dl className="mt-6 space-y-3 border-b border-border pb-6 text-sm">
+            <div className="flex flex-wrap gap-3"><dt className="flex w-28 items-center gap-2 text-muted-foreground"><Tag className="h-4 w-4" /> Category</dt><dd className="text-primary">{post.category}</dd></div>
+            <div className="flex flex-wrap gap-3"><dt className="flex w-28 items-center gap-2 text-muted-foreground"><CalendarDays className="h-4 w-4" /> Published</dt><dd>{displayDate}</dd></div>
+            <div className="flex flex-wrap gap-3"><dt className="flex w-28 items-center gap-2 text-muted-foreground"><Clock className="h-4 w-4" /> Reading time</dt><dd>{post.read_time}</dd></div>
+          </dl>
         </RevealSection>
 
-        <div className="mx-auto mt-10 max-w-3xl">
+        <div className="mx-auto mt-8 max-w-3xl">
           <BlogContent content={post.content} />
         </div>
 
@@ -150,18 +148,18 @@ export default function BlogPostPage() {
         </div>
       </article>
 
-      <section className="border-t border-border/40 bg-muted/30 px-6 py-16">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="font-heading text-2xl font-bold tracking-tight">More from the blog</h2>
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
+      <section className="border-t border-border px-6 py-12">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="font-heading text-xl font-semibold">More from the blog</h2>
+          <div className="mt-6 divide-y divide-border">
             {related.map((p) => (
               <Link
                 key={p.id}
                 to={`/blog/${p.slug}`}
-                className="group flex flex-col border-t border-border py-5"
+                className="group block py-5"
               >
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                  <span className="text-xs font-medium text-muted-foreground">
                     {p.category}
                   </span>
                   <span className="text-xs text-muted-foreground">{p.read_time}</span>

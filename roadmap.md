@@ -16,3 +16,7 @@
 # Minimalist public-site design
 - [x] Simplify homepage effects, public navigation/footer styling, and blog layouts while preserving existing colors.
 - [x] Verify desktop/mobile layouts and article discovery, search, and signup navigation.
+
+# Blog-only document redesign
+- [x] Give the article index document-style rows and article pages quiet property lists without changing the palette or other pages.
+- [x] Verify all 42 article pages, search, and signup navigation on phone and desktop in both themes.
