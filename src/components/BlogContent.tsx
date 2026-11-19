@@ -14,15 +14,24 @@ export default function BlogContent({ content }: { content: string }) {
   const renderInline = (text: string): React.ReactNode => {
     // Split by **bold** and `code`, preserve order.
     const parts: React.ReactNode[] = [];
-    const regex = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+    const regex = /(\[[^\]]+\]\([^\s)]+\)|\*\*[^*]+\*\*|`[^`]+`)/g;
     let last = 0;
     let m: RegExpExecArray | null;
     let n = 0;
     while ((m = regex.exec(text)) !== null) {
       if (m.index > last) parts.push(text.slice(last, m.index));
       const tok = m[0];
-      if (tok.startsWith("**")) {
-        parts.push(<strong key={`b-${n++}`} className="font-semibold text-foreground">{tok.slice(2, -2)}</strong>);
+      if (tok.startsWith("[")) {
+        const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(tok);
+        const label = link?.[1] ?? tok;
+        const href = link?.[2] ?? "";
+        if (/^https?:\/\//i.test(href) || /^\/(?!\/)/.test(href)) {
+          parts.push(<a key={`a-${n++}`} href={href} className="font-medium text-primary underline underline-offset-4">{label}</a>);
+        } else {
+          parts.push(label);
+        }
+      } else if (tok.startsWith("**")) {
+        parts.push(<strong key={`b-${n++}`} className="font-semibold text-foreground">{renderInline(tok.slice(2, -2))}</strong>);
       } else {
         parts.push(
           <code key={`c-${n++}`} className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.9em] text-foreground">

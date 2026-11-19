@@ -15,8 +15,9 @@ import {
 import BlogContent from "@/components/BlogContent";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { slugify, type BlogPost } from "@/lib/blog";
-import { ArrowLeft } from "lucide-react";
+import { fetchAllPostsAdmin, slugify, type BlogPost } from "@/lib/blog";
+import { nextWeeklyPublishDate, validateScheduledPost } from "@/lib/blogSchedule";
+import { ArrowLeft, CalendarDays } from "lucide-react";
 
 const CATEGORIES = ["Productivity", "Kanban", "Tutorials", "Product Updates"];
 type Status = BlogPost["status"];
@@ -90,6 +91,11 @@ function AdminBlogEditorInner() {
     },
   });
 
+  const { data: calendarPosts = [], isLoading: calendarLoading, isError: calendarError } = useQuery({
+    queryKey: ["blog-posts-admin"],
+    queryFn: fetchAllPostsAdmin,
+  });
+
   useEffect(() => {
     if (existing) {
       setTitle(existing.title);
@@ -132,11 +138,13 @@ function AdminBlogEditorInner() {
         canonical_url: canonicalUrl.trim() || null,
       };
       if (!payload.title || !payload.slug) throw new Error("Title and slug are required");
+      validateScheduledPost(payload.status, payload.published_at, payload.content);
 
       if (isNew) {
+        if (!user) throw new Error("Sign in before creating a post");
         const { data, error } = await supabase
           .from("blog_posts")
-          .insert({ ...payload, author_id: user!.id })
+          .insert({ ...payload, author_id: user.id })
           .select()
           .single();
         if (error) throw error;
@@ -235,6 +243,21 @@ function AdminBlogEditorInner() {
             </div>
             <div>
               <Label htmlFor="published_at">Publish date</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mb-2 mt-2 w-full"
+                disabled={calendarLoading || calendarError}
+                onClick={() => {
+                  const dates = calendarPosts.filter(post => post.id !== id && post.status !== "draft").map(post => post.published_at);
+                  const next = nextWeeklyPublishDate(dates);
+                  setPublishedAt(toLocalInput(next));
+                  setStatus("scheduled");
+                }}
+              >
+                <CalendarDays className="mr-2 h-4 w-4" /> Next weekly slot
+              </Button>
               <Input
                 id="published_at"
                 type="datetime-local"
@@ -242,7 +265,7 @@ function AdminBlogEditorInner() {
                 onChange={(e) => setPublishedAt(e.target.value)}
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Scheduled posts auto-publish at this time.
+                Thursdays, 15:00 UTC. Date shown in your local time. Scheduled posts go live at the selected time.
               </p>
             </div>
             <div>

@@ -131,13 +131,13 @@ export default function BlogPostPage() {
         <div className="mx-auto mt-12 max-w-3xl rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-8">
           <h3 className="font-heading text-xl font-bold">Try Pintask free</h3>
           <p className="mt-2 text-muted-foreground">
-            Personal task tracking with the most customizable Kanban board on the web. Free forever — or grab the
-            Co-Founder Lifetime for $39 while spots last.
+            Turn scattered thoughts into manageable tasks, see your progress on a visual Kanban board,
+            and choose your next step with Pintask's ADHD-friendly tools.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Button asChild>
-              <Link to="/auth">
-                Start free <ArrowRight className="ml-1 h-4 w-4" />
+              <Link to={`/auth?utm_source=blog&utm_medium=article&utm_campaign=${encodeURIComponent(slug)}`}>
+                Create your Pintask account <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" asChild>
