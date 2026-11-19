@@ -4,6 +4,6 @@
 - [x] Verify page metadata, sitemap coverage, and navigation.
 
 # Weekly articles
-- [ ] Publish today's researched Pintask vs Goblin Tools comparison with signup links.
-- [ ] Add and verify one-click weekly article scheduling.
+- [x] Publish today's researched Pintask vs Goblin Tools comparison with signup links.
+- [x] Add and verify one-click weekly article scheduling.
 - [ ] Schedule remaining articles — waiting for the user's title list.
