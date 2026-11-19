@@ -249,3 +249,8 @@
 .marketing-minimal footer [class*="text-gray-"] { color: hsl(var(--muted-foreground)); }
 .marketing-minimal footer a:hover { color: hsl(var(--primary)); }
 .marketing-minimal footer [class*="border-gray-"] { border-color: hsl(var(--border)); }
+.marketing-minimal [class*="opacity-0"] {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
