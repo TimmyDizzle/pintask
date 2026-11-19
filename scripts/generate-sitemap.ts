@@ -6,6 +6,7 @@
 
 import { writeFileSync, readdirSync, unlinkSync } from "fs";
 import { resolve } from "path";
+import { PUBLIC_PAGE_SEO } from "../src/lib/seo";
 
 const BASE_URL = "https://pintask.online";
 const SUPABASE_URL =
@@ -37,74 +38,50 @@ interface SitemapEntry {
   };
 }
 
-const today = new Date().toISOString().slice(0, 10);
-
-const staticEntries: SitemapEntry[] = [
-  { path: "/", lastmod: today, changefreq: "weekly", priority: "1.0" },
-  { path: "/features", lastmod: today, changefreq: "monthly", priority: "0.9" },
-  { path: "/pricing", lastmod: today, changefreq: "monthly", priority: "0.9" },
-  { path: "/extensions", lastmod: today, changefreq: "weekly", priority: "0.8" },
-  { path: "/trello-alternative", lastmod: today, changefreq: "monthly", priority: "0.9" },
-  { path: "/kanban-board", lastmod: today, changefreq: "monthly", priority: "0.9" },
-  { path: "/task-tracker", lastmod: today, changefreq: "monthly", priority: "0.9" },
-  { path: "/about", lastmod: today, changefreq: "monthly", priority: "0.6" },
-  { path: "/blog", lastmod: today, changefreq: "weekly", priority: "0.8" },
-  { path: "/privacy", changefreq: "yearly", priority: "0.3" },
-  { path: "/terms", changefreq: "yearly", priority: "0.3" },
-  { path: "/jv", lastmod: today, changefreq: "monthly", priority: "0.5" },
-];
+const staticEntries: SitemapEntry[] = Object.keys(PUBLIC_PAGE_SEO).map((path) => ({
+  path,
+  changefreq: path === "/blog" || path === "/" ? "weekly" : "monthly",
+  priority: path === "/" ? "1.0" : "0.7",
+}));
 
 async function fetchLivePosts(): Promise<SitemapEntry[]> {
   // RLS already filters to live posts (published, or scheduled with published_at <= now).
-  const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,published_at,updated_at,og_image&order=published_at.desc.nullslast`;
-  try {
+  const posts: SitemapEntry[] = [];
+  const pageSize = 1000;
+  for (let offset = 0; ; offset += pageSize) {
+    const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,published_at,og_image&order=published_at.desc.nullslast,slug.asc&offset=${offset}&limit=${pageSize}`;
     const res = await fetch(url, {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+      signal: AbortSignal.timeout(30000),
     });
-    if (!res.ok) {
-      console.warn(`[sitemap] Failed to fetch blog posts: ${res.status}`);
-      return [];
-    }
-    const rows = (await res.json()) as Array<{
-      slug: string;
-      title: string;
-      published_at: string | null;
-      updated_at: string | null;
-      og_image: string | null;
-    }>;
-    return rows.map((r) => ({
+    // Do not erase the existing sitemap when the database is unavailable.
+    if (!res.ok) throw new Error(`[sitemap] Failed to fetch blog posts: ${res.status}`);
+    const rows = await res.json() as Array<{ slug: string; title: string; published_at: string | null; og_image: string | null }>;
+    posts.push(...rows.map((r) => ({
       path: `/blog/${r.slug}`,
-      lastmod: (r.updated_at || r.published_at || "").slice(0, 10) || undefined,
+      // Publication is a page-specific significant change; generic updated_at is not.
+      lastmod: r.published_at?.slice(0, 10),
       changefreq: "monthly" as const,
       priority: "0.7",
-      image: r.og_image
-        ? {
-            loc: r.og_image.startsWith("http") ? r.og_image : `${BASE_URL}${r.og_image}`,
-            title: r.title,
-          }
-        : undefined,
-    }));
-  } catch (err) {
-    console.warn("[sitemap] Error fetching blog posts:", err);
-    return [];
+      image: r.og_image ? { loc: new URL(r.og_image, BASE_URL).href, title: r.title } : undefined,
+    })));
+    if (rows.length < pageSize) break;
   }
+  return posts;
 }
 
 function renderUrlset(entries: SitemapEntry[]) {
   const urls = entries.map((e) =>
     [
       `  <url>`,
-      `    <loc>${BASE_URL}${e.path}</loc>`,
+      `    <loc>${escapeXml(`${BASE_URL}${e.path}`)}</loc>`,
       e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
       e.image
         ? [
             `    <image:image>`,
-            `      <image:loc>${e.image.loc}</image:loc>`,
+            `      <image:loc>${escapeXml(e.image.loc)}</image:loc>`,
             e.image.title ? `      <image:title>${escapeXml(e.image.title)}</image:title>` : null,
             e.image.caption ? `      <image:caption>${escapeXml(e.image.caption)}</image:caption>` : null,
             `    </image:image>`,
@@ -136,12 +113,12 @@ function escapeXml(text: string): string {
     .replace(/'/g, "&apos;");
 }
 
-function renderIndex(files: Array<{ name: string; lastmod: string }>) {
+function renderIndex(files: Array<{ name: string; lastmod?: string }>) {
   const items = files.map((f) =>
     [
       `  <sitemap>`,
       `    <loc>${BASE_URL}/${f.name}</loc>`,
-      `    <lastmod>${f.lastmod}</lastmod>`,
+      ...(f.lastmod ? [`    <lastmod>${f.lastmod}</lastmod>`] : []),
       `  </sitemap>`,
     ].join("\n"),
   );
@@ -182,18 +159,18 @@ async function main() {
   // Always emit at least one blog sitemap (empty is valid) so the index is stable.
   if (chunks.length === 0) chunks.push([]);
 
-  const blogFiles: Array<{ name: string; lastmod: string }> = [];
+  const blogFiles: Array<{ name: string; lastmod?: string }> = [];
   chunks.forEach((chunk, idx) => {
     const name = `sitemap-blog-${idx + 1}.xml`;
     writeFileSync(resolve("public", name), renderUrlset(chunk));
     const lastmod =
-      chunk.map((c) => c.lastmod).filter(Boolean).sort().pop() || today;
+      chunk.map((c) => c.lastmod).filter(Boolean).sort().pop() || undefined;
     blogFiles.push({ name, lastmod });
   });
 
   // Index references the static + all blog sitemaps
   const indexFiles = [
-    { name: "sitemap-static.xml", lastmod: today },
+    { name: "sitemap-static.xml" },
     ...blogFiles,
   ];
   writeFileSync(resolve("public/sitemap.xml"), renderIndex(indexFiles));
@@ -204,4 +181,7 @@ async function main() {
   );
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

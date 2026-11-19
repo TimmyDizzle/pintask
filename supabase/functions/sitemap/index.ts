@@ -6,15 +6,15 @@
 //   /sitemap/static     → marketing routes
 //   /sitemap/blog/:n    → blog post chunk N (1-indexed)
 //
-// Referenced from public/robots.txt.
+// Legacy dynamic endpoint; public/robots.txt advertises the same-domain generated sitemap.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const BASE_URL = "https://pintask.online";
 const POSTS_PER_SITEMAP = 5000;
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") || "";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,23 +37,21 @@ interface SitemapEntry {
   image?: { loc: string; title?: string; caption?: string };
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
-
 const staticEntries = (): SitemapEntry[] => {
-  const d = today();
   return [
-    { path: "/", lastmod: d, changefreq: "weekly", priority: "1.0" },
-    { path: "/features", lastmod: d, changefreq: "monthly", priority: "0.9" },
-    { path: "/pricing", lastmod: d, changefreq: "monthly", priority: "0.9" },
-    { path: "/extensions", lastmod: d, changefreq: "weekly", priority: "0.8" },
-    { path: "/trello-alternative", lastmod: d, changefreq: "monthly", priority: "0.9" },
-    { path: "/kanban-board", lastmod: d, changefreq: "monthly", priority: "0.9" },
-    { path: "/task-tracker", lastmod: d, changefreq: "monthly", priority: "0.9" },
-    { path: "/about", lastmod: d, changefreq: "monthly", priority: "0.6" },
-    { path: "/blog", lastmod: d, changefreq: "weekly", priority: "0.8" },
+    { path: "/", changefreq: "weekly", priority: "1.0" },
+    { path: "/features", changefreq: "monthly", priority: "0.9" },
+    { path: "/pricing", changefreq: "monthly", priority: "0.9" },
+    { path: "/extensions", changefreq: "weekly", priority: "0.8" },
+    { path: "/trello-alternative", changefreq: "monthly", priority: "0.9" },
+    { path: "/kanban-board", changefreq: "monthly", priority: "0.9" },
+    { path: "/task-tracker", changefreq: "monthly", priority: "0.9" },
+    { path: "/about", changefreq: "monthly", priority: "0.6" },
+    { path: "/blog", changefreq: "weekly", priority: "0.8" },
     { path: "/privacy", changefreq: "yearly", priority: "0.3" },
     { path: "/terms", changefreq: "yearly", priority: "0.3" },
-    { path: "/jv", lastmod: d, changefreq: "monthly", priority: "0.5" },
+    { path: "/jv", changefreq: "monthly", priority: "0.5" },
+    { path: "/jvsalespage", changefreq: "monthly", priority: "0.5" },
   ];
 };
 
@@ -70,14 +68,14 @@ function renderUrlset(entries: SitemapEntry[]): string {
   const urls = entries.map((e) =>
     [
       `  <url>`,
-      `    <loc>${BASE_URL}${e.path}</loc>`,
+      `    <loc>${escapeXml(`${BASE_URL}${e.path}`)}</loc>`,
       e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
       e.image
         ? [
             `    <image:image>`,
-            `      <image:loc>${e.image.loc}</image:loc>`,
+            `      <image:loc>${escapeXml(e.image.loc)}</image:loc>`,
             e.image.title ? `      <image:title>${escapeXml(e.image.title)}</image:title>` : null,
             e.image.caption ? `      <image:caption>${escapeXml(e.image.caption)}</image:caption>` : null,
             `    </image:image>`,
@@ -99,9 +97,9 @@ function renderUrlset(entries: SitemapEntry[]): string {
   ].join("\n");
 }
 
-function renderIndex(files: Array<{ url: string; lastmod: string }>): string {
+function renderIndex(files: Array<{ url: string; lastmod?: string }>): string {
   const items = files.map((f) =>
-    [`  <sitemap>`, `    <loc>${f.url}</loc>`, `    <lastmod>${f.lastmod}</lastmod>`, `  </sitemap>`].join("\n"),
+    [`  <sitemap>`, `    <loc>${f.url}</loc>`, ...(f.lastmod ? [`    <lastmod>${f.lastmod}</lastmod>`] : []), `  </sitemap>`].join("\n"),
   );
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -125,7 +123,7 @@ async function fetchLivePosts(): Promise<SitemapEntry[]> {
   }
   return (data ?? []).map((r: any) => ({
     path: `/blog/${r.slug}`,
-    lastmod: (r.updated_at || r.published_at || "").slice(0, 10) || undefined,
+    lastmod: r.published_at?.slice(0, 10),
     changefreq: "monthly" as const,
     priority: "0.7",
     image: r.og_image
@@ -168,9 +166,8 @@ Deno.serve(async (req) => {
     // Default: sitemap index
     const posts = await fetchLivePosts();
     const chunkCount = Math.max(1, Math.ceil(posts.length / POSTS_PER_SITEMAP));
-    const d = today();
     const files = [
-      { url: functionUrl("/static"), lastmod: d },
+      { url: functionUrl("/static") },
       ...Array.from({ length: chunkCount }, (_, i) => ({
         url: functionUrl(`/blog/${i + 1}`),
         lastmod:
@@ -179,7 +176,7 @@ Deno.serve(async (req) => {
             .map((p) => p.lastmod)
             .filter(Boolean)
             .sort()
-            .pop() || d,
+            .pop() || undefined,
       })),
     ];
     return new Response(renderIndex(files), { headers: xmlHeaders });

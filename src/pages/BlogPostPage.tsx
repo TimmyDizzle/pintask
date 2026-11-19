@@ -9,6 +9,7 @@ import { AD_SLOTS } from "@/config/adsense";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { fetchLivePosts, fetchPostBySlug, formatPostDate } from "@/lib/blog";
+import { blogSeo, canonicalUrl } from "@/lib/seo";
 
 export default function BlogPostPage() {
   const { slug = "" } = useParams();
@@ -24,11 +25,11 @@ export default function BlogPostPage() {
     queryFn: fetchLivePosts,
   });
 
-  const defaultUrl = post ? `https://pintask.online/blog/${post.slug}` : undefined;
-  const postUrl = post?.canonical_url || defaultUrl;
+  const postUrl = canonicalUrl(`/blog/${slug}`);
   const ogImage = post?.og_image || "https://pintask.online/og-image.png";
-  const metaTitle = post?.seo_title || (post ? `${post.title} — Pintask Blog` : "Pintask Blog");
-  const metaDescription = post?.seo_description || post?.excerpt;
+  const { title: metaTitle, description: metaDescription } = post
+    ? blogSeo(post)
+    : { title: "ADHD Productivity Article — Pintask Blog", description: "Practical ADHD productivity and Kanban insights from Pintask." };
   const publishedIso = post?.published_at ?? undefined;
   const displayDate = formatPostDate(post?.published_at ?? null);
 

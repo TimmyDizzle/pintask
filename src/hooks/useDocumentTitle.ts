@@ -1,6 +1,7 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { BASE_TITLE, BASE_DESCRIPTION, PUBLIC_PAGE_SEO, canonicalUrl, normalizePagePath } from "@/lib/seo";
 
-const BASE_TITLE = "Pintask — Personal Task Tracker";
 const SITE_ORIGIN = "https://pintask.online";
 const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png`;
 
@@ -30,7 +31,7 @@ interface UseDocumentTitleOptions {
   jsonLd?: JsonLd;
   ogType?: string;
   ogImage?: string;
-  /** Override canonical URL (defaults to current pathname under SITE_ORIGIN). */
+  /** Legacy option; canonical URLs always self-reference the current route. */
   canonical?: string;
   /** Additional route-specific meta tags. Keys with ":" use [property], others use [name]. */
   meta?: Record<string, string>;
@@ -39,25 +40,26 @@ interface UseDocumentTitleOptions {
 }
 
 export function useDocumentTitle(title?: string, description?: string, options?: UseDocumentTitleOptions) {
+  const { pathname } = useLocation();
   useEffect(() => {
-    const finalTitle = title || BASE_TITLE;
+    const page = PUBLIC_PAGE_SEO[normalizePagePath(pathname)];
+    const finalTitle = page?.title || title || BASE_TITLE;
+    const finalDescription = page?.description || description || BASE_DESCRIPTION;
     document.title = finalTitle;
 
-    const url = options?.canonical || `${SITE_ORIGIN}${window.location.pathname}`;
+    const url = canonicalUrl(pathname);
     const ogType = options?.ogType || "website";
     const ogImage = options?.ogImage || DEFAULT_OG_IMAGE;
 
-    if (description) {
-      upsertMeta('meta[name="description"]', "name", "description", description);
-    }
+    upsertMeta('meta[name="description"]', "name", "description", finalDescription);
     upsertLink("canonical", url);
     upsertMeta('meta[property="og:title"]', "property", "og:title", finalTitle);
-    if (description) upsertMeta('meta[property="og:description"]', "property", "og:description", description);
+    upsertMeta('meta[property="og:description"]', "property", "og:description", finalDescription);
     upsertMeta('meta[property="og:url"]', "property", "og:url", url);
     upsertMeta('meta[property="og:type"]', "property", "og:type", ogType);
     upsertMeta('meta[property="og:image"]', "property", "og:image", ogImage);
     upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", finalTitle);
-    if (description) upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", description);
+    upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", finalDescription);
     upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", ogImage);
 
     // Track route-scoped tags so they don't leak across navigations.
@@ -99,5 +101,5 @@ export function useDocumentTitle(title?: string, description?: string, options?:
       if (jsonLdEl && jsonLdEl.parentNode) jsonLdEl.parentNode.removeChild(jsonLdEl);
       routeMeta.forEach((el) => el.parentNode?.removeChild(el));
     };
-  }, [title, description, options?.ogType, options?.ogImage, options?.canonical, options?.keywords, JSON.stringify(options?.meta), JSON.stringify(options?.jsonLd)]);
+  }, [pathname, title, description, options?.ogType, options?.ogImage, options?.canonical, options?.keywords, JSON.stringify(options?.meta), JSON.stringify(options?.jsonLd)]);
 }

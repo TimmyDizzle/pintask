@@ -14,5 +14,5 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-# Dynamic sitemap — always reflects the latest published/scheduled posts.
-Sitemap: https://zieqfktltyolazltppjo.supabase.co/functions/v1/sitemap
+# Sitemap refreshed before each publish with public pages and live blog posts.
+Sitemap: https://pintask.online/sitemap.xml
