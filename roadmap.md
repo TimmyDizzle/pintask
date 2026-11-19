@@ -6,7 +6,8 @@
 # Weekly articles
 - [x] Publish today's researched Pintask vs Goblin Tools comparison with signup links.
 - [x] Add and verify one-click weekly article scheduling.
-- [ ] Schedule remaining articles — waiting for the user's title list.
+- [x] Import the ten supplied PDF articles with their SEO fields and signup links.
+- [x] Date the ten articles weekly (September 10–November 12, 2026) before today's comparison and verify their public pages and sitemap.
 
 # Public structured data
 - [x] Add linked site, application, public-page, breadcrumb, and blog schemas.
