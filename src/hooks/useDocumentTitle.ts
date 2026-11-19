@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { BASE_TITLE, BASE_DESCRIPTION, PUBLIC_PAGE_SEO, canonicalUrl, normalizePagePath } from "@/lib/seo";
+import { publicPageStructuredData } from "@/lib/structuredData";
 
 const SITE_ORIGIN = "https://pintask.online";
 const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png`;
@@ -88,11 +89,13 @@ export function useDocumentTitle(title?: string, description?: string, options?:
     }
 
     let jsonLdEl: HTMLScriptElement | null = null;
-    if (options?.jsonLd) {
+    const structuredData = publicPageStructuredData(pathname, options?.jsonLd);
+    if (structuredData.length) {
+      document.head.querySelectorAll('script[data-route-jsonld="true"]').forEach(el => el.remove());
       jsonLdEl = document.createElement("script");
       jsonLdEl.type = "application/ld+json";
       jsonLdEl.setAttribute("data-route-jsonld", "true");
-      jsonLdEl.text = JSON.stringify(options.jsonLd);
+      jsonLdEl.text = JSON.stringify(structuredData);
       document.head.appendChild(jsonLdEl);
     }
 

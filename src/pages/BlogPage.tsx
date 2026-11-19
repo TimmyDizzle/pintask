@@ -11,14 +11,11 @@ import { ArrowRight, Search, ChevronDown } from "lucide-react";
 import AdSlot from "@/components/AdSlot";
 import { AD_SLOTS } from "@/config/adsense";
 import { fetchLivePosts, formatPostDate } from "@/lib/blog";
+import { blogListingStructuredData } from "@/lib/structuredData";
 
 const categories = ["All", "Productivity", "Kanban", "Tutorials", "Product Updates"];
 
 export default function BlogPage() {
-  useDocumentTitle(
-    "Pintask Blog — Productivity, Kanban, and Task Management Insights",
-    "Practical guides on Kanban workflow, task management, team productivity, and getting the most out of Pintask.",
-  );
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
 
@@ -35,6 +32,9 @@ export default function BlogPage() {
 
   const featured = filtered.find((p) => p.featured);
   const rest = filtered.filter((p) => p.id !== featured?.id);
+  useDocumentTitle(undefined, undefined, {
+    jsonLd: blogListingStructuredData(featured ? [featured, ...rest] : rest),
+  });
 
   return (
     <MarketingLayout>

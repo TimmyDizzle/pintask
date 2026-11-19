@@ -28,17 +28,32 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Pintask",
-      "url": "https://pintask.online",
-      "description": "ADHD-friendly Kanban task management with AI-guided next steps and project breakdowns.",
-      "applicationCategory": "ProductivityApplication",
-      "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://pintask.online/#organization",
+          "name": "Pintask",
+          "url": "https://pintask.online/"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://pintask.online/#website",
+          "name": "Pintask",
+          "url": "https://pintask.online/",
+          "inLanguage": "en",
+          "publisher": { "@id": "https://pintask.online/#organization" }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://pintask.online/#application",
+          "name": "Pintask",
+          "url": "https://pintask.online/",
+          "description": "ADHD-friendly Kanban task management with AI-guided next steps and project breakdowns.",
+          "applicationCategory": "ProductivityApplication",
+          "operatingSystem": "Web",
+          "publisher": { "@id": "https://pintask.online/#organization" }
+        }
+      ]
     }
     </script>
 
