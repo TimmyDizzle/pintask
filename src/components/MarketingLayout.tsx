@@ -14,7 +14,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="marketing-minimal min-h-screen bg-background text-foreground">
       {/* Nav */}
       <nav className={`sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "shadow-sm" : ""}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">

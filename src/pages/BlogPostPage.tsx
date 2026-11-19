@@ -100,7 +100,7 @@ export default function BlogPostPage() {
 
   return (
     <MarketingLayout>
-      <article className="px-6 pt-16 pb-12 md:pt-24">
+      <article className="px-6 pt-10 pb-12 md:pt-14">
         <RevealSection className="mx-auto max-w-3xl">
           <Link
             to="/blog"
@@ -109,8 +109,8 @@ export default function BlogPostPage() {
             <ArrowLeft className="h-4 w-4" /> Back to blog
           </Link>
 
-          <div className="mt-6 flex items-center gap-2">
-            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+          <div className="mt-6 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-primary">
               {post.category}
             </span>
             <span className="text-xs text-muted-foreground">{displayDate}</span>
@@ -131,7 +131,7 @@ export default function BlogPostPage() {
           <AdSlot slot={AD_SLOTS.blogPost} />
         </div>
 
-        <div className="mx-auto mt-12 max-w-3xl rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-8">
+        <div className="mx-auto mt-12 max-w-3xl border-y border-border py-8">
           <h3 className="font-heading text-xl font-bold">Try Pintask free</h3>
           <p className="mt-2 text-muted-foreground">
             Turn scattered thoughts into manageable tasks, see your progress on a visual Kanban board,
@@ -158,7 +158,7 @@ export default function BlogPostPage() {
               <Link
                 key={p.id}
                 to={`/blog/${p.slug}`}
-                className="group rounded-xl border border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                className="group flex flex-col border-t border-border py-5"
               >
                 <div className="flex items-center gap-2">
                   <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">

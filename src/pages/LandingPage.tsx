@@ -34,10 +34,7 @@ import tourScreensGif from "@/assets/tour-screens.gif";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import WaitlistForm from "@/components/WaitlistForm";
 import FounderLTDBanner from "@/components/FounderLTDBanner";
-import AnimatedHeroBackground from "@/components/AnimatedHeroBackground";
 import HighContrastToggle from "@/components/HighContrastToggle";
-import PurpleLightningOrb from "@/components/PurpleLightningOrb";
-import AmbientGradientBackdrop from "@/components/AmbientGradientBackdrop";
 
 const features = [
   {
@@ -163,8 +160,7 @@ export default function LandingPage() {
   const ctaReveal = useScrollReveal({ threshold: 0.2 });
 
   return (
-    <div className="relative min-h-screen text-foreground">
-      <AmbientGradientBackdrop />
+    <div className="marketing-minimal relative min-h-screen bg-background text-foreground">
       {/* Nav */}
       <nav className={`sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md transition-shadow duration-300 ${scrolled ? "shadow-sm" : ""}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -228,28 +224,13 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative overflow-hidden px-6 pb-16 pt-20 md:pt-28">
-        <AnimatedHeroBackground />
-        <PurpleLightningOrb
-          size={520}
-          mobileSize={260}
-          className="left-1/2 top-[-14%] -z-10 -translate-x-1/2 opacity-25 md:top-[-8%] md:opacity-50"
-        />
-        {/* Readability scrim: keeps the headline crisp over the glow */}
-        <div
-          className="pointer-events-none absolute inset-0 -z-10"
-          aria-hidden="true"
-          style={{
-            background:
-              "radial-gradient(ellipse 42% 46% at 50% 36%, hsl(var(--background) / 0.94), hsl(var(--background) / 0.55) 60%, transparent 84%)",
-          }}
-        />
+      <section className="relative overflow-hidden px-6 pb-12 pt-14 md:pt-20">
         <div
           ref={heroReveal.ref}
           className={`mx-auto max-w-3xl text-center ${revealBase} duration-1000 ${heroReveal.isVisible ? revealVisible : revealHidden}`}
         >
           <div
-            className={`inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
+            className={`inline-flex items-center gap-1.5 text-sm text-primary ${revealBase} ${heroReveal.isVisible ? revealVisible : revealHidden}`}
             style={{ transitionDelay: "100ms" }}
           >
             🔁 Pintask is back — and it brought AI with it

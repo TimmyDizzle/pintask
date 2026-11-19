@@ -4,10 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import MarketingLayout from "@/components/MarketingLayout";
 import RevealSection from "@/components/RevealSection";
-import BlogHeroBackdrop from "@/components/BlogHeroBackdrop";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Search, ChevronDown } from "lucide-react";
+import { ArrowRight, Search, BookOpen, FileText } from "lucide-react";
 import AdSlot from "@/components/AdSlot";
 import { AD_SLOTS } from "@/config/adsense";
 import { fetchLivePosts, formatPostDate } from "@/lib/blog";
@@ -38,67 +37,49 @@ export default function BlogPage() {
 
   return (
     <MarketingLayout>
-      <section className="relative isolate overflow-hidden px-6 py-24 md:py-32">
-        <BlogHeroBackdrop />
-        <RevealSection className="relative mx-auto max-w-3xl text-center">
-          <div className="flex justify-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Productivity & Kanban
-            </span>
-          </div>
-          <h1 className="mt-6 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
-            The{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Pintask
-            </span>{" "}
-            Blog
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
+      <section className="px-6 pb-10 pt-12 md:pt-16">
+        <RevealSection className="mx-auto max-w-5xl">
+          <BookOpen className="h-9 w-9 text-primary" strokeWidth={1.5} aria-hidden="true" />
+          <h1 className="mt-5 font-heading text-4xl font-bold sm:text-5xl">Pintask Blog</h1>
+          <p className="mt-4 max-w-xl text-lg text-muted-foreground">
             Practical guides on Kanban, workflow design, and team productivity.
           </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+          <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
             <span className="font-medium text-foreground/80">The Pintask Team</span>
             <span aria-hidden>·</span>
-            <time dateTime="2026-01-01">Updated weekly</time>
+            <span>Updated weekly</span>
             <span aria-hidden>·</span>
-            <span>20+ articles</span>
+            <span>{posts.length} articles</span>
           </div>
         </RevealSection>
       </section>
 
-      <div className="flex justify-center -mt-10 pb-2">
-        <a
-          href="#blog-content"
-          aria-label="Skip to blog posts"
-          className="scroll-indicator inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/80 text-muted-foreground shadow-sm backdrop-blur transition-colors hover:text-primary hover:border-primary/40"
-        >
-          <ChevronDown className="h-4 w-4" />
-        </a>
-      </div>
-
-      <section id="blog-content" className="border-t border-border/40 bg-muted/30 px-6 py-10">
-        <div className="mx-auto max-w-4xl">
+      <section id="blog-content" className="px-6">
+        <div className="mx-auto max-w-5xl border-y border-border py-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => (
-                <button
+                <Button
                   key={cat}
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={activeCategory === cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                  className={`rounded-sm px-2 text-sm font-medium ${
                     activeCategory === cat
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card border border-border/50 text-muted-foreground hover:text-foreground"
+                      ? "bg-muted text-primary"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {cat}
-                </button>
+                </Button>
               ))}
             </div>
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search posts..."
+                aria-label="Search posts"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-9"
@@ -108,25 +89,25 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <section className="px-6 py-12">
-        <div className="mx-auto max-w-4xl">
+      <section className="px-6 py-8">
+        <div className="mx-auto max-w-5xl">
           {featured && (
             <RevealSection>
               <Link
                 to={`/blog/${featured.slug}`}
-                className="group block rounded-xl border border-primary/20 bg-card p-8 shadow-sm hover:shadow-md transition-shadow mb-8"
+                className="group mb-6 block border-b border-border pb-8 pt-2"
               >
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-primary">
                     {featured.category}
                   </span>
                   <span className="text-xs text-muted-foreground">{formatPostDate(featured.published_at)}</span>
                   <span className="text-xs text-muted-foreground">· {featured.read_time}</span>
                 </div>
-                <h2 className="mt-3 font-heading text-2xl font-bold group-hover:text-primary transition-colors">
+                <h2 className="mt-3 max-w-3xl font-heading text-2xl font-bold group-hover:text-primary transition-colors sm:text-3xl">
                   {featured.title}
                 </h2>
-                <p className="mt-3 text-muted-foreground">{featured.excerpt}</p>
+                <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">{featured.excerpt}</p>
                 <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
                   Read article <ArrowRight className="h-3.5 w-3.5" />
                 </p>
@@ -136,15 +117,16 @@ export default function BlogPage() {
 
           <AdSlot slot={AD_SLOTS.blogIndexTop} className="mb-8" />
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-x-10 md:grid-cols-2">
             {rest.map((post, i) => (
-              <RevealSection key={post.id} delay={80 + i * 80}>
+              <RevealSection key={post.id} delay={Math.min(i * 30, 150)}>
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="group block rounded-xl border border-border/50 bg-card p-6 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col"
+                  className="group flex h-full flex-col border-b border-border py-6"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                    <FileText className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    <span className="text-xs font-medium text-muted-foreground">
                       {post.category}
                     </span>
                     <span className="text-xs text-muted-foreground">{post.read_time}</span>

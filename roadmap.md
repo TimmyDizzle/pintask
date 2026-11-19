@@ -11,3 +11,7 @@
 # Public structured data
 - [x] Add linked site, application, public-page, breadcrumb, and blog schemas.
 - [x] Test every public route and blog article across screen sizes and verify navigation cleanup.
+
+# Minimalist public-site design
+- [x] Simplify homepage effects, public navigation/footer styling, and blog layouts while preserving existing colors.
+- [x] Verify desktop/mobile layouts and article discovery, search, and signup navigation.

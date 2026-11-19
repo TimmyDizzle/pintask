@@ -224,3 +224,28 @@
 .high-contrast h4 {
   text-shadow: none !important;
 }
+
+/* A quiet document-like presentation, scoped to the public site. */
+.marketing-minimal {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+.marketing-minimal h1, .marketing-minimal h2, .marketing-minimal h3 {
+  letter-spacing: 0;
+  text-shadow: none;
+}
+.marketing-minimal h1 { font-weight: 700; line-height: 1.15; }
+.marketing-minimal nav { background: hsl(var(--background)); box-shadow: none; backdrop-filter: none; }
+.marketing-minimal [data-decorative="true"],
+.marketing-minimal .blog-hero-card { display: none; }
+.marketing-minimal .hero-accent-glow { color: hsl(var(--primary)); text-shadow: none; }
+.marketing-minimal [class*="shadow-"] { box-shadow: none; }
+.marketing-minimal [class*="rounded-xl"],
+.marketing-minimal [class*="rounded-2xl"] { border-radius: 6px; }
+.marketing-minimal section[class*="bg-muted"] { background: hsl(var(--background)); }
+.marketing-minimal footer { background: hsl(var(--background)); color: hsl(var(--foreground)); }
+.marketing-minimal footer [class*="text-white"],
+.marketing-minimal footer [class*="text-gray-300"] { color: hsl(var(--foreground)); }
+.marketing-minimal footer [class*="text-gray-"] { color: hsl(var(--muted-foreground)); }
+.marketing-minimal footer a:hover { color: hsl(var(--primary)); }
+.marketing-minimal footer [class*="border-gray-"] { border-color: hsl(var(--border)); }
